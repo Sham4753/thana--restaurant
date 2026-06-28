@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Thana Procurement</title>
+    <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+    <div class="app">
+        <div class="header"><div class="header-icon">🛒</div><div class="header-title">قائمة المشتريات</div></div>
+        <div class="card"><h3>📋 المشتريات المقترحة</h3><div id="procurementList"></div></div>
+        <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="shareWhatsApp()">📤 مشاركة عبر واتساب</button>
+        <nav class="bottom-nav">
+            <a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a>
+            <a href="tables.html">🪑</a><a href="staff.html">👥</a><a href="inventory.html">📦</a>
+            <a href="reports.html">📊</a><a href="close.html">📆</a><a href="waste_report.html">🗑️</a>
+        </nav>
+    </div>
+    <script>
+        const inventory=JSON.parse(localStorage.getItem('thana_inventory')||'[]');
+        const needed=inventory.filter(i=>i.qty<=i.min*2);
+        document.getElementById('procurementList').innerHTML=needed.length>0?
+            needed.map(i=>`<p>📦 ${i.name}: اشتري ${Math.ceil(i.min*3-i.qty)} ${i.unit}</p>`).join(''):
+            '<p style="opacity:0.5">✅ كل المواد متوفرة</p>';
+        function shareWhatsApp(){
+            const text=needed.map(i=>`📦 ${i.name}: ${Math.ceil(i.min*3-i.qty)} ${i.unit}`).join('%0A');
+            window.open(`https://wa.me/?text=🛒 قائمة مشتريات:%0A${text}`,'_blank');
+        }
+    </script>
+</body>
+</html>

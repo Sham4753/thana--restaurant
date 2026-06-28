@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Thana Velocity</title>
+    <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+    <div class="app">
+        <div class="header"><div class="header-icon">⚡</div><div class="header-title">سرعة المطبخ</div></div>
+        <div class="card"><h3>⏱️ أوقات التجهيز</h3><div id="velocityStats"></div></div>
+        <div class="card"><h3>📊 أكثر ساعة ازدحاماً</h3><div id="peakHour"></div></div>
+        <nav class="bottom-nav">
+            <a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a>
+            <a href="tables.html">🪑</a><a href="staff.html">👥</a><a href="inventory.html">📦</a>
+            <a href="reports.html">📊</a><a href="close.html">📆</a><a href="waste_report.html">🗑️</a>
+        </nav>
+    </div>
+    <script>
+        const orders=JSON.parse(localStorage.getItem('thana_kitchen_orders')||'[]');
+        const completed=orders.filter(o=>o.deducted);
+        const avgTime=completed.length>0?Math.round(completed.reduce((s,o)=>s+(o.deducted?5:10),0)/completed.length):0;
+        const hours={};
+        orders.forEach(o=>{const h=new Date(o.time).getHours();hours[h]=(hours[h]||0)+1});
+        const peak=Object.entries(hours).sort((a,b)=>b[1]-a[1])[0];
+        document.getElementById('velocityStats').innerHTML=`
+            <p>📋 إجمالي الطلبات المكتملة: ${completed.length}</p>
+            <p>⏱️ متوسط وقت التجهيز: ${avgTime} دقائق</p>
+        `;
+        document.getElementById('peakHour').innerHTML=`
+            <p>🕐 ساعة الذروة: ${peak?peak[0]+':00':'—'} (${peak?peak[1]:0} طلبات)</p>
+        `;
+    </script>
+</body>
+</html>

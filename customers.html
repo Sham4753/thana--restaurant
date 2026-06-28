@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thana CRM</title>
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        .customer-card{background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+        .customer-avatar{font-size:2.5em;width:60px;text-align:center}
+        .customer-info{flex:1}.customer-name{font-weight:600}.customer-history{font-size:0.75em;opacity:0.6}
+        .customer-last{font-size:0.7em;opacity:0.5}
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="header"><div class="header-icon">👑</div><div class="header-title">العملاء المميزين</div></div>
+        <button class="btn btn-primary" style="width:100%;margin-bottom:16px" onclick="addCustomer()">➕ إضافة عميل</button>
+        <div id="customerList"></div>
+        <div class="modal" id="customerModal">
+            <div class="modal-content">
+                <h3>➕ عميل جديد</h3>
+                <input type="text" id="custName" placeholder="اسم العميل">
+                <input type="tel" id="custPhone" placeholder="رقم الهاتف">
+                <input type="text" id="custNotes" placeholder="ملاحظات (مثلاً: يحب الزاوية)">
+                <button class="btn btn-primary" onclick="saveCustomer()">💾 حفظ</button>
+                <button class="btn btn-ghost" onclick="document.getElementById('customerModal').style.display='none'">✕ إلغاء</button>
+            </div>
+        </div>
+        <nav class="bottom-nav">
+            <a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a>
+            <a href="tables.html">🪑</a><a href="staff.html">👥</a><a href="inventory.html">📦</a>
+            <a href="reports.html">📊</a><a href="close.html">📆</a><a href="waste_report.html">🗑️</a>
+        </nav>
+    </div>
+    <script>
+        let customers=JSON.parse(localStorage.getItem('thana_customers')||'[]');
+        const orders=JSON.parse(localStorage.getItem('thana_kitchen_orders')||'[]');
+        function save(){localStorage.setItem('thana_customers',JSON.stringify(customers))}
+        function render(){
+            document.getElementById('customerList').innerHTML=customers.map(c=>{
+                const customerOrders=orders.filter(o=>o.customerPhone===c.phone);
+                const lastOrder=customerOrders[customerOrders.length-1];
+                const lastDate=lastOrder?new Date(lastOrder.time).toLocaleDateString('ar-SA'):'لا يوجد';
+                const favItem=customerOrders.flatMap(o=>o.items).reduce((a,i)=>{a[i.name]=(a[i.name]||0)+i.qty;return a},{});
+                const topItem=Object.entries(favItem).sort((a,b)=>b[1]-a[1])[0];
+                return`<div class="customer-card">
+                    <div class="customer-avatar">👤</div>
+                    <div class="customer-info">
+                        <div class="customer-name">${c.name} 📞 ${c.phone}</div>
+                        <div class="customer-history">🍽️ المفضل: ${topItem?topItem[0]:'—'} | ✏️ ${c.notes||'—'}</div>
+                        <div class="customer-last">🕐 آخر زيارة: ${lastDate}</div>
+                    </div>
+                </div>`;
+            }).join('')||'<p style="text-align:center;opacity:0.5">لا يوجد عملاء بعد</p>';
+        }
+        function addCustomer(){document.getElementById('customerModal').style.display='flex'}
+        function saveCustomer(){
+            const name=document.getElementById('custName').value.trim();
+            const phone=document.getElementById('custPhone').value.trim();
+            const notes=document.getElementById('custNotes').value.trim();
+            if(!name||!phone)return;
+            customers.push({id:Date.now(),name,phone,notes});
+            save();render();
+            document.getElementById('customerModal').style.display='none';
+        }
+        render();
+    </script>
+</body>
+</html>
