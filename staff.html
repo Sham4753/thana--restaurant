@@ -17,10 +17,17 @@
         .staff-info{flex:1}
         .staff-name{font-weight:600}
         .staff-role{font-size:0.8em;opacity:0.7}
-        .staff-status{font-size:0.7em;padding:4px 8px;border-radius:12px}
+        .staff-status{font-size:0.7em;padding:4px 8px;border-radius:12px;cursor:pointer}
         .status-present{background:#00a884}
         .status-absent{background:#e94560}
+        .staff-delete{color:var(--accent);cursor:pointer;font-size:1.2em;padding:8px}
         .btn-add{width:100%;background:var(--accent2);color:white;border:none;padding:12px;border-radius:12px;font-size:1em;cursor:pointer;margin-bottom:16px}
+        .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:1000}
+        .modal-content{background:#1a1a2e;border:1px solid var(--border);border-radius:20px;padding:24px;width:90%;max-width:350px;text-align:center}
+        .modal input{width:100%;padding:10px;margin:8px 0;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px}
+        .modal button{width:100%;padding:12px;margin:6px 0;border:none;border-radius:12px;cursor:pointer;font-weight:600}
+        .btn-save{background:var(--accent2);color:white}
+        .btn-cancel{background:rgba(255,255,255,0.1);color:white}
         .bottom-nav{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:12px;display:flex;justify-content:space-around;position:sticky;bottom:16px;margin-top:20px}
         .bottom-nav a{text-decoration:none;color:var(--text);text-align:center;padding:8px 12px;border-radius:12px;font-size:1em}
     </style>
@@ -31,9 +38,25 @@
             <div class="header-icon">👥</div>
             <div class="header-title">إدارة الموظفين</div>
         </div>
-        <button class="btn-add" onclick="addStaff()">➕ إضافة موظف</button>
+        <button class="btn-add" onclick="showAddModal()">➕ إضافة موظف</button>
         <div id="staffList"></div>
+        <nav class="bottom-nav">
+            <a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a>
+            <a href="tables.html">🪑</a><a href="staff.html">👥</a><a href="inventory.html">📦</a>
+            <a href="reports.html">📊</a><a href="close.html">📆</a><a href="waste_report.html">🗑️</a>
+        </nav>
     </div>
+
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <h3>➕ إضافة موظف</h3>
+            <input type="text" id="newName" placeholder="اسم الموظف">
+            <input type="text" id="newRole" placeholder="الدور (شيف، نادل، كاشير، مساعد)">
+            <button class="btn-save" onclick="addStaff()">💾 حفظ</button>
+            <button class="btn-cancel" onclick="closeModal()">✕ إلغاء</button>
+        </div>
+    </div>
+
     <script>
         const defaults=[{id:1,name:'أحمد',role:'شيف',status:'present'},{id:2,name:'محمد',role:'نادل',status:'present'},{id:3,name:'علي',role:'مساعد شيف',status:'present'},{id:4,name:'خالد',role:'كاشير',status:'present'},{id:5,name:'عمر',role:'نادل',status:'absent'}];
         let staff=JSON.parse(localStorage.getItem('thana_staff')||'null');
@@ -47,27 +70,32 @@
                         <div class="staff-name">${s.name}</div>
                         <div class="staff-role">${s.role}</div>
                     </div>
-                    <div class="staff-status ${s.status==='present'?'status-present':'status-absent'}">${s.status==='present'?'✅ حاضر':'❌ غائب'}</div>
+                    <div class="staff-status ${s.status==='present'?'status-present':'status-absent'}" onclick="toggleStatus(${s.id})">${s.status==='present'?'✅ حاضر':'❌ غائب'}</div>
+                    <span class="staff-delete" onclick="deleteStaff(${s.id})">🗑️</span>
                 </div>
             `).join('');
         }
+        function showAddModal(){document.getElementById('addModal').style.display='flex'}
+        function closeModal(){document.getElementById('addModal').style.display='none'}
         function addStaff(){
-            const name=prompt('اسم الموظف:');if(!name)return;
-            const role=prompt('الدور (شيف، نادل، كاشير، مساعد):');if(!role)return;
-            staff.push({id:Date.now(),name,role,status:'present'});save();render();
+            const name=document.getElementById('newName').value.trim();
+            const role=document.getElementById('newRole').value.trim();
+            if(!name||!role)return;
+            staff.push({id:Date.now(),name,role,status:'present'});
+            save();render();closeModal();
+            document.getElementById('newName').value='';
+            document.getElementById('newRole').value='';
+        }
+        function deleteStaff(id){
+            if(!confirm('متأكد من حذف الموظف؟'))return;
+            staff=staff.filter(s=>s.id!==id);
+            save();render();
+        }
+        function toggleStatus(id){
+            const s=staff.find(s=>s.id===id);
+            if(s){s.status=s.status==='present'?'absent':'present';save();render();}
         }
         render();
     </script>
 </body>
 </html>
-<nav class="bottom-nav">
-<a href="index.html">🏠</a>
-<a href="waiter.html">📋</a>
-<a href="kitchen.html">🍳</a>
-<a href="tables.html">🪑</a>
-<a href="staff.html">👥</a>
-<a href="inventory.html">📦</a>
-<a href="reports.html">📊</a>
-<a href="close.html">📆</a>
-<a href="waste_report.html">🗑️</a>
-</nav>
