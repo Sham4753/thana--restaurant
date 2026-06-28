@@ -46,6 +46,6 @@
         </nav>
     </div>
 
-    <script src="app.js"></script>
+    <script>if(!localStorage.getItem("thana_inventory")){localStorage.setItem("thana_inventory",JSON.stringify([{id:1,name:"دجاج",icon:"🍗",unit:"كغ",qty:25,min:5},{id:2,name:"لحم",icon:"🥩",unit:"كغ",qty:15,min:3},{id:3,name:"بطاطا",icon:"🥔",unit:"كغ",qty:30,min:5},{id:4,name:"خبز",icon:"🫓",unit:"رغيف",qty:100,min:20},{id:5,name:"بيبسي",icon:"🥤",unit:"علبة",qty:50,min:10},{id:6,name:"ثوم",icon:"🧄",unit:"كغ",qty:5,min:1},{id:7,name:"زيت",icon:"🫗",unit:"لتر",qty:20,min:5},{id:8,name:"حمص",icon:"🫘",unit:"كغ",qty:8,min:2}]))}if(!localStorage.getItem("thana_tables")){let t=[];for(let i=1;i<=15;i++)t.push({id:i,status:"free",time:null,orderCount:0});t[0].status="occupied";t[0].time=Date.now();t[2].status="occupied";t[2].time=Date.now();localStorage.setItem("thana_tables",JSON.stringify(t))}</script><script src="app.js"></script>
 </body>
 </html>
