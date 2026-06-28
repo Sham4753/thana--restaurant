@@ -20,68 +20,7 @@
         .btn-save{background:var(--accent2);color:white}
         .btn-danger{background:var(--accent);color:white}
         .btn:active{transform:scale(0.95)}
-        .bottom-nav{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:12px;display:flex;justify-content:space-around;position:sticky;bottom:16px;margin-top:20px}
-        .bottom-nav a{text-decoration:none;color:var(--text);text-align:center;padding:8px 12px;border-radius:12px;font-size:1em}
-    </style>
-</head>
-<body>
-    <div class="app">
-        <div class="header"><div class="header-icon">⚙️</div><div class="header-title">الإعدادات</div></div>
-
-        <div class="card">
-            <h3>🏪 اسم المطعم</h3>
-            <label>يظهر في الصفحة الرئيسية</label>
-            <input type="text" id="restaurantName" placeholder="اسم المطعم">
-            <button class="btn btn-save" onclick="saveName()">💾 حفظ الاسم</button>
-        </div>
-
-        <div class="card">
-            <h3>🔐 تغيير رمز المدير</h3>
-            <label>الرمز الحالي: <span id="currentPIN"></span></label>
-            <input type="password" id="newPIN" placeholder="رمز جديد (4 أرقام)" maxlength="4">
-            <button class="btn btn-save" onclick="changePIN()">💾 تغيير الرمز</button>
-        </div>
-
-        <div class="card">
-            <h3>🌐 اللغة / Language</h3>
-            <button class="btn btn-save" onclick="alert('الميزة قيد التطوير')">العربية 🇸🇾</button>
-        </div>
-
-        <div class="card">
-            <h3>ℹ️ عن النظام</h3>
-            <p style="font-size:0.85em;opacity:0.7">Thana Restaurant v1.0<br>ERP ذكي للمطاعم<br>بدون سيرفر. بدون إنترنت.<br>2026</p>
-        </div>
-
-        <nav class="bottom-nav">
-            <a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a>
-            <a href="tables.html">🪑</a><a href="staff.html">👥</a><a href="inventory.html">📦</a>
-            <a href="reports.html">📊</a><a href="close.html">📆</a><a href="waste_report.html">🗑️</a>
-        </nav>
-    </div>
-
-    <script>
-        const ADMIN_PIN = '2026';
-        const defaultName = localStorage.getItem('thana_restaurant_name') || 'Thana Restaurant';
-        document.getElementById('restaurantName').value = defaultName;
-        document.getElementById('currentPIN').textContent = localStorage.getItem('thana_admin_pin') || ADMIN_PIN;
-
-        function saveName() {
-            const name = document.getElementById('restaurantName').value.trim();
-            if (!name) return;
-            localStorage.setItem('thana_restaurant_name', name);
-            alert('✅ تم حفظ اسم المطعم: ' + name);
-        }
-
-        function changePIN() {
-            const newPIN = document.getElementById('newPIN').value.trim();
-            if (newPIN.length !== 4) { alert('الرجاء إدخال 4 أرقام'); return; }
-            localStorage.setItem('thana_admin_pin', newPIN);
-            document.getElementById('currentPIN').textContent = newPIN;
-            document.getElementById('newPIN').value = '';
-            alert('✅ تم تغيير الرمز إلى: ' + newPIN);
-        }
-    </script>
-<div class="card"><h3>💾 نسخ احتياطي</h3><p>حمل نسخة أو استرجع بيانات</p><button class="btn btn-primary" onclick="backup()">📥 تصدير</button><input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restore(event)"><button class="btn btn-ghost" onclick="document.getElementById("restoreFile").click()">📤 استيراد</button></div></body>
+</body>
 </html>
 <script>
 function backup() {
@@ -116,3 +55,4 @@ function restore(event) {
     reader.readAsText(file);
 }
 </script>
+<nav class="bottom-nav"><a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a><a href="tables.html">🪑</a><a href="staff.html">👥</a><a href="inventory.html">📦</a><a href="reports.html">📊</a></nav>

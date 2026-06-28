@@ -22,60 +22,6 @@
         .modal input,.modal select{width:100%;padding:10px;margin:8px 0;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px}
         .modal button{width:100%;padding:12px;margin:6px 0;border:none;border-radius:12px;cursor:pointer;font-weight:600}
         .btn-save{background:var(--accent2);color:white}.btn-cancel{background:rgba(255,255,255,0.1);color:white}
-        .bottom-nav{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:12px;display:flex;justify-content:space-around;position:sticky;bottom:16px;margin-top:20px}
-        .bottom-nav a{text-decoration:none;color:var(--text);text-align:center;padding:8px 12px;border-radius:12px;font-size:1em}
-    </style>
-</head>
-<body>
-    <div class="app">
-        <div class="header"><div class="header-icon">🍽️</div><div class="header-title">قائمة الطعام</div></div>
-        <button class="btn-add" onclick="showAddModal()">➕ إضافة صنف</button>
-        <div id="menuList"></div>
-        <nav class="bottom-nav">
-            <a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a>
-            <a href="tables.html">🪑</a><a href="staff.html">👥</a><a href="inventory.html">📦</a>
-            <a href="reports.html">📊</a><a href="close.html">📆</a><a href="waste_report.html">🗑️</a>
-        </nav>
-    </div>
-
-    <div class="modal" id="addModal">
-        <div class="modal-content">
-            <h3>➕ إضافة صنف</h3>
-            <input type="text" id="newName" placeholder="اسم الصنف">
-            <input type="number" id="newPrice" placeholder="السعر ($)" min="1" step="0.5">
-            <select id="newIcon"><option value="🌯">🌯 شاورما</option><option value="🥙">🥙 لحم</option><option value="🍟">🍟 بطاطا</option><option value="🥤">🥤 مشروب</option><option value="🧆">🧆 فلافل</option><option value="🫘">🫘 حمص</option><option value="🍖">🍖 مشاوي</option><option value="🥗">🥗 سلطة</option></select>
-            <button class="btn-save" onclick="addItem()">💾 حفظ</button>
-            <button class="btn-cancel" onclick="closeModal()">✕ إلغاء</button>
-        </div>
-    </div>
-
-    <script>
-        const defaults=[{id:1,name:'شاورما دجاج',price:3,icon:'🌯'},{id:2,name:'شاورما لحم',price:4,icon:'🥙'},{id:3,name:'بطاطا مقلية',price:2,icon:'🍟'},{id:4,name:'بيبسي',price:1,icon:'🥤'},{id:5,name:'فلافل',price:2,icon:'🧆'},{id:6,name:'حمص',price:2,icon:'🫘'},{id:7,name:'مشاوي',price:5,icon:'🍖'},{id:8,name:'سلطة',price:2,icon:'🥗'}];
-        let menu=JSON.parse(localStorage.getItem('thana_menu')||'null');
-        if(!menu||menu.length===0){menu=defaults;save()}
-        function save(){localStorage.setItem('thana_menu',JSON.stringify(menu))}
-        function render(){
-            document.getElementById('menuList').innerHTML=menu.map(m=>`
-                <div class="menu-item">
-                    <div class="menu-icon">${m.icon}</div>
-                    <div class="menu-info"><div class="menu-name">${m.name}</div></div>
-                    <div class="menu-price">$${m.price}</div>
-                    <span class="menu-delete" onclick="deleteItem(${m.id})">🗑️</span>
-                </div>
-            `).join('');
-        }
-        function showAddModal(){document.getElementById('addModal').style.display='flex'}
-        function closeModal(){document.getElementById('addModal').style.display='none'}
-        function addItem(){
-            const name=document.getElementById('newName').value.trim();
-            const price=parseFloat(document.getElementById('newPrice').value);
-            const icon=document.getElementById('newIcon').value;
-            if(!name||!price)return;
-            menu.push({id:Date.now(),name,price,icon});
-            save();render();closeModal();
-        }
-        function deleteItem(id){if(!confirm('حذف هذا الصنف؟'))return;menu=menu.filter(m=>m.id!==id);save();render();}
-        render();
-    </script>
 </body>
 </html>
+<nav class="bottom-nav"><a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a><a href="tables.html">🪑</a><a href="staff.html">👥</a><a href="inventory.html">📦</a><a href="reports.html">📊</a></nav>
