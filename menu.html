@@ -3,25 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thana Menu</title>
     <link rel="stylesheet" href="theme.css">
-<title>Thana Menu</title>
     <style>
-        :root{--bg:#0a0a0a;--accent:#e94560;--accent2:#00a884;--text:#fff;--glass:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.1)}
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:system-ui,sans-serif;background:linear-gradient(135deg,#0a0a0a,#1a1a2e);color:var(--text);min-height:100vh;padding:16px}
-        .app{max-width:500px;margin:0 auto}
-        .header{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
-        .header-icon{font-size:2em}.header-title{font-size:1.3em;font-weight:700}
-        .menu-item{background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+        .menu-item{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
         .menu-icon{font-size:2.5em;width:60px;text-align:center}
-        .menu-info{flex:1}.menu-name{font-weight:600}.menu-price{font-size:1.2em;font-weight:700;color:var(--accent2)}
+        .menu-info{flex:1}.menu-name{font-weight:600}
+        .menu-price{font-size:1.2em;font-weight:700;color:var(--accent2);cursor:pointer}
         .menu-delete{color:var(--accent);cursor:pointer;font-size:1.2em;padding:8px}
-        .btn-add{width:100%;background:var(--accent2);color:white;border:none;padding:12px;border-radius:12px;font-size:1em;cursor:pointer;margin-bottom:16px}
-        .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:1000}
-        .modal-content{background:#1a1a2e;border:1px solid var(--border);border-radius:20px;padding:24px;width:90%;max-width:350px;text-align:center}
-        .modal input,.modal select{width:100%;padding:10px;margin:8px 0;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px}
-        .modal button{width:100%;padding:12px;margin:6px 0;border:none;border-radius:12px;cursor:pointer;font-weight:600}
-        .btn-save{background:var(--accent2);color:white}.btn-cancel{background:rgba(255,255,255,0.1);color:white}
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="header"><div class="header-icon">🍽️</div><div class="header-title">قائمة الطعام</div></div>
+        <button class="btn btn-primary" style="width:100%;margin-bottom:16px" onclick="showAddModal()">➕ إضافة صنف</button>
+        <div id="menuList"></div>
+        <div class="modal" id="addModal">
+            <div class="modal-content">
+                <h3 id="modalTitle">➕ إضافة صنف</h3>
+                <input type="text" id="itemName" placeholder="اسم الصنف">
+                <input type="number" id="itemPrice" placeholder="السعر ($)" min="0.5" step="0.5">
+                <select id="itemIcon"><option value="🌯">🌯</option><option value="🥙">🥙</option><option value="🍟">🍟</option><option value="🥤">🥤</option><option value="🧆">🧆</option><option value="🫘">🫘</option><option value="🍖">🍖</option><option value="🥗">🥗</option></select>
+                <input type="hidden" id="editId">
+                <button class="btn btn-primary" onclick="saveItem()">💾 حفظ</button>
+                <button class="btn btn-ghost" onclick="closeModal()">✕ إلغاء</button>
+            </div>
+        </div>
+        <nav class="bottom-nav">
+            <a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a>
+            <a href="tables.html">🪑</a><a href="staff.html">👥</a><a href="inventory.html">📦</a>
+            <a href="reports.html">📊</a><a href="admin.html">⚙️</a>
+        </nav>
+    </div>
+    <script>
+        const defaults=[{id:1,name:'شاورما دجاج',price:3,icon:'🌯'},{id:2,name:'شاورما لحم',price:4,icon:'🥙'},{id:3,name:'بطاطا مقلية',price:2,icon:'🍟'},{id:4,name:'بيبسي',price:1,icon:'🥤'},{id:5,name:'فلافل',price:2,icon:'🧆'},{id:6,name:'حمص',price:2,icon:'🫘'},{id:7,name:'مشاوي',price:5,icon:'🍖'},{id:8,name:'سلطة',price:2,icon:'🥗'}];
+        let menu=JSON.parse(localStorage.getItem('thana_menu')||'null');
+        if(!menu||menu.length===0){menu=defaults;save()}
+        function save(){localStorage.setItem('thana_menu',JSON.stringify(menu))}
+        function render(){
+            document.getElementById('menuList').innerHTML=menu.map(m=>`
+                <div class="menu-item">
+                    <div class="menu-icon">${m.icon}</div>
+                    <div class="menu-info"><div class="menu-name">${m.name}</div></div>
+                    <div class="menu-price" onclick="editItem(${m.id})">$${m.price}</div>
+                    <span class="menu-delete" onclick="deleteItem(${m.id})">🗑️</span>
+                </div>
+            `).join('');
+        }
+        function showAddModal(){
+            document.getElementById('modalTitle').textContent='➕ إضافة صنف';
+            document.getElementById('itemName').value='';
+            document.getElementById('itemPrice').value='';
+            document.getElementById('editId').value='';
+            document.getElementById('addModal').style.display='flex';
+        }
+        function editItem(id){
+            const m=menu.find(i=>i.id===id);
+            if(!m)return;
+            document.getElementById('modalTitle').textContent='✏️ تعديل صنف';
+            document.getElementById('itemName').value=m.name;
+            document.getElementById('itemPrice').value=m.price;
+            document.getElementById('itemIcon').value=m.icon;
+            document.getElementById('editId').value=id;
+            document.getElementById('addModal').style.display='flex';
+        }
+        function closeModal(){document.getElementById('addModal').style.display='none'}
+        function saveItem(){
+            const name=document.getElementById('itemName').value.trim();
+            const price=parseFloat(document.getElementById('itemPrice').value);
+            const icon=document.getElementById('itemIcon').value;
+            const editId=document.getElementById('editId').value;
+            if(!name||!price)return;
+            if(editId){
+                const m=menu.find(i=>i.id===parseInt(editId));
+                if(m){m.name=name;m.price=price;m.icon=icon}
+            } else {
+                menu.push({id:Date.now(),name,price,icon});
+            }
+            save();render();closeModal();
+        }
+        function deleteItem(id){if(!confirm('حذف هذا الصنف؟'))return;menu=menu.filter(m=>m.id!==id);save();render();}
+        render();
+    </script>
 </body>
 </html>
-<nav class="bottom-nav"><a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a><a href="tables.html">🪑</a><a href="staff.html">👥</a><a href="inventory.html">📦</a><a href="reports.html">📊</a><a href="admin.html">⚙️</a></nav>
