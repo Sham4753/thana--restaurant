@@ -81,5 +81,38 @@
             alert('✅ تم تغيير الرمز إلى: ' + newPIN);
         }
     </script>
-</body>
+<div class="card"><h3>💾 نسخ احتياطي</h3><p>حمل نسخة أو استرجع بيانات</p><button class="btn btn-primary" onclick="backup()">📥 تصدير</button><input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restore(event)"><button class="btn btn-ghost" onclick="document.getElementById("restoreFile").click()">📤 استيراد</button></div></body>
 </html>
+<script>
+function backup() {
+    const data = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('thana_')) {
+            data[key] = JSON.parse(localStorage.getItem(key));
+        }
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'thana_backup_' + new Date().toISOString().split('T')[0] + '.json';
+    a.click();
+    alert('✅ تم التصدير');
+}
+
+function restore(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (!confirm('⚠️ استعادة النسخة ستؤدي لفقدان البيانات الحالية. متابعة؟')) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const data = JSON.parse(e.target.result);
+        for (const [key, value] of Object.entries(data)) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+        alert('✅ تمت الاستعادة. سيتم تحديث الصفحة.');
+        location.reload();
+    };
+    reader.readAsText(file);
+}
+</script>
