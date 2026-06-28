@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thana Tables</title>
+    <style>
+        :root {
+            --bg: #0a0a0a; --accent: #e94560; --accent2: #00a884;
+            --text: #fff; --glass: rgba(255,255,255,0.05); --border: rgba(255,255,255,0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+            color: var(--text); min-height: 100vh; padding: 16px;
+        }
+        .app { max-width: 500px; margin: 0 auto; }
+        .header {
+            background: var(--glass); backdrop-filter: blur(20px);
+            border: 1px solid var(--border); border-radius: 20px;
+            padding: 16px; margin-bottom: 16px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .header-icon { font-size: 2em; }
+        .header-title { font-size: 1.3em; font-weight: 700; }
+        
+        .legend { display: flex; gap: 8px; margin-bottom: 16px; }
+        .legend-item {
+            background: var(--glass); backdrop-filter: blur(10px);
+            border: 1px solid var(--border); border-radius: 30px;
+            padding: 6px 12px; font-size: 0.7em; display: flex; align-items: center; gap: 6px;
+        }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .dot.free { background: #00a884; }
+        .dot.occupied { background: #e94560; }
+        .dot.waiting { background: #f5a623; }
+        .dot.reserved { background: #3a86ff; }
+        
+        .table-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .table-card {
+            background: var(--glass); backdrop-filter: blur(10px);
+            border: 1px solid var(--border); border-radius: 16px;
+            padding: 16px; text-align: center; cursor: pointer;
+            transition: all 0.3s; aspect-ratio: 1;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .table-card:hover { transform: translateY(-2px); }
+        .table-card:active { transform: scale(0.95); }
+        .table-card.free { border-color: #00a884; }
+        .table-card.occupied { border-color: #e94560; animation: busyPulse 2s infinite; }
+        .table-card.waiting { border-color: #f5a623; animation: waitPulse 1.5s infinite; }
+        .table-card.reserved { border-color: #3a86ff; }
+        @keyframes busyPulse { 0%,100%{box-shadow:0 0 10px rgba(233,68,96,0.2)} 50%{box-shadow:0 0 20px rgba(233,68,96,0.5)} }
+        @keyframes waitPulse { 0%,100%{box-shadow:0 0 10px rgba(245,166,35,0.2)} 50%{box-shadow:0 0 20px rgba(245,166,35,0.5)} }
+        .table-num { font-size: 2em; font-weight: 700; }
+        .table-status { font-size: 0.7em; opacity: 0.8; margin-top: 4px; }
+        .table-time { font-size: 0.6em; opacity: 0.5; margin-top: 2px; }
+        .table-orders { font-size: 0.6em; opacity: 0.6; margin-top: 2px; }
+        
+        .stats-row { display: flex; gap: 8px; margin-bottom: 16px; }
+        .stat-chip {
+            background: var(--glass); backdrop-filter: blur(10px);
+            border: 1px solid var(--border); border-radius: 30px;
+            padding: 8px 16px; font-size: 0.8em; flex: 1; text-align: center;
+        }
+        .stat-num { font-size: 1.2em; font-weight: 700; }
+        .stat-label { font-size: 0.6em; opacity: 0.7; }
+        
+        .modal {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8); display: none;
+            align-items: center; justify-content: center; z-index: 1000;
+        }
+        .modal-content {
+            background: #1a1a2e; border: 1px solid var(--border);
+            border-radius: 20px; padding: 24px; width: 90%; max-width: 350px; text-align: center;
+        }
+        .modal h3 { margin-bottom: 16px; }
+        .modal button {
+            width: 100%; padding: 14px; margin: 6px 0; border: none;
+            border-radius: 12px; font-size: 1em; cursor: pointer; font-weight: 600;
+        }
+        .modal button:active { transform: scale(0.95); }
+        .btn-occupy { background: #e94560; color: white; }
+        .btn-waiting { background: #f5a623; color: #0a0a0a; }
+        .btn-clean { background: #00a884; color: white; }
+        .btn-close { background: rgba(255,255,255,0.1); color: white; }
+        
+        .bottom-nav {
+            background: var(--glass); backdrop-filter: blur(20px);
+            border: 1px solid var(--border); border-radius: 20px;
+            padding: 12px; display: flex; justify-content: space-around;
+            position: sticky; bottom: 16px; margin-top: 20px;
+        }
+        .bottom-nav a {
+            text-decoration: none; color: var(--text);
+            text-align: center; padding: 8px 12px; border-radius: 12px;
+            font-size: 1.2em;
+        }
+        .bottom-nav a.active { background: var(--accent); }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="header">
+            <div class="header-left">
+                <div class="header-icon">🪑</div>
+                <div class="header-title">إدارة الطاولات</div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item"><div class="dot free"></div> فاضية</div>
+            <div class="legend-item"><div class="dot occupied"></div> مشغولة</div>
+            <div class="legend-item"><div class="dot waiting"></div> بانتظار الحساب</div>
+            <div class="legend-item"><div class="dot reserved"></div> محجوزة</div>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-chip"><div class="stat-num" id="freeCount">0</div><div class="stat-label">🟢 فاضية</div></div>
+            <div class="stat-chip"><div class="stat-num" id="occupiedCount">0</div><div class="stat-label">🔴 مشغولة</div></div>
+            <div class="stat-chip"><div class="stat-num" id="waitingCount">0</div><div class="stat-label">🟡 انتظار حساب</div></div>
+        </div>
+
+        <div class="table-grid" id="tableGrid"></div>
+
+        <nav class="bottom-nav">
+            <a href="index.html">🏠</a>
+            <a href="waiter.html">📋</a>
+            <a href="kitchen.html">🍳</a>
+            <a href="inventory.html">📦</a>
+            <a href="reports.html">📊</a>
+        </nav>
+    </div>
+
+    <div class="modal" id="tableModal">
+        <div class="modal-content">
+            <h3 id="modalTitle">طاولة 1</h3>
+            <p id="modalStatus"></p>
+            <button class="btn-occupy" onclick="changeStatus('occupied')">🔴 مشغولة</button>
+            <button class="btn-waiting" onclick="changeStatus('waiting')">🟡 بانتظار الحساب</button>
+            <button class="btn-clean" onclick="changeStatus('free')">🟢 تنظيف / فاضية</button>
+            <button class="btn-close" onclick="closeModal()">✕ إغلاق</button>
+        </div>
+    </div>
+
+    <script>
+        // Load or init tables
+        let tables = JSON.parse(localStorage.getItem('thana_tables') || 'null');
+        if (!tables || tables.length === 0) {
+            tables = [];
+            for (let i = 1; i <= 15; i++) {
+                tables.push({ id: i, status: 'free', time: null, orderCount: 0 });
+            }
+            tables[0].status = 'occupied'; tables[0].time = Date.now(); // طاولة 1 مشغولة
+            tables[2].status = 'occupied'; tables[2].time = Date.now(); // طاولة 3 مشغولة
+            save();
+        }
+
+        let selectedTable = null;
+
+        function save() { localStorage.setItem('thana_tables', JSON.stringify(tables)); }
+
+        function render() {
+            document.getElementById('freeCount').textContent = tables.filter(t => t.status === 'free').length;
+            document.getElementById('occupiedCount').textContent = tables.filter(t => t.status === 'occupied').length;
+            document.getElementById('waitingCount').textContent = tables.filter(t => t.status === 'waiting').length;
+
+            const orders = JSON.parse(localStorage.getItem('thana_kitchen_orders') || '[]');
+
+            document.getElementById('tableGrid').innerHTML = tables.map(t => {
+                const mins = t.time ? Math.floor((Date.now() - t.time) / 60000) : 0;
+                const statusText = { free: 'فاضية', occupied: 'مشغولة', waiting: 'بانتظار الحساب', reserved: 'محجوزة' };
+                const tableOrders = orders.filter(o => o.table === `طاولة ${t.id}` && (!o.status || o.status !== 'ready')).length;
+                return `
+                <div class="table-card ${t.status}" onclick="openModal(${t.id})">
+                    <div class="table-num">${t.id}</div>
+                    <div class="table-status">${statusText[t.status]}</div>
+                    ${t.status !== 'free' && mins > 0 ? `<div class="table-time">⏱ ${mins}د</div>` : ''}
+                    ${tableOrders > 0 ? `<div class="table-orders">📋 ${tableOrders} طلبات</div>` : ''}
+                </div>`;
+            }).join('');
+        }
+
+        function openModal(id) {
+            selectedTable = id;
+            const t = tables.find(t => t.id === id);
+            document.getElementById('modalTitle').textContent = `🪑 طاولة ${id}`;
+            document.getElementById('modalStatus').textContent = `الحالة: ${t.status}`;
+            document.getElementById('tableModal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('tableModal').style.display = 'none'; }
+
+        function changeStatus(status) {
+            if (!selectedTable) return;
+            const t = tables.find(t => t.id === selectedTable);
+            t.status = status;
+            t.time = status !== 'free' ? Date.now() : null;
+            if (status === 'free') t.orderCount = 0;
+            save();
+            render();
+            closeModal();
+        }
+
+        render();
+        setInterval(render, 10000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thana Kitchen</title>
+    <link rel="stylesheet" href="kitchen.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="header-icon">🍳</div>
+            <div class="header-title">Thana Kitchen</div>
+        </div>
+        <div class="header-badge" id="orderCount">0</div>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-chip active"><div class="stat-num" id="pendingCount">0</div><div class="stat-label">⏳ انتظار</div></div>
+        <div class="stat-chip active"><div class="stat-num" id="cookingCount">0</div><div class="stat-label">🔥 تحضير</div></div>
+        <div class="stat-chip ready"><div class="stat-num" id="readyCount">0</div><div class="stat-label">✅ جاهز</div></div>
+    </div>
+
+    <div class="order-list" id="orderList">
+        <div class="empty-state">
+            <div class="empty-icon">🍽️</div>
+            <h3>لا توجد طلبات</h3>
+            <p>في انتظار طلبات جديدة...</p>
+        </div>
+    </div>
+
+    <div class="alert-overlay" id="alertOverlay">
+        <div>🔔</div>
+        <div class="alert-text">طلب جديد!</div>
+        <div id="alertTable"></div>
+        <button class="alert-dismiss" onclick="dismissAlert()">👨‍🍳 شفته</button>
+    </div>
+
+    <button class="add-test-btn" style="bottom:80px" onclick="addTestOrder()">➕ إضافة طلب تجريبي</button>
+
+    <script src="kitchen.js"></script>
+<nav class="bottom-nav"><a href="index.html" class="nav-item">🏠</a><a href="waiter.html" class="nav-item">📋</a><a href="kitchen.html" class="nav-item">🍳</a><a href="inventory.html" class="nav-item">📦</a><a href="reports.html" class="nav-item">📊</a></nav><div class="modal" id="wasteModal"><div class="modal-content"><h3>🗑️ تسجيل هدر</h3><select id="wasteItem"><option value="">اختر المادة...</option></select><input type="number" id="wasteQty" placeholder="الكمية" min="0.1" step="0.1" value="1"><select id="wasteReason"><option value="حرق">🔥 حرق</option><option value="سقوط">💧 سقوط</option><option value="إرجاع زبون">👤 إرجاع زبون</option><option value="تالف">🦠 تالف</option><option value="آخر">📝 آخر</option></select><button class="btn-send" onclick="submitWaste()">💾 سجل الهدر</button><button class="btn-close" onclick="document.getElementById("wasteModal").style.display="none"">✕ إغلاق</button></div></div></body>
+</html>
+<button class="add-test-btn" style="bottom:20px;background:#e94560" onclick="wasteItem()">🗑️ تسجيل هدر</button>

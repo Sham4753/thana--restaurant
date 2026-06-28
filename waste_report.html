@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>تقرير الهدر</title>
+<style>
+:root{--bg:#0a0a0a;--accent:#e94560;--text:#fff;--glass:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.1)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:linear-gradient(135deg,#0a0a0a,#1a1a2e);color:var(--text);min-height:100vh;padding:16px}
+.app{max-width:500px;margin:0 auto}
+.header{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:16px;margin-bottom:16px;text-align:center}
+h1{background:linear-gradient(135deg,var(--accent),#f5a623);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.waste-card{background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.waste-reason{font-size:0.7em;opacity:0.7}
+.waste-qty{font-size:1.2em;font-weight:700;color:var(--accent)}
+.summary{background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--accent);border-radius:16px;padding:16px;margin-bottom:16px;text-align:center}
+.summary-num{font-size:2.5em;font-weight:700;color:var(--accent)}
+</style></head>
+<body><div class="app">
+<div class="header"><h1>🗑️ تقرير الهدر</h1></div>
+<div class="summary"><div class="summary-num" id="totalWaste">0</div>إجمالي المواد المهدرة</div>
+<div id="wasteList"></div>
+<a href="index.html" style="display:block;text-align:center;margin-top:16px;color:var(--text);opacity:0.7">🏠 العودة</a>
+</div>
+<script>
+const waste=JSON.parse(localStorage.getItem('thana_waste')||'[]');
+document.getElementById('totalWaste').textContent=waste.reduce((s,w)=>s+w.qty,0);
+document.getElementById('wasteList').innerHTML=waste.slice(-20).reverse().map(w=>`
+<div class="waste-card">
+<div><b>${w.itemName}</b><br><span class="waste-reason">${w.reason} | ${w.time}</span></div>
+<div class="waste-qty">-${w.qty}</div>
+</div>`).join('')||'<p style="text-align:center;opacity:0.5">لا يوجد هدر مسجل</p>';
+</script><nav class="bottom-nav"><a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a><a href="inventory.html">📦</a><a href="reports.html">📊</a></nav></body></html>

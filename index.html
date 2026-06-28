@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thana Restaurant</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="glass header">
+            <div class="logo">🍽️</div>
+            <h1>Thana Restaurant</h1>
+            <p class="subtitle">نظام إدارة ذكي 2026</p>
+        </div>
+
+        <div class="glass ai" onclick="activateAI()">
+            <div class="ai-icon">🤖</div>
+            <div class="ai-text">
+                <b>Thana AI</b>
+                <small id="aiMessage">كيف أقدر أساعدك اليوم؟</small>
+            </div>
+            <button class="voice-btn" onclick="event.stopPropagation();startVoice()">🎤</button>
+        </div>
+
+        <div id="alertsContainer" class="alerts"></div><div class="stats">
+            <div class="stat-card"><div class="stat-num" id="freeTables">8</div><div class="stat-label">🪑 طاولات فاضية</div></div>
+            <div class="stat-card"><div class="stat-num" id="activeOrders">3</div><div class="stat-label">📋 طلبات نشطة</div></div>
+            <div class="stat-card"><div class="stat-num" id="todayRevenue">1,250</div><div class="stat-label">💰 مبيعات اليوم $</div></div>
+            <div class="stat-card"><div class="stat-num" id="predictedBusy">18:30</div><div class="stat-label">⏰ وقت الذروة</div></div>
+        </div>
+
+        <div class="menu-grid">
+            <a href="waiter.html" class="menu-card">📋<br>الطلبات<br><small>3 نشطة</small></a>
+            <a href="kitchen.html" class="menu-card">🍳<br>المطبخ<br><small>2 قيد التحضير</small></a>
+            <a href="inventory.html" class="menu-card">📦<br>المخزون<br><small>3 أصناف ناقصة</small></a>
+            <a href="inventory.html" class="menu-card">👥<br>الموظفين<br><small>5 حاضرين</small></a>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item active">🏠</a>
+            <a href="waiter.html" class="nav-item">📋</a>
+            <a href="kitchen.html" class="nav-item">🍳</a>
+            <a href="inventory.html" class="nav-item">📦</a>
+            <a href="reports.html" class="nav-item">📊</a>
+        </nav>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

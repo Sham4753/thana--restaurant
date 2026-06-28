@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thana Waiter</title>
+    <link rel="stylesheet" href="waiter.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="header-icon">📋</div>
+                <div class="header-title">تسجيل الطلبات</div>
+            </div>
+            <div class="header-badge" id="cartCount">0</div>
+        </div>
+
+        <!-- Table Select -->
+        <div class="table-select">
+            <label>🪑 رقم الطاولة:</label>
+            <select id="tableNumber">
+                <option value="">اختر الطاولة...</option>
+            </select>
+        </div>
+
+        <!-- Menu Items -->
+        <div class="menu-grid" id="menuGrid"></div>
+
+        <!-- Cart Summary -->
+        <div class="cart-summary" id="cartSummary" style="display:none">
+            <div class="cart-header">
+                <span>🛒 الطلب الحالي</span>
+                <span id="cartTotal">$0</span>
+            </div>
+            <div class="cart-items" id="cartItems"></div>
+            <button class="btn-send" onclick="sendOrder()">📤 إرسال للمطبخ</button>
+        </div>
+    </div>
+
+    <script src="waiter.js"></script>
+<nav class="bottom-nav"><a href="index.html" class="nav-item">🏠</a><a href="waiter.html" class="nav-item">📋</a><a href="kitchen.html" class="nav-item">🍳</a><a href="inventory.html" class="nav-item">📦</a><a href="reports.html" class="nav-item">📊</a></nav><div class="modal" id="paymentModal"><div class="modal-content"><h3>💳 الدفع</h3><p id="paymentTotal"></p><button class="btn-send" onclick="pay("cash")">💵 كاش</button><button class="btn-send" style="background:#3a86ff" onclick="pay("debt")">📝 دين</button></div></div></body>
+</html>

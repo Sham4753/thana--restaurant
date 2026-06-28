@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>إغلاق يومي</title>
+<style>
+:root{--bg:#0a0a0a;--accent:#e94560;--accent2:#00a884;--text:#fff;--glass:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.1)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:linear-gradient(135deg,#0a0a0a,#1a1a2e);color:var(--text);min-height:100vh;padding:16px}
+.app{max-width:500px;margin:0 auto}
+.header{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:16px;margin-bottom:16px;text-align:center}
+h1{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:2em}
+.kpi{background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;display:flex;justify-content:space-between}
+.kpi-label{opacity:0.7}
+.kpi-num{font-size:1.5em;font-weight:700}
+.btn{width:100%;padding:16px;border:none;border-radius:12px;font-size:1.1em;font-weight:700;cursor:pointer;margin:8px 0}
+.btn-reset{background:var(--accent);color:white}
+.btn-back{background:rgba(255,255,255,0.1);color:white}
+</style></head>
+<body><div class="app">
+<div class="header"><h1>📆 إغلاق يومي</h1><p id="todayDate"></p></div>
+<div class="kpi"><div class="kpi-label">💰 إجمالي المبيعات</div><div class="kpi-num" id="totalSales">$0</div></div>
+<div class="kpi"><div class="kpi-label">💵 كاش</div><div class="kpi-num" id="cashTotal">$0</div></div>
+<div class="kpi"><div class="kpi-label">📝 ديون</div><div class="kpi-num" id="debtTotal">$0</div></div>
+<div class="kpi"><div class="kpi-label">🗑️ هدر</div><div class="kpi-num" id="wasteTotal">0</div></div>
+<div class="kpi"><div class="kpi-label">📊 صافي المتوقع</div><div class="kpi-num" id="netExpected">$0</div></div>
+<button class="btn btn-reset" onclick="resetDay()">🔄 تصفير اليوم + حفظ أرشيف</button>
+<a href="index.html" class="btn btn-back" style="display:block;text-align:center;text-decoration:none">🏠 العودة للرئيسية</a>
+</div>
+<script>
+document.getElementById('todayDate').textContent=new Date().toLocaleDateString('ar-SA');
+const orders=JSON.parse(localStorage.getItem('thana_kitchen_orders')||'[]');
+const menu=[{name:'شاورما دجاج',price:3},{name:'شاورما لحم',price:4},{name:'بطاطا مقلية',price:2},{name:'بيبسي',price:1},{name:'فلافل',price:2},{name:'حمص',price:2},{name:'مشاوي',price:5},{name:'سلطة',price:2}];
+let totalSales=0;orders.forEach(o=>{if(o.deducted)o.items.forEach(i=>{const m=menu.find(m=>m.name===i.name);if(m)totalSales+=m.price*i.qty})});
+const payments=JSON.parse(localStorage.getItem('thana_payments')||'[]');
+const cashTotal=payments.filter(p=>p.method==='cash').reduce((s,p)=>s+p.amount,0);
+const debtTotal=payments.filter(p=>p.method==='debt').reduce((s,p)=>s+p.amount,0);
+const waste=JSON.parse(localStorage.getItem('thana_waste')||'[]');
+const wasteTotal=waste.reduce((s,w)=>s+w.qty,0);
+document.getElementById('totalSales').textContent='$'+totalSales;
+document.getElementById('cashTotal').textContent='$'+cashTotal;
+document.getElementById('debtTotal').textContent='$'+debtTotal;
+document.getElementById('wasteTotal').textContent=wasteTotal;
+document.getElementById('netExpected').textContent='$'+(totalSales-wasteTotal*2);
+function resetDay(){
+if(confirm('تصفير اليوم؟ سيتم حفظ أرشيف.')){
+const archive=JSON.parse(localStorage.getItem('thana_archive')||'[]');
+archive.push({date:new Date().toLocaleDateString('ar-SA'),sales:totalSales,cash:cashTotal,debt:debtTotal,waste:wasteTotal});
+localStorage.setItem('thana_archive',JSON.stringify(archive));
+localStorage.setItem('thana_kitchen_orders','[]');
+localStorage.setItem('thana_payments','[]');
+localStorage.setItem('thana_waste','[]');
+alert('تم التصفير. يوم جديد!');
+location.reload();
+}}
+</script><nav class="bottom-nav"><a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a><a href="inventory.html">📦</a><a href="reports.html">📊</a></nav></body></html>

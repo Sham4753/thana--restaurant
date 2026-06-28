@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thana Reports</title>
+    <link rel="stylesheet" href="reports.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app">
+        <div class="header">
+            <div class="header-left">
+                <div class="header-icon">📊</div>
+                <div class="header-title">التقارير</div>
+            </div>
+            <select id="periodFilter" onchange="renderAll()">
+                <option value="today">اليوم</option>
+                <option value="week">الأسبوع</option>
+                <option value="month">الشهر</option>
+            </select>
+        </div>
+
+        <div class="kpi-grid">
+            <div class="kpi-card"><div class="kpi-num" id="totalRevenue">$0</div><div class="kpi-label">💰 إجمالي المبيعات</div></div>
+            <div class="kpi-card"><div class="kpi-num" id="totalOrders">0</div><div class="kpi-label">📋 عدد الطلبات</div></div>
+            <div class="kpi-card"><div class="kpi-num" id="avgTime">0د</div><div class="kpi-label">⏱ متوسط وقت التجهيز</div></div>
+            <div class="kpi-card"><div class="kpi-num" id="topItem">-</div><div class="kpi-label">🏆 الأكثر طلباً</div></div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="salesChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="itemsChart"></canvas>
+        </div>
+
+        <button class="btn-export" onclick="exportCSV()">📥 تصدير CSV</button>
+    </div>
+    <script src="reports.js"></script>
+<nav class="bottom-nav"><a href="index.html" class="nav-item">🏠</a><a href="waiter.html" class="nav-item">📋</a><a href="kitchen.html" class="nav-item">🍳</a><a href="inventory.html" class="nav-item">📦</a><a href="reports.html" class="nav-item">📊</a></nav></body>
+</html>
