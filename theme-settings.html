@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تخصيص المظهر - Thana Restaurant</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0f1e">
+    <script src="pwa-register.js" defer></script>
+    <style>
+        body {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container { max-width: 600px; width: 100%; }
+        .preview-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin: 16px 0;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            text-align: center;
+        }
+        .preview-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            background: var(--accent-gradient);
+            color: #fff;
+            font-weight: 600;
+            margin: 8px;
+        }
+        .preview-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-weight: 600;
+            margin: 4px;
+        }
+        .section-title {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin: 20px 0 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="text-align:center;margin-bottom:24px;">
+            <div style="font-size:48px;">🎨</div>
+            <h1 style="background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:26px;margin-top:8px;">
+                تخصيص المظهر
+            </h1>
+            <p style="color:var(--text-muted);font-size:14px;">Dark/Light · 8 ألوان · Glassmorphism</p>
+        </div>
+
+        <!-- معاينة -->
+        <div class="preview-card">
+            <div style="font-size:18px;font-weight:700;margin-bottom:8px;">👀 معاينة مباشرة</div>
+            <div class="preview-btn">زر أساسي</div>
+            <div style="margin-top:8px;">
+                <span class="preview-badge badge-success">نجاح</span>
+                <span class="preview-badge badge-warning">تحذير</span>
+                <span class="preview-badge badge-danger">خطأ</span>
+                <span class="preview-badge badge-info">معلومة</span>
+            </div>
+            <div style="margin-top:12px;padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);font-size:13px;color:var(--text-secondary);">
+                📝 هذا نص تجريبي داخل بطاقة المعاينة لتوضيح ألوان النص والخلفية
+            </div>
+        </div>
+
+        <!-- Dark/Light -->
+        <div class="section-title">🌓 الوضع</div>
+        <div class="glass-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span>الوضع الليلي</span>
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()"></button>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+                تلقائي حسب جهازك · أو اختيار يدوي
+            </div>
+        </div>
+
+        <!-- الألوان -->
+        <div class="section-title">🌈 نظام الألوان</div>
+        <div class="glass-card">
+            <div class="color-picker">
+                <div class="color-dot active" style="background:#38bdf8;" onclick="setColor('ocean')" title="محيط"></div>
+                <div class="color-dot" style="background:#a78bfa;" onclick="setColor('purple')" title="بنفسجي"></div>
+                <div class="color-dot" style="background:#34d399;" onclick="setColor('emerald')" title="زمرد"></div>
+                <div class="color-dot" style="background:#fb923c;" onclick="setColor('sunset')" title="غروب"></div>
+                <div class="color-dot" style="background:#fb7185;" onclick="setColor('rose')" title="وردي"></div>
+                <div class="color-dot" style="background:#fbbf24;" onclick="setColor('amber')" title="عنبر"></div>
+                <div class="color-dot" style="background:#22d3ee;" onclick="setColor('cyan')" title="سماوي"></div>
+                <div class="color-dot" style="background:#6366f1;" onclick="setColor('indigo')" title="نيلي"></div>
+            </div>
+        </div>
+
+        <!-- معلومات -->
+        <div class="glass-card" style="text-align:center;">
+            <h3>📐 Thana Restaurant v2.0</h3>
+            <p style="color:var(--text-muted);font-size:13px;margin-top:4px;">
+                تصميم Glassmorphism · Dark/Light Mode · 8 سمات لونية
+            </p>
+            <p style="color:var(--text-muted);font-size:11px;margin-top:8px;">
+                الإعدادات تحفظ تلقائياً في localStorage
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // ========== Theme Engine ==========
+        
+        function applyTheme() {
+            const theme = localStorage.getItem('thana_theme') || 'dark';
+            const color = localStorage.getItem('thana_color') || 'ocean';
+            
+            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.setAttribute('data-color', color);
+            
+            // تحديث meta theme-color
+            const metaTheme = document.querySelector('meta[name="theme-color"]');
+            if (metaTheme) {
+                metaTheme.content = theme === 'dark' ? '#0a0f1e' : '#f8fafc';
+            }
+            
+            // تحديث التoggle
+            const toggle = document.getElementById('themeToggle');
+            if (toggle && theme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        }
+
+        function toggleTheme() {
+            const current = localStorage.getItem('thana_theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('thana_theme', next);
+            applyTheme();
+        }
+
+        function setColor(color) {
+            localStorage.setItem('thana_color', color);
+            applyTheme();
+            
+            // تحديث النقاط
+            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // تطبيق عند التحميل
+        applyTheme();
+        
+        // استماع لتغيير إعدادات الجهاز
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (!localStorage.getItem('thana_theme_manual')) {
+                localStorage.setItem('thana_theme', e.matches ? 'dark' : 'light');
+                applyTheme();
+            }
+        });
+    </script>
+</body>
+</html>
