@@ -61,3 +61,10 @@ function bridgeListenForOrders(callback) {
 }
 
 console.log('🌉 Thana Bridge v' + BRIDGE_VERSION + ' - جاهز');
+
+// إشعار فوري عند طلب جديد
+function notifyKitchen(order) {
+    if (typeof notifyNewOrder === 'function') {
+        notifyNewOrder(order);
+    }
+}
