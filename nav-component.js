@@ -38,6 +38,8 @@ function getNavConfig() {
                 { href: 'auth.html', icon: '🔐', label: 'أمان' },
                 { href: 'print.html', icon: '🖨️', label: 'طباعة' },
                 { href: 'theme-settings.html', icon: '🎨', label: 'مظهر' },
+                { href: 'setup.html', icon: '🏪', label: 'هوية المطعم' },
+                { href: 'setup.html', icon: '🏪', label: 'هوية المطعم' },
                 { href: 'settings.html', icon: '⚙️', label: 'الإعدادات' },
                 { href: 'pin-settings.html', icon: '🔢', label: 'رموز PIN' },
                 { href: 'activate.html', icon: '🔑', label: 'الترخيص' },
