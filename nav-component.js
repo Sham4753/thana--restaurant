@@ -39,6 +39,7 @@ function getNavConfig() {
                 { href: 'print.html', icon: '🖨️', label: 'طباعة' },
                 { href: 'theme-settings.html', icon: '🎨', label: 'مظهر' },
                 { href: 'settings.html', icon: '⚙️', label: 'الإعدادات' },
+                { href: 'pin-settings.html', icon: '🔢', label: 'رموز PIN' },
                 { href: 'activate.html', icon: '🔑', label: 'الترخيص' },
                 { href: 'backup.html', icon: '💾', label: 'نسخ احتياطي' },
                 { href: 'help.html', icon: '📖', label: 'مساعدة' },

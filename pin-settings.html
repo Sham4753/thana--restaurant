@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إعدادات PIN - Thana Restaurant</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <script src="nav-component.js" defer></script>
+    <style>
+        body { padding: 16px; }
+        .container { max-width: 500px; margin: 0 auto; }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            margin-bottom: 14px;
+        }
+        h2 { color: var(--gold); margin-bottom: 16px; text-align: center; }
+        .pin-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .pin-icon { font-size: 24px; width: 35px; }
+        .pin-info { flex: 1; }
+        .pin-name { font-weight: 600; font-size: 14px; }
+        .pin-role { font-size: 11px; color: var(--text-muted); }
+        .pin-input {
+            width: 70px;
+            padding: 8px;
+            border-radius: 8px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: #fff;
+            font-size: 16px;
+            text-align: center;
+            letter-spacing: 4px;
+            font-family: var(--font);
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius);
+            border: none;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 12px;
+            font-family: var(--font);
+        }
+        .btn-gold { background: linear-gradient(135deg, var(--gold-dark), var(--gold)); color: #1a1814; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+        .btn-danger { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); }
+        
+        .toast {
+            position: fixed;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #10b981;
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-weight: 700;
+            z-index: 300;
+            animation: slideDown 0.4s ease, slideUp 0.4s ease 2s forwards;
+        }
+        @keyframes slideDown { from{opacity:0;transform:translateX(-50%) translateY(-80px);} }
+        @keyframes slideUp { to{opacity:0;transform:translateX(-50%) translateY(-80px);} }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card" style="text-align:center;">
+            <div style="font-size:48px;">🔢</div>
+            <h2>إعدادات رموز PIN</h2>
+            <p style="color:var(--text-secondary);font-size:12px;">غير رموز الدخول لكل دور</p>
+        </div>
+
+        <div class="card">
+            <div class="pin-row">
+                <div class="pin-icon">🔑</div>
+                <div class="pin-info">
+                    <div class="pin-name">المدير</div>
+                    <div class="pin-role">كل الصلاحيات</div>
+                </div>
+                <input type="text" class="pin-input" id="pin-admin" maxlength="4" value="2026">
+            </div>
+            <div class="pin-row">
+                <div class="pin-icon">📋</div>
+                <div class="pin-info">
+                    <div class="pin-name">النادل</div>
+                    <div class="pin-role">طلبات - طاولات - QR</div>
+                </div>
+                <input type="text" class="pin-input" id="pin-waiter" maxlength="4" value="1111">
+            </div>
+            <div class="pin-row">
+                <div class="pin-icon">🍳</div>
+                <div class="pin-info">
+                    <div class="pin-name">المطبخ</div>
+                    <div class="pin-role">KDS - مخزون - هدر</div>
+                </div>
+                <input type="text" class="pin-input" id="pin-kitchen" maxlength="4" value="2222">
+            </div>
+            <div class="pin-row">
+                <div class="pin-icon">💰</div>
+                <div class="pin-info">
+                    <div class="pin-name">الكاشير</div>
+                    <div class="pin-role">فواتير - تقارير - طباعة</div>
+                </div>
+                <input type="text" class="pin-input" id="pin-cashier" maxlength="4" value="3333">
+            </div>
+            <div class="pin-row">
+                <div class="pin-icon">📊</div>
+                <div class="pin-info">
+                    <div class="pin-name">مدير مناوب</div>
+                    <div class="pin-role">تقارير - موظفين - مخزون</div>
+                </div>
+                <input type="text" class="pin-input" id="pin-manager" maxlength="4" value="4444">
+            </div>
+
+            <button class="btn btn-gold" onclick="savePins()">💾 حفظ جميع الرموز</button>
+            <button class="btn btn-outline" onclick="resetPins()">↩️ استعادة الافتراضية</button>
+        </div>
+
+        <div class="card" style="text-align:center;">
+            <p style="color:var(--text-muted);font-size:11px;">
+                ⚠️ تأكد من حفظ الرموز الجديدة في مكان آمن<br>
+                الرموز الافتراضية: 2026 - 1111 - 2222 - 3333 - 4444
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const DEFAULT_PINS = {
+            admin: '2026',
+            waiter: '1111',
+            kitchen: '2222',
+            cashier: '3333',
+            manager: '4444'
+        };
+
+        function loadPins() {
+            const saved = JSON.parse(localStorage.getItem('thana_pins') || '{}');
+            document.getElementById('pin-admin').value = saved.admin || DEFAULT_PINS.admin;
+            document.getElementById('pin-waiter').value = saved.waiter || DEFAULT_PINS.waiter;
+            document.getElementById('pin-kitchen').value = saved.kitchen || DEFAULT_PINS.kitchen;
+            document.getElementById('pin-cashier').value = saved.cashier || DEFAULT_PINS.cashier;
+            document.getElementById('pin-manager').value = saved.manager || DEFAULT_PINS.manager;
+        }
+
+        function savePins() {
+            const pins = {
+                admin: document.getElementById('pin-admin').value || DEFAULT_PINS.admin,
+                waiter: document.getElementById('pin-waiter').value || DEFAULT_PINS.waiter,
+                kitchen: document.getElementById('pin-kitchen').value || DEFAULT_PINS.kitchen,
+                cashier: document.getElementById('pin-cashier').value || DEFAULT_PINS.cashier,
+                manager: document.getElementById('pin-manager').value || DEFAULT_PINS.manager,
+            };
+
+            // التحقق من 4 أرقام
+            for (const [role, pin] of Object.entries(pins)) {
+                if (pin.length !== 4 || !/^\d{4}$/.test(pin)) {
+                    showToast('⚠️ كل الرموز يجب أن تكون 4 أرقام');
+                    return;
+                }
+            }
+
+            // التحقق من عدم التكرار
+            const values = Object.values(pins);
+            if (new Set(values).size !== values.length) {
+                showToast('⚠️ لا يمكن تكرار نفس الرمز لدورين');
+                return;
+            }
+
+            localStorage.setItem('thana_pins', JSON.stringify(pins));
+            
+            // تحديث login.html إذا احتاج
+            updateLoginPage(pins);
+            
+            showToast('✅ تم حفظ الرموز الجديدة بنجاح!');
+        }
+
+        function resetPins() {
+            if (!confirm('استعادة الرموز الافتراضية؟')) return;
+            localStorage.removeItem('thana_pins');
+            loadPins();
+            showToast('✅ تمت استعادة الرموز الافتراضية');
+        }
+
+        function updateLoginPage(pins) {
+            // تخزين للاستخدام في login.html
+            localStorage.setItem('thana_pins_updated', 'true');
+            showToast('✅ الرموز الجديدة سارية فوراً');
+        }
+
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        loadPins();
+    </script>
+</body>
+</html>
