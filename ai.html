@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الذكاء الاصطناعي - Thana Restaurant</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e3a5f">
+    <script src="pwa-register.js" defer></script>
+    <style>
+        :root {
+            --bg: #0a0f1e;
+            --card: rgba(15,23,42,0.8);
+            --accent: #38bdf8;
+            --accent2: #818cf8;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --radius: 20px;
+            --glass-border: rgba(255,255,255,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'Cairo', sans-serif;
+            background: var(--bg);
+            background-image: 
+                radial-gradient(ellipse at 30% 0%, rgba(129,140,248,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 100%, rgba(56,189,248,0.06) 0%, transparent 50%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 16px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+
+        .header {
+            text-align: center;
+            padding: 24px 0;
+        }
+        .header .icon { font-size: 56px; }
+        .header h1 {
+            font-size: 26px;
+            background: linear-gradient(135deg, var(--accent2), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 8px;
+        }
+        .header .subtitle { color: var(--text-muted); font-size: 14px; }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(15px);
+        }
+        .card h3 { 
+            font-size: 16px; 
+            color: var(--accent); 
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* توقعات اليوم */
+        .prediction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        .prediction-item {
+            background: rgba(255,255,255,0.03);
+            border-radius: 14px;
+            padding: 14px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .prediction-item .item-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .prediction-item .item-pred {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent2);
+            margin: 6px 0;
+        }
+        .prediction-item .item-info {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .confidence-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            margin-top: 8px;
+        }
+        .confidence-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 1s ease;
+        }
+        .confidence-fill.high { background: var(--success); }
+        .confidence-fill.med { background: var(--warning); }
+        .confidence-fill.low { background: var(--danger); }
+
+        /* تحليل الساعة */
+        .hour-heatmap {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .hour-block {
+            flex: 1;
+            min-width: 24px;
+            height: 60px;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            font-size: 10px;
+            padding-bottom: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .hour-block:hover { transform: scale(1.1); z-index: 2; }
+        .hour-label {
+            position: absolute;
+            top: -16px;
+            font-size: 9px;
+            color: var(--text-muted);
+        }
+
+        /* اقتراحات الطبخ */
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(52,211,153,0.05);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border-right: 3px solid var(--success);
+        }
+        .suggestion-icon {
+            font-size: 28px;
+        }
+        .suggestion-text {
+            flex: 1;
+            font-size: 14px;
+        }
+        .suggestion-qty {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        /* أيام الأسبوع */
+        .weekly-pattern {
+            display: flex;
+            gap: 8px;
+        }
+        .day-block {
+            flex: 1;
+            text-align: center;
+            padding: 12px 8px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+        }
+        .day-block.today {
+            background: rgba(56,189,248,0.15);
+            border: 1px solid rgba(56,189,248,0.3);
+        }
+        .day-name { font-size: 12px; color: var(--text-muted); }
+        .day-revenue { font-size: 14px; font-weight: 700; margin-top: 4px; }
+        .day-bar {
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            margin-top: 6px;
+        }
+        .day-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            background: var(--accent);
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            background: linear-gradient(135deg, var(--accent2), var(--accent));
+            color: #fff;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 600px) {
+            .two-col { grid-template-columns: 1fr; }
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            font-size: 14px;
+        }
+        .stat-value { font-weight: 600; }
+        .trend-up { color: var(--success); }
+        .trend-down { color: var(--danger); }
+        .trend-stable { color: var(--warning); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon">🧠</div>
+            <h1>الذكاء الاصطناعي</h1>
+            <div class="subtitle">توقعات ذكية للمبيعات واقتراحات الطبخ المسبق</div>
+        </div>
+
+        <!-- توقعات اليوم -->
+        <div class="card">
+            <h3>🔮 توقعات طلبات اليوم</h3>
+            <div class="prediction-grid" id="predictions"></div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:12px;">
+                📊 بناءً على تحليل آخر 30 يوم من المبيعات
+            </div>
+        </div>
+
+        <!-- اقتراحات طبخ -->
+        <div class="card">
+            <h3>🍳 اقتراحات طبخ مسبق</h3>
+            <div id="suggestions"></div>
+        </div>
+
+        <div class="two-col">
+            <!-- الخريطة الحرارية للساعات -->
+            <div class="card">
+                <h3>🔥 أوقات الذروة</h3>
+                <div class="hour-heatmap" id="heatmap"></div>
+                <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-muted);margin-top:4px;">
+                    <span>8ص</span><span>12م</span><span>4م</span><span>8م</span>
+                </div>
+            </div>
+
+            <!-- أيام الأسبوع -->
+            <div class="card">
+                <h3>📅 نمط الأسبوع</h3>
+                <div class="weekly-pattern" id="weeklyPattern"></div>
+            </div>
+        </div>
+
+        <!-- إحصائيات سريعة -->
+        <div class="card">
+            <h3>📈 إحصائيات ذكية</h3>
+            <div id="stats"></div>
+            <button class="btn" onclick="refreshAI()">🔄 تحديث التحليل</button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== محرك الذكاء الاصطناعي المحلي ====================
+        
+        function getData() {
+            const orders = JSON.parse(localStorage.getItem('thana_orders') || '[]');
+            const menu = JSON.parse(localStorage.getItem('thana_menu') || '[]');
+            const closeData = JSON.parse(localStorage.getItem('thana_close_archive') || '[]');
+            return { orders, menu, closeData };
+        }
+
+        // تحليل اتجاهات الطلب لكل صنف
+        function analyzeItemTrends() {
+            const { orders, menu } = getData();
+            const itemStats = {};
+
+            orders.forEach(order => {
+                (order.items || []).forEach(item => {
+                    const name = item.name;
+                    if (!itemStats[name]) {
+                        itemStats[name] = {
+                            totalQty: 0,
+                            totalRevenue: 0,
+                            days: {},
+                            hours: {},
+                            lastOrder: null
+                        };
+                    }
+                    itemStats[name].totalQty += (item.qty || 1);
+                    itemStats[name].totalRevenue += (item.price || 0) * (item.qty || 1);
+                    
+                    const date = new Date(order.timestamp || Date.now()).toLocaleDateString('ar-SA');
+                    itemStats[name].days[date] = (itemStats[name].days[date] || 0) + (item.qty || 1);
+                    
+                    const hour = new Date(order.timestamp || Date.now()).getHours();
+                    itemStats[name].hours[hour] = (itemStats[name].hours[hour] || 0) + (item.qty || 1);
+                    
+                    itemStats[name].lastOrder = order.timestamp;
+                });
+            });
+
+            return itemStats;
+        }
+
+        // توقع طلبات اليوم
+        function predictToday() {
+            const { orders, menu } = getData();
+            const itemStats = analyzeItemTrends();
+            const allItems = menu.length > 0 ? menu : [
+                { name: 'شاورما دجاج', price: 25000 },
+                { name: 'شاورما لحم', price: 30000 },
+                { name: 'فلافل', price: 15000 },
+                { name: 'برجر', price: 35000 },
+                { name: 'بيتزا', price: 40000 },
+                { name: 'كولا', price: 5000 },
+            ];
+
+            // حساب المتوسط اليومي لكل صنف
+            const predictions = allItems.map(item => {
+                const stats = itemStats[item.name];
+                if (!stats || Object.keys(stats.days).length < 2) {
+                    return { ...item, predicted: '?', confidence: 0, trend: 'غير كافي بيانات' };
+                }
+
+                const days = Object.values(stats.days);
+                const avg = days.reduce((a, b) => a + b, 0) / days.length;
+                
+                // الانحراف المعياري
+                const variance = days.reduce((sum, d) => sum + Math.pow(d - avg, 2), 0) / days.length;
+                const stdDev = Math.sqrt(variance);
+                
+                // الثقة: كل ما قل الانحراف المعياري زادت الثقة
+                const confidence = Math.max(0, Math.min(100, Math.round(100 - (stdDev / (avg || 1)) * 100)));
+                
+                // التنبؤ = المتوسط مضروب في معامل اليوم
+                const today = new Date().getDay();
+                const weekendBoost = (today === 5 || today === 6) ? 1.4 : 1.0;
+                const predicted = Math.round(avg * weekendBoost);
+                
+                let trend = 'مستقر';
+                if (days.length >= 3) {
+                    const recent = days.slice(-3);
+                    const old = days.slice(0, -3);
+                    const recentAvg = recent.reduce((a,b) => a+b, 0) / recent.length;
+                    const oldAvg = old.length > 0 ? old.reduce((a,b) => a+b, 0) / old.length : recentAvg;
+                    const change = ((recentAvg - oldAvg) / (oldAvg || 1)) * 100;
+                    if (change > 15) trend = '📈 صاعد بقوة';
+                    else if (change > 5) trend = '↗️ صاعد';
+                    else if (change < -15) trend = '📉 هابط بقوة';
+                    else if (change < -5) trend = '↘️ هابط';
+                }
+
+                return {
+                    ...item,
+                    predicted: predicted,
+                    confidence: confidence,
+                    trend: trend,
+                    avg: Math.round(avg)
+                };
+            });
+
+            // ترتيب حسب التوقع
+            predictions.sort((a, b) => (b.predicted === '?' ? 0 : b.predicted) - (a.predicted === '?' ? 0 : a.predicted));
+            
+            return predictions;
+        }
+
+        function renderPredictions() {
+            const predictions = predictToday();
+            const container = document.getElementById('predictions');
+            
+            container.innerHTML = predictions.slice(0, 6).map(p => {
+                const confClass = p.confidence > 70 ? 'high' : p.confidence > 40 ? 'med' : 'low';
+                return `
+                    <div class="prediction-item">
+                        <div class="item-name">${p.name}</div>
+                        <div class="item-pred">${p.predicted} طلب</div>
+                        <div class="item-info">
+                            ${p.trend} | المتوسط: ${p.avg}/يوم
+                        </div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill ${confClass}" style="width:${p.confidence}%;"></div>
+                        </div>
+                        <div style="font-size:10px;color:var(--text-muted);margin-top:4px;">ثقة: ${p.confidence}%</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // اقتراحات طبخ مسبق
+        function generateSuggestions() {
+            const predictions = predictToday();
+            const now = new Date();
+            const currentHour = now.getHours();
+            
+            const suggestions = [];
+            
+            predictions.forEach(p => {
+                if (p.predicted === '?' || p.predicted < 5) return;
+                
+                // اقترح طبخ 30% من التوقع المتوقع مسبقاً إذا كان وقت ذروة
+                const isPeak = (currentHour >= 11 && currentHour <= 14) || (currentHour >= 18 && currentHour <= 21);
+                const prepQty = isPeak ? Math.round(p.predicted * 0.5) : Math.round(p.predicted * 0.25);
+                
+                if (prepQty >= 2) {
+                    suggestions.push({
+                        name: p.name,
+                        prepQty: prepQty,
+                        reason: isPeak ? 'وقت ذروة - حضّر الآن' : 'تحضير مسبق موصى به',
+                        confidence: p.confidence
+                    });
+                }
+            });
+
+            return suggestions.sort((a, b) => b.prepQty - a.prepQty);
+        }
+
+        function renderSuggestions() {
+            const suggestions = generateSuggestions();
+            const container = document.getElementById('suggestions');
+            
+            if (suggestions.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:16px;">لا توجد اقتراحات حالية - البيانات غير كافية</p>';
+                return;
+            }
+
+            container.innerHTML = suggestions.map(s => `
+                <div class="suggestion-item">
+                    <div class="suggestion-icon">🍳</div>
+                    <div class="suggestion-text">
+                        <div><b>${s.name}</b></div>
+                        <div style="font-size:12px;color:var(--text-muted);">${s.reason} | ثقة ${s.confidence}%</div>
+                    </div>
+                    <div class="suggestion-qty">حضّر ${s.prepQty} قطعة</div>
+                </div>
+            `).join('');
+        }
+
+        // خريطة حرارية للساعات
+        function renderHeatmap() {
+            const { orders } = getData();
+            const hourlyCount = Array(12).fill(0);
+            
+            orders.forEach(o => {
+                const hour = new Date(o.timestamp || Date.now()).getHours();
+                const index = hour - 8;
+                if (index >= 0 && index < 12) {
+                    hourlyCount[index] += (o.items || []).reduce((s, i) => s + (i.qty || 1), 0);
+                }
+            });
+
+            const max = Math.max(...hourlyCount, 1);
+            const labels = ['8ص','9ص','10ص','11ص','12م','1م','2م','3م','4م','5م','6م','7م'];
+            
+            const container = document.getElementById('heatmap');
+            container.innerHTML = hourlyCount.map((val, i) => {
+                const intensity = val / max;
+                const r = Math.round(15 + intensity * 30);
+                const g = Math.round(23 + intensity * 40);
+                const b = Math.round(42 + intensity * 60);
+                return `
+                    <div class="hour-block" style="background:rgba(${r},${g},${b},${0.3 + intensity * 0.7});" title="${labels[i]}: ${val} طلب">
+                        <span class="hour-label">${labels[i]}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // نمط الأسبوع
+        function renderWeeklyPattern() {
+            const { orders } = getData();
+            const dayNames = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+            const today = new Date().getDay();
+            const dayRevenue = Array(7).fill(0);
+            const dayCount = Array(7).fill(0);
+
+            orders.forEach(o => {
+                const d = new Date(o.timestamp || Date.now()).getDay();
+                dayRevenue[d] += (o.total || 0);
+                dayCount[d]++;
+            });
+
+            const maxRev = Math.max(...dayRevenue, 1);
+
+            const container = document.getElementById('weeklyPattern');
+            container.innerHTML = dayNames.map((name, i) => {
+                const avg = dayCount[i] > 0 ? Math.round(dayRevenue[i] / dayCount[i]) : 0;
+                return `
+                    <div class="day-block ${i === today ? 'today' : ''}">
+                        <div class="day-name">${name}</div>
+                        <div class="day-revenue">${avg.toLocaleString()}</div>
+                        <div class="day-bar">
+                            <div class="day-bar-fill" style="width:${(avg/maxRev)*100}%;"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // إحصائيات
+        function renderStats() {
+            const { orders, closeData } = getData();
+            const today = new Date().toLocaleDateString('ar-SA');
+            const todayOrders = orders.filter(o => {
+                const orderDate = new Date(o.timestamp || Date.now()).toLocaleDateString('ar-SA');
+                return orderDate === today;
+            });
+
+            const totalToday = todayOrders.reduce((s, o) => s + (o.total || 0), 0);
+            const avgOrderValue = todayOrders.length > 0 ? Math.round(totalToday / todayOrders.length) : 0;
+            
+            // أكثر ساعة مبيعاً
+            const hourCount = {};
+            orders.forEach(o => {
+                const h = new Date(o.timestamp || Date.now()).getHours();
+                hourCount[h] = (hourCount[h] || 0) + (o.total || 0);
+            });
+            const peakHour = Object.entries(hourCount).sort((a, b) => b[1] - a[1])[0];
+
+            // متوسط الأسبوع
+            const weeklyTotal = orders.reduce((s, o) => s + (o.total || 0), 0);
+            const daysWithOrders = new Set(orders.map(o => new Date(o.timestamp || Date.now()).toLocaleDateString('ar-SA'))).size;
+            const weeklyAvg = daysWithOrders > 0 ? Math.round(weeklyTotal / daysWithOrders) : 0;
+
+            const container = document.getElementById('stats');
+            container.innerHTML = `
+                <div class="stat-row"><span>💰 إيراد اليوم</span><span class="stat-value">${totalToday.toLocaleString()} ل.س</span></div>
+                <div class="stat-row"><span>📋 طلبات اليوم</span><span class="stat-value">${todayOrders.length} طلب</span></div>
+                <div class="stat-row"><span>💵 متوسط قيمة الطلب</span><span class="stat-value">${avgOrderValue.toLocaleString()} ل.س</span></div>
+                <div class="stat-row"><span>📊 متوسط الإيراد اليومي</span><span class="stat-value">${weeklyAvg.toLocaleString()} ل.س</span></div>
+                <div class="stat-row"><span>🔥 ساعة الذروة</span><span class="stat-value">${peakHour ? peakHour[0] + ':00' : '--'} - ${peakHour ? parseInt(peakHour[1]).toLocaleString() : '0'} ل.س</span></div>
+                <div class="stat-row"><span>🗄️ أيام مؤرشفة</span><span class="stat-value">${closeData.length} يوم</span></div>
+            `;
+        }
+
+        function refreshAI() {
+            renderPredictions();
+            renderSuggestions();
+            renderHeatmap();
+            renderWeeklyPattern();
+            renderStats();
+            // هزة
+            if (navigator.vibrate) navigator.vibrate(20);
+        }
+
+        // بدء التشغيل
+        refreshAI();
+    </script>
+</body>
+</html>
