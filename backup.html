@@ -114,7 +114,8 @@
         </div>
     </div>
 
-    <script>
+    <script src="checksum.js"></script>
+<script>
         function getAllData() {
             const data = {};
             for (let i = 0; i < localStorage.length; i++) {
@@ -162,8 +163,8 @@
             `;
         }
 
-        function exportAll() {
-            const data = getAllData();
+        async function exportAll() {
+            const data = await exportWithChecksum();
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -175,7 +176,7 @@
             showToast('✅ تم تحميل النسخة الاحتياطية');
         }
 
-        function importAll(event) {
+        async function importAll(event) {
             const file = event.target.files[0];
             if (!file) return;
             
@@ -187,7 +188,9 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
-                    const imported = JSON.parse(e.target.result);
+                    const result = await importWithChecksum(e.target.result);
+            if (!result.valid) { showToast(result.error); event.target.value = ''; return; }
+            const imported = result.data;
                     const data = imported.data || imported;
                     
                     let count = 0;
@@ -207,7 +210,7 @@
         }
 
         function copyToClipboard() {
-            const data = getAllData();
+            const data = await exportWithChecksum();
             navigator.clipboard.writeText(JSON.stringify(data, null, 2))
                 .then(() => showToast('✅ تم النسخ - الصقه في مكان آمن'))
                 .catch(() => showToast('❌ فشل النسخ'));
