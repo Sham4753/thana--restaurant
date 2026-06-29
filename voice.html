@@ -277,7 +277,8 @@
         </div>
     </div>
 
-    <script>
+    <script src="bridge.js"></script>
+<script>
         // ==================== محرك الأوامر الصوتية ====================
         
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -456,10 +457,10 @@
 
             const orders = JSON.parse(localStorage.getItem('thana_orders') || '[]');
             orders.push(order);
-            localStorage.setItem('thana_orders', JSON.stringify(orders));
+            bridgeSendOrder(order);
 
             // إشعار
-            localStorage.setItem('thana_new_order_notify', JSON.stringify(order));
+            
 
             // تحديث الطاولة
             updateTable(parsed.table);

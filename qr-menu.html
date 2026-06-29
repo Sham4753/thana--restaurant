@@ -306,7 +306,8 @@
         <button class="btn btn-secondary" onclick="closeCart()">✕ إغلاق</button>
     </div>
 
-    <script>
+    <script src="bridge.js"></script>
+<script>
         // استخراج رقم الطاولة من URL
         const params = new URLSearchParams(window.location.search);
         const tableId = params.get('table') || '1';
@@ -473,7 +474,7 @@
             // حفظ الطلب
             const orders = JSON.parse(localStorage.getItem('thana_orders') || '[]');
             orders.push(order);
-            localStorage.setItem('thana_orders', JSON.stringify(orders));
+            bridgeSendOrder(order);
 
             // إشعار الصوت
             localStorage.setItem('thana_new_order_notify', JSON.stringify(order));
