@@ -3,45 +3,362 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thana Restaurant</title>
-    <link rel="stylesheet" href="theme.css">
+    <title>Thana Restaurant v2.0</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0f1e">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <script src="pwa-register.js" defer></script>
+    <style>
+        body {
+            padding: 16px;
+            background-image: 
+                radial-gradient(ellipse at 20% 0%, rgba(56,189,248,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(129,140,248,0.06) 0%, transparent 50%);
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        .hero {
+            text-align: center;
+            padding: 30px 0 20px;
+        }
+        .hero .logo { font-size: 64px; }
+        .hero h1 {
+            font-size: 30px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 10px 0;
+        }
+        .hero .version {
+            display: inline-block;
+            background: var(--accent-gradient);
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .hero .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 8px;
+        }
 
+        .install-banner {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 14px 18px;
+            margin: 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: var(--glass-blur);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+        .install-banner:hover { border-color: var(--accent-primary); }
+
+        .section-title {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 24px 0 12px;
+            padding-right: 8px;
+            border-right: 3px solid var(--accent-primary);
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+        }
+        .nav-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 16px 12px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-primary);
+            backdrop-filter: var(--glass-blur);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+        .nav-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-glow);
+        }
+        .nav-card .icon { font-size: 32px; display: block; margin-bottom: 6px; }
+        .nav-card .label { font-size: 12px; font-weight: 600; }
+        .nav-card .badge-new {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: var(--accent-gradient);
+            color: #fff;
+            font-size: 9px;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+        }
+
+        .live-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 16px 0;
+        }
+        .stat-mini {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            text-align: center;
+            backdrop-filter: var(--glass-blur);
+        }
+        .stat-mini .val { font-size: 22px; font-weight: 700; }
+        .stat-mini .lbl { font-size: 11px; color: var(--text-muted); }
+
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 16px 0;
+        }
+        .quick-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            backdrop-filter: var(--glass-blur);
+            transition: all var(--transition-fast);
+        }
+        .quick-btn:hover { border-color: var(--accent-primary); }
+
+        .footer {
+            text-align: center;
+            padding: 24px 0;
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+    </style>
 </head>
 <body>
-    <div class="app">
-        <div class="glass header">
+    <div class="container">
+        <!-- Hero -->
+        <div class="hero">
             <div class="logo">🍽️</div>
             <h1>Thana Restaurant</h1>
-            <p class="subtitle">نظام إدارة ذكي 2026</p>
+            <span class="version">v2.0</span>
+            <div class="subtitle">نظام إدارة مطعم متكامل · 2026</div>
         </div>
 
-        <div class="glass ai" onclick="activateAI()">
-            <div class="ai-icon">🤖</div>
-            <div class="ai-text">
-                <b>Thana AI</b>
-                <small id="aiMessage">كيف أقدر أساعدك اليوم؟</small>
+        <!-- تثبيت التطبيق -->
+        <div class="install-banner" id="installBanner" style="display:none;" onclick="installApp()">
+            <span style="font-size:28px;">📲</span>
+            <div>
+                <div style="font-weight:600;">تثبيت التطبيق</div>
+                <div style="font-size:11px;color:var(--text-muted);">أيقونة على الشاشة الرئيسية</div>
             </div>
-            <button class="voice-btn" onclick="event.stopPropagation();startVoice()">🎤</button>
+            <span style="margin-right:auto;color:var(--accent-primary);">تثبيت ←</span>
         </div>
 
-        <div id="alertsContainer" class="alerts"></div><div class="stats">
-            <div class="stat-card"><div class="stat-num" id="freeTables">8</div><div class="stat-label">🪑 طاولات فاضية</div></div>
-            <div class="stat-card"><div class="stat-num" id="activeOrders">3</div><div class="stat-label">📋 طلبات نشطة</div></div>
-            <div class="stat-card"><div class="stat-num" id="todayRevenue">1,250</div><div class="stat-label">💰 مبيعات اليوم $</div></div>
-            <div class="stat-card"><div class="stat-num" id="predictedBusy">18:30</div><div class="stat-label">⏰ وقت الذروة</div></div>
+        <!-- إحصائيات سريعة -->
+        <div class="section-title">📊 نظرة سريعة</div>
+        <div class="live-stats" id="liveStats">
+            <div class="stat-mini"><div class="val">--</div><div class="lbl">طلبات اليوم</div></div>
+            <div class="stat-mini"><div class="val">--</div><div class="lbl">طاولات مشغولة</div></div>
+            <div class="stat-mini"><div class="val">--</div><div class="lbl">متوسط الوقت</div></div>
         </div>
 
-        <div class="menu-grid">
-            <a href="waiter.html" class="menu-card">📋<br>الطلبات<br><small id="menuActiveOrders">0 نشطة</small></a>
-            <a href="kitchen.html" class="menu-card">🍳<br>المطبخ<br><small id="menuCookingOrders">0 قيد التحضير</small></a>
-            <a href="staff.html" class="menu-card">📦<br>المخزون<br><small id="menuLowStock">0 أصناف ناقصة</small></a>
-            <a href="staff.html" class="menu-card">👥<br>الموظفين<br><small id="staffCount">5 حاضرين</small></a>
+        <!-- أزرار سريعة -->
+        <div class="quick-actions">
+            <a href="waiter.html" class="quick-btn">📋 طلب جديد</a>
+            <a href="qr-menu.html?table=1" class="quick-btn">📱 قائمة QR</a>
+            <a href="voice.html" class="quick-btn">🎤 أمر صوتي</a>
+            <a href="dashboard.html" class="quick-btn">📊 لوحة التحكم</a>
         </div>
 
+        <!-- صفحات v2.0 الجديدة -->
+        <div class="section-title">🚀 مميزات v2.0</div>
+        <div class="nav-grid">
+            <a href="dashboard.html" class="nav-card">
+                <span class="badge-new">جديد</span>
+                <span class="icon">📊</span>
+                <span class="label">لوحة التحكم</span>
+            </a>
+            <a href="qr-menu.html?table=1" class="nav-card">
+                <span class="badge-new">جديد</span>
+                <span class="icon">📱</span>
+                <span class="label">قائمة QR</span>
+            </a>
+            <a href="voice.html" class="nav-card">
+                <span class="badge-new">جديد</span>
+                <span class="icon">🎤</span>
+                <span class="label">أوامر صوتية</span>
+            </a>
+            <a href="ai.html" class="nav-card">
+                <span class="badge-new">جديد</span>
+                <span class="icon">🧠</span>
+                <span class="label">الذكاء الاصطناعي</span>
+            </a>
+            <a href="auth.html" class="nav-card">
+                <span class="badge-new">جديد</span>
+                <span class="icon">🔐</span>
+                <span class="label">الأمان والبصمة</span>
+            </a>
+            <a href="print.html" class="nav-card">
+                <span class="badge-new">جديد</span>
+                <span class="icon">🖨️</span>
+                <span class="label">الطباعة</span>
+            </a>
+            <a href="theme-settings.html" class="nav-card">
+                <span class="badge-new">جديد</span>
+                <span class="icon">🎨</span>
+                <span class="label">تخصيص المظهر</span>
+            </a>
+        </div>
+
+        <!-- صفحات v1.0 -->
+        <div class="section-title">📋 الإدارة</div>
+        <div class="nav-grid">
+            <a href="waiter.html" class="nav-card">
+                <span class="icon">📋</span>
+                <span class="label">النادل</span>
+            </a>
+            <a href="kitchen.html" class="nav-card">
+                <span class="icon">🍳</span>
+                <span class="label">المطبخ</span>
+            </a>
+            <a href="tables.html" class="nav-card">
+                <span class="icon">🪑</span>
+                <span class="label">الطاولات</span>
+            </a>
+            <a href="staff.html" class="nav-card">
+                <span class="icon">👥</span>
+                <span class="label">الموظفين</span>
+            </a>
+            <a href="menu.html" class="nav-card">
+                <span class="icon">🍽️</span>
+                <span class="label">القائمة</span>
+            </a>
+            <a href="inventory.html" class="nav-card">
+                <span class="icon">📦</span>
+                <span class="label">المخزون</span>
+            </a>
+            <a href="reports.html" class="nav-card">
+                <span class="icon">📊</span>
+                <span class="label">التقارير</span>
+            </a>
+            <a href="customers.html" class="nav-card">
+                <span class="icon">👤</span>
+                <span class="label">العملاء CRM</span>
+            </a>
+        </div>
+
+        <div class="section-title">⚙️ النظام</div>
+        <div class="nav-grid">
+            <a href="settings.html" class="nav-card">
+                <span class="icon">⚙️</span>
+                <span class="label">الإعدادات</span>
+            </a>
+            <a href="admin.html" class="nav-card">
+                <span class="icon">🔑</span>
+                <span class="label">المدير</span>
+            </a>
+            <a href="close.html" class="nav-card">
+                <span class="icon">🔒</span>
+                <span class="label">الإغلاق اليومي</span>
+            </a>
+            <a href="waste_report.html" class="nav-card">
+                <span class="icon">🗑️</span>
+                <span class="label">تقرير الهدر</span>
+            </a>
+            <a href="velocity.html" class="nav-card">
+                <span class="icon">⚡</span>
+                <span class="label">سرعة المطبخ</span>
+            </a>
+            <a href="procurement.html" class="nav-card">
+                <span class="icon">🛒</span>
+                <span class="label">المشتريات</span>
+            </a>
+            <a href="invoice.html" class="nav-card">
+                <span class="icon">🧾</span>
+                <span class="label">الفاتورة</span>
+            </a>
+        </div>
+
+        <div class="footer">
+            Thana Restaurant v2.0 · 2026 · <span style="color:var(--success);">تكلفة $0</span> · بدون سيرفر
+        </div>
     </div>
 
-    <script>if(!localStorage.getItem("thana_inventory")){localStorage.setItem("thana_inventory",JSON.stringify([{id:1,name:"دجاج",icon:"🍗",unit:"كغ",qty:25,min:5},{id:2,name:"لحم",icon:"🥩",unit:"كغ",qty:15,min:3},{id:3,name:"بطاطا",icon:"🥔",unit:"كغ",qty:30,min:5},{id:4,name:"خبز",icon:"🫓",unit:"رغيف",qty:100,min:20},{id:5,name:"بيبسي",icon:"🥤",unit:"علبة",qty:50,min:10},{id:6,name:"ثوم",icon:"🧄",unit:"كغ",qty:5,min:1},{id:7,name:"زيت",icon:"🫗",unit:"لتر",qty:20,min:5},{id:8,name:"حمص",icon:"🫘",unit:"كغ",qty:8,min:2}]))}if(!localStorage.getItem("thana_tables")){let t=[];for(let i=1;i<=15;i++)t.push({id:i,status:"free",time:null,orderCount:0});t[0].status="occupied";t[0].time=Date.now();t[2].status="occupied";t[2].time=Date.now();localStorage.setItem("thana_tables",JSON.stringify(t))}</script><script src="app.js"></script>
+    <script>
+        // إحصائيات سريعة
+        function updateStats() {
+            const orders = JSON.parse(localStorage.getItem('thana_orders') || '[]');
+            const tables = JSON.parse(localStorage.getItem('thana_tables') || '[]');
+            const today = new Date().toLocaleDateString('ar-SA');
+            
+            const todayOrders = orders.filter(o => {
+                const d = new Date(o.timestamp || Date.now()).toLocaleDateString('ar-SA');
+                return d === today;
+            });
+            
+            const busyTables = tables.filter(t => t.status === 'busy' || t.status === 'waiting').length;
+            
+            const times = orders.filter(o => o.cookStart && o.cookEnd)
+                .map(o => (new Date(o.cookEnd) - new Date(o.cookStart)) / 60000);
+            const avgTime = times.length > 0 ? Math.round(times.reduce((a,b)=>a+b,0)/times.length) : 0;
+            
+            const stats = document.querySelectorAll('#liveStats .val');
+            if (stats[0]) stats[0].textContent = todayOrders.length;
+            if (stats[1]) stats[1].textContent = busyTables + '/15';
+            if (stats[2]) stats[2].textContent = avgTime + ' د';
+        }
+
+        updateStats();
+        setInterval(updateStats, 30000);
+
+        // PWA install
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBanner').style.display = 'flex';
+        });
+
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(() => {
+                    document.getElementById('installBanner').style.display = 'none';
+                });
+            }
+        }
+
+        window.addEventListener('appinstalled', () => {
+            document.getElementById('installBanner').style.display = 'none';
+        });
+    </script>
 </body>
 </html>
-<nav class="bottom-nav"><a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a><a href="tables.html">🪑</a><a href="staff.html">👥</a><a href="staff.html">📦</a><a href="menu.html">🍽️</a>
-<a href="reports.html">📊</a><a href="settings.html">⚙️</a></nav>
