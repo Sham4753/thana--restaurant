@@ -145,11 +145,16 @@
         <button onclick="quickLogin('3333')">💰 كاشير</button>
     </div>
 
-    <button class="reset-btn" onclick="localStorage.clear();location.reload()">🗑️ مسح جميع البيانات</button>
+    <button class="install-btn" onclick="installApp()" style="display:none;width:100%;padding:10px;border-radius:10px;background:rgba(212,168,83,0.15);color:#d4a853;border:1px solid rgba(212,168,83,0.3);font-weight:700;font-size:11px;cursor:pointer;font-family:Cairo,sans-serif;margin-bottom:6px" id="installBtn">📲 تثبيت التطبيق</button>
+<button class="reset-btn" onclick="localStorage.clear();location.reload()">🗑️ مسح جميع البيانات</button>
 </div>
 </div>
 
 <script>
+var deferredPrompt;
+window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferredPrompt=e;document.getElementById("installBtn").style.display="block"});
+function installApp(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(function(r){if(r.outcome==="accepted")document.getElementById("installBtn").style.display="none"})}}
+
 // ========== بيانات المستخدمين ==========
 var USERS = {
     '2026': {n:'المدير',r:'admin'},
