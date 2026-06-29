@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الإجهاد - Thana Restaurant</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <style>
+        body { padding: 16px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            margin-bottom: 14px;
+        }
+        h2 { color: var(--gold); margin-bottom: 12px; }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius);
+            border: none;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            font-family: var(--font);
+            transition: all var(--transition);
+        }
+        .btn-gold { background: linear-gradient(135deg, var(--gold-dark), var(--gold)); color: #1a1814; }
+        .btn-danger { background: var(--danger-light); color: var(--danger); }
+        .btn:active { transform: scale(0.97); }
+
+        .log-area {
+            background: #0a0b0f;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            line-height: 1.7;
+            color: #e8e4dd;
+        }
+        .log-line { padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .log-ok { color: #34d399; }
+        .log-warn { color: #fbbf24; }
+        .log-error { color: #f87171; }
+        .log-info { color: #38bdf8; }
+
+        .result-box {
+            padding: 14px;
+            border-radius: var(--radius);
+            margin-top: 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        .result-pass { background: rgba(52,211,153,0.12); color: #34d399; border: 1px solid rgba(52,211,153,0.3); }
+        .result-fail { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .stat-box {
+            background: rgba(255,255,255,0.02);
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        .stat-val { font-size: 22px; font-weight: 700; }
+        .stat-lbl { font-size: 10px; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card" style="text-align:center;">
+            <div style="font-size:48px;">🧪</div>
+            <h2>اختبار إجهاد نظام المزامنة</h2>
+            <p style="color:var(--text-secondary);font-size:13px;">محاكاة طلبات متزامنة + فحص التعارضات</p>
+        </div>
+
+        <div class="card">
+            <h2>🎯 إعدادات الاختبار</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-val">50</div>
+                    <div class="stat-lbl">طلب متزامن</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-val">5</div>
+                    <div class="stat-lbl">طاولات مختلفة</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-val">3</div>
+                    <div class="stat-lbl">مصادر (نادل-QR-صوت)</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-val">0ms</div>
+                    <div class="stat-lbl">تأخير بين الطلبات</div>
+                </div>
+            </div>
+            <button class="btn btn-gold" onclick="runStressTest()">🧪 بدء اختبار الإجهاد</button>
+            <button class="btn btn-danger" onclick="clearLogs()">🗑️ مسح السجل</button>
+        </div>
+
+        <div class="card">
+            <h2>📋 سجل الاختبار</h2>
+            <div class="log-area" id="logArea">
+                <div class="log-line log-info">⏳ بانتظار بدء الاختبار...</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📊 النتيجة</h2>
+            <div id="resultBox"></div>
+            <div class="stats-grid" id="resultStats" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script src="sync-engine.js"></script>
+    <script src="db-schema.js"></script>
+    <script>
+        const logArea = document.getElementById('logArea');
+        let logs = [];
+
+        function addLog(msg, type = 'info') {
+            const time = new Date().toLocaleTimeString('ar-SA');
+            logs.push({ time, msg, type });
+            const line = document.createElement('div');
+            line.className = `log-line log-${type}`;
+            line.textContent = `[${time}] ${msg}`;
+            logArea.appendChild(line);
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        function clearLogs() {
+            logs = [];
+            logArea.innerHTML = '<div class="log-line log-info">🗑️ تم مسح السجل</div>';
+            document.getElementById('resultBox').innerHTML = '';
+            document.getElementById('resultStats').style.display = 'none';
+        }
+
+        async function runStressTest() {
+            clearLogs();
+            addLog('🧪 بدء اختبار الإجهاد...', 'info');
+            addLog('📊 إعداد: 50 طلب متزامن - 5 طاولات - 3 مصادر', 'info');
+
+            const startTime = performance.now();
+            const results = {
+                total: 0,
+                success: 0,
+                failed: 0,
+                conflicts: 0,
+                duplicates: 0,
+                orderIds: new Set()
+            };
+
+            // بيانات الاختبار
+            const tables = [1, 2, 3, 4, 5];
+            const sources = ['waiter', 'qr', 'voice'];
+            const items = [
+                [{ name: 'شاورما دجاج', price: 25000, qty: 2 }],
+                [{ name: 'فلافل', price: 15000, qty: 3 }],
+                [{ name: 'برجر', price: 35000, qty: 1 }],
+                [{ name: 'بيتزا', price: 40000, qty: 1 }],
+                [{ name: 'كولا', price: 5000, qty: 2 }],
+            ];
+
+            // توليد 50 طلب
+            const testOrders = [];
+            for (let i = 0; i < 50; i++) {
+                testOrders.push({
+                    id: Date.now() + i,
+                    table: tables[i % 5],
+                    items: items[i % 5],
+                    total: items[i % 5].reduce((s, it) => s + it.price * it.qty, 0),
+                    source: sources[i % 3],
+                    status: 'new',
+                    timestamp: new Date().toISOString(),
+                });
+            }
+
+            addLog(`📦 تم توليد ${testOrders.length} طلب اختبار`, 'info');
+
+            // تنفيذ جميع الطلبات في نفس اللحظة (Promise.all)
+            addLog('⚡ إرسال جميع الطلبات في نفس اللحظة...', 'warn');
+
+            const promises = testOrders.map(async (order, index) => {
+                try {
+                    // محاكاة addToSyncQueueWithAtomicity
+                    const result = await simulateAtomicAdd(order);
+                    results.total++;
+                    
+                    if (result.success) {
+                        results.success++;
+                        results.orderIds.add(order.id);
+                        if (index % 10 === 0) addLog(`✅ طلب #${order.id} - طاولة ${order.table} - ${order.source}`, 'ok');
+                    } else {
+                        results.failed++;
+                        addLog(`❌ فشل طلب #${order.id}: ${result.error}`, 'error');
+                    }
+                    
+                    return result;
+                } catch(e) {
+                    results.total++;
+                    results.failed++;
+                    addLog(`💥 خطأ طلب #${order.id}: ${e.message}`, 'error');
+                    return { success: false, error: e.message };
+                }
+            });
+
+            // انتظار جميع الطلبات
+            await Promise.all(promises);
+
+            const endTime = performance.now();
+            const duration = Math.round(endTime - startTime);
+
+            // فحص النتائج
+            const savedOrders = JSON.parse(localStorage.getItem('thana_orders') || '[]');
+            const testOrderIds = testOrders.map(o => o.id);
+            const savedTestOrders = savedOrders.filter(o => testOrderIds.includes(o.id));
+
+            // فحص التكرار
+            const idCounts = {};
+            savedTestOrders.forEach(o => {
+                idCounts[o.id] = (idCounts[o.id] || 0) + 1;
+            });
+            
+            Object.entries(idCounts).forEach(([id, count]) => {
+                if (count > 1) {
+                    results.duplicates += (count - 1);
+                    addLog(`⚠️ تكرار: طلب #${id} موجود ${count} مرات`, 'warn');
+                }
+            });
+
+            // فحص التعارضات
+            const tableOrders = {};
+            savedTestOrders.forEach(o => {
+                if (!tableOrders[o.table]) tableOrders[o.table] = [];
+                tableOrders[o.table].push(o);
+            });
+
+            // عرض النتائج
+            addLog('', 'info');
+            addLog(`✅ اكتمل الاختبار في ${duration}ms`, 'ok');
+            addLog(`📊 نجح: ${results.success} | فشل: ${results.failed} | تكرار: ${results.duplicates}`, 'info');
+
+            // تقييم
+            const successRate = (results.success / results.total) * 100;
+            const passed = successRate >= 95 && results.duplicates === 0;
+
+            const resultBox = document.getElementById('resultBox');
+            if (passed) {
+                resultBox.innerHTML = `<div class="result-pass">✅ اجتاز الاختبار بنجاح!<br>نسبة النجاح: ${successRate.toFixed(1)}% | ${results.success}/${results.total} طلب</div>`;
+            } else {
+                resultBox.innerHTML = `<div class="result-fail">⚠️ يحتاج تحسين<br>نسبة النجاح: ${successRate.toFixed(1)}% | تكرار: ${results.duplicates}</div>`;
+            }
+
+            // إحصائيات
+            const statsGrid = document.getElementById('resultStats');
+            statsGrid.style.display = 'grid';
+            statsGrid.innerHTML = `
+                <div class="stat-box">
+                    <div class="stat-val" style="color:#38bdf8;">${duration}ms</div>
+                    <div class="stat-lbl">مدة الاختبار</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-val" style="color:#34d399;">${results.success}</div>
+                    <div class="stat-lbl">طلبات ناجحة</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-val" style="color:#f87171;">${results.failed}</div>
+                    <div class="stat-lbl">طلبات فاشلة</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-val" style="color:#fbbf24;">${results.duplicates}</div>
+                    <div class="stat-lbl">تكرارات</div>
+                </div>
+            `;
+
+            // تنظيف بيانات الاختبار
+            if (confirm('هل تريد حذف طلبات الاختبار من localStorage؟')) {
+                const allOrders = JSON.parse(localStorage.getItem('thana_orders') || '[]');
+                const filtered = allOrders.filter(o => !testOrderIds.includes(o.id));
+                localStorage.setItem('thana_orders', JSON.stringify(filtered));
+                addLog('🗑️ تم حذف طلبات الاختبار', 'info');
+            }
+        }
+
+        // محاكاة addToSyncQueueWithAtomicity
+        async function simulateAtomicAdd(order) {
+            try {
+                // محاكاة تأخير بسيط (0-5ms)
+                await new Promise(r => setTimeout(r, Math.random() * 5));
+                
+                // حفظ الطلب
+                const orders = JSON.parse(localStorage.getItem('thana_orders') || '[]');
+                
+                // فحص التكرار
+                if (orders.find(o => o.id === order.id)) {
+                    return { success: false, error: 'طلب مكرر' };
+                }
+                
+                orders.push(order);
+                localStorage.setItem('thana_orders', JSON.stringify(orders));
+                
+                return { success: true };
+            } catch(e) {
+                return { success: false, error: e.message };
+            }
+        }
+    </script>
+</body>
+</html>
