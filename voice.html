@@ -378,7 +378,7 @@
                 voiceRaw: pendingOrder.raw
             };
 
-            bridgeSendOrder(order);
+            var orders=JSON.parse(localStorage.getItem("thana_orders")||"[]");orders.push(order);localStorage.setItem("thana_orders",JSON.stringify(orders));localStorage.setItem("thana_new_order_notify",JSON.stringify(order));
 
             voiceHistory.unshift({
                 raw: pendingOrder.raw,
@@ -499,7 +499,7 @@
                 source: 'voice',
                 voiceRaw: 'إدخال يدوي'
             };
-            bridgeSendOrder(order);
+            var orders=JSON.parse(localStorage.getItem("thana_orders")||"[]");orders.push(order);localStorage.setItem("thana_orders",JSON.stringify(orders));localStorage.setItem("thana_new_order_notify",JSON.stringify(order));
             voiceHistory.unshift({ raw: 'إدخال يدوي', items: [...manualCartItems], table, time: new Date().toISOString() });
             if (voiceHistory.length > 10) voiceHistory = voiceHistory.slice(0, 10);
             localStorage.setItem('thana_voice_history', JSON.stringify(voiceHistory));
