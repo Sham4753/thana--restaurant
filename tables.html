@@ -56,5 +56,6 @@
         function changeStatus(s){if(!selectedTable)return;const t=tables.find(t=>t.id===selectedTable);t.status=s;t.time=s!=='free'?Date.now():null;save();render();document.getElementById('tableModal').style.display='none'}
         render();setInterval(render,10000);
     </script>
+<script src="swipe-nav.js"></script>
 </body>
 </html>
