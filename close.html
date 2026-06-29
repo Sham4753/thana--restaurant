@@ -1,56 +1,166 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <link rel="stylesheet" href="theme-v2.css"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><link rel="stylesheet" href="theme.css">
-<title>إغلاق يومي</title>
-<style>
-:root{--bg:#0a0a0a;--accent:#e94560;--accent2:#00a884;--text:#fff;--glass:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.1)}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,sans-serif;background:linear-gradient(135deg,#0a0a0a,#1a1a2e);color:var(--text);min-height:100vh;padding:16px}
-.app{max-width:500px;margin:0 auto}
-.header{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:16px;margin-bottom:16px;text-align:center}
-h1{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:2em}
-.kpi{background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;display:flex;justify-content:space-between}
-.kpi-label{opacity:0.7}
-.kpi-num{font-size:1.5em;font-weight:700}
-.btn{width:100%;padding:16px;border:none;border-radius:12px;font-size:1.1em;font-weight:700;cursor:pointer;margin:8px 0}
-.btn-reset{background:var(--accent);color:white}
-.btn-back{background:rgba(255,255,255,0.1);color:white}
-<script src="nav-component.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإغلاق اليومي - Thana</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <script src="nav-component.js" defer></script>
+    <style>
+        body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
+        .container{max-width:700px;margin:0 auto}
+        .card{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:20px;margin-bottom:14px}
+        h2{color:#d4a853;text-align:center;margin-bottom:16px}
+        h3{color:#d4a853;margin-bottom:10px;font-size:15px}
+        .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+        .stat{background:rgba(255,255,255,0.02);padding:12px;border-radius:10px;text-align:center}
+        .stat .num{font-size:24px;font-weight:700}
+        .stat .lbl{font-size:9px;color:#6b6760;margin-top:2px}
+        .stat .num.gold{color:#d4a853}
+        .stat .num.green{color:#10b981}
+        .stat .num.red{color:#ef4444}
+        .stat .num.blue{color:#38bdf8}
+        
+        .btn{display:block;width:100%;padding:14px;border-radius:12px;border:none;font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;font-family:'Cairo',sans-serif}
+        .btn-gold{background:linear-gradient(135deg,#b8942e,#d4a853);color:#1a1814}
+        .btn-danger{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.2)}
+        .btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.1);color:#fff}
+        
+        .archive-item{display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(255,255,255,0.02);border-radius:10px;margin-bottom:6px;font-size:13px}
+        .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 22px;border-radius:30px;font-weight:700;z-index:300}
+    </style>
 </head>
-<body><div class="app">
-<div class="header"><h1>📆 إغلاق يومي</h1><p id="todayDate"></p></div>
-<div class="kpi"><div class="kpi-label">💰 إجمالي المبيعات</div><div class="kpi-num" id="totalSales">$0</div></div>
-<div class="kpi"><div class="kpi-label">💵 كاش</div><div class="kpi-num" id="cashTotal">$0</div></div>
-<div class="kpi"><div class="kpi-label">📝 ديون</div><div class="kpi-num" id="debtTotal">$0</div></div>
-<div class="kpi"><div class="kpi-label">🗑️ هدر</div><div class="kpi-num" id="wasteTotal">0</div></div>
-<div class="kpi"><div class="kpi-label">📊 صافي المتوقع</div><div class="kpi-num" id="netExpected">$0</div></div>
-<button class="btn btn-reset" onclick="resetDay()">🔄 تصفير اليوم + حفظ أرشيف</button>
-<a href="index.html" class="btn btn-back" style="display:block;text-align:center;text-decoration:none">🏠 العودة للرئيسية</a>
+<body>
+<div class="container">
+<div class="card" style="text-align:center">
+    <div style="font-size:48px">🔒</div>
+    <h2>الإغلاق اليومي</h2>
+    <p style="color:#6b6760;font-size:12px">آخر النهار - سكر اليوم وابدأ جديد</p>
 </div>
+
+<div class="card">
+    <h3>📊 ملخص اليوم</h3>
+    <div class="stats" id="todayStats"></div>
+</div>
+
+<div class="card">
+    <h3>🔒 إجراء الإغلاق</h3>
+    <p style="font-size:12px;color:#f59e0b;margin-bottom:10px">⚠️ الإغلاق: يرحل طلبات اليوم للأرشيف + يصفر العدادات + يفضي الطاولات</p>
+    <button class="btn btn-gold" onclick="closeDay()">🔒 إغلاق اليوم وبدء يوم جديد</button>
+    <button class="btn btn-outline" onclick="exportToday()">📤 تصدير تقرير اليوم</button>
+</div>
+
+<div class="card">
+    <h3>📦 الأرشيف</h3>
+    <div id="archiveList"></div>
+    <button class="btn btn-danger" onclick="clearArchive()">🗑️ مسح الأرشيف</button>
+</div>
+</div>
+
 <script>
-document.getElementById('todayDate').textContent=new Date().toLocaleDateString('ar-SA');
-const orders=JSON.parse(localStorage.getItem('thana_kitchen_orders')||'[]');
-const menu=[{name:'شاورما دجاج',price:3},{name:'شاورما لحم',price:4},{name:'بطاطا مقلية',price:2},{name:'بيبسي',price:1},{name:'فلافل',price:2},{name:'حمص',price:2},{name:'مشاوي',price:5},{name:'سلطة',price:2}];
-let totalSales=0;orders.forEach(o=>{if(o.deducted)o.items.forEach(i=>{const m=menu.find(m=>m.name===i.name);if(m)totalSales+=m.price*i.qty})});
-const payments=JSON.parse(localStorage.getItem('thana_payments')||'[]');
-const cashTotal=payments.filter(p=>p.method==='cash').reduce((s,p)=>s+p.amount,0);
-const debtTotal=payments.filter(p=>p.method==='debt').reduce((s,p)=>s+p.amount,0);
-const waste=JSON.parse(localStorage.getItem('thana_waste')||'[]');
-const wasteTotal=waste.reduce((s,w)=>s+w.qty,0);
-document.getElementById('totalSales').textContent='$'+totalSales;
-document.getElementById('cashTotal').textContent='$'+cashTotal;
-document.getElementById('debtTotal').textContent='$'+debtTotal;
-document.getElementById('wasteTotal').textContent=wasteTotal;
-document.getElementById('netExpected').textContent='$'+(totalSales-wasteTotal*2);
-function resetDay(){
-if(confirm('تصفير اليوم؟ سيتم حفظ أرشيف.')){
-const archive=JSON.parse(localStorage.getItem('thana_archive')||'[]');
-archive.push({date:new Date().toLocaleDateString('ar-SA'),sales:totalSales,cash:cashTotal,debt:debtTotal,waste:wasteTotal});
-localStorage.setItem('thana_archive',JSON.stringify(archive));
-localStorage.setItem('thana_kitchen_orders','[]');
-localStorage.setItem('thana_payments','[]');
-localStorage.setItem('thana_waste','[]');
-alert('تم التصفير. يوم جديد!');
-location.reload();
-}}
+function GO(){return JSON.parse(localStorage.getItem('thana_orders')||'[]')}
+function SO(o){localStorage.setItem('thana_orders',JSON.stringify(o))}
+function GT(){return JSON.parse(localStorage.getItem('thana_tables')||'[]')}
+function ST(t){localStorage.setItem('thana_tables',JSON.stringify(t))}
+function GA(){return JSON.parse(localStorage.getItem('thana_archive')||'[]')}
+function SA(a){localStorage.setItem('thana_archive',JSON.stringify(a))}
+
+function getTodayOrders(){
+    var orders=GO();var today=new Date().toLocaleDateString('ar-SA');
+    return orders.filter(function(o){return new Date(o.timestamp||Date.now()).toLocaleDateString('ar-SA')===today});
+}
+
+function renderStats(){
+    var today=getTodayOrders();
+    var total=today.length;
+    var paid=today.filter(function(o){return o.paymentStatus==='paid'}).length;
+    var debt=today.filter(function(o){return o.paymentStatus==='debt'}).length;
+    var cash=today.filter(function(o){return o.paymentStatus==='paid'}).reduce(function(s,o){return s+(o.total||0)},0);
+    var debtMoney=today.filter(function(o){return o.paymentStatus==='debt'}).reduce(function(s,o){return s+(o.total||0)},0);
+    var currency=localStorage.getItem('thana_currency_symbol')||'ل.س';
+    
+    document.getElementById('todayStats').innerHTML=
+        '<div class="stat"><div class="num blue">'+total+'</div><div class="lbl">كل الطلبات</div></div>'+
+        '<div class="stat"><div class="num green">'+paid+'</div><div class="lbl">مدفوع</div></div>'+
+        '<div class="stat"><div class="num gold">'+cash.toLocaleString()+'</div><div class="lbl">الكاش ('+currency+')</div></div>'+
+        '<div class="stat"><div class="num red">'+debt+'</div><div class="lbl">دين</div></div>'+
+        '<div class="stat"><div class="num red">'+debtMoney.toLocaleString()+'</div><div class="lbl">الديون ('+currency+')</div></div>';
+    
+    renderArchive();
+}
+
+function closeDay(){
+    if(!confirm('⚠️ هل أنت متأكد من إغلاق اليوم؟\n\nسيتم أرشفة طلبات اليوم وتصفير العدادات وتفريغ الطاولات.'))return;
+    
+    var today=getTodayOrders();
+    if(today.length===0){alert('لا توجد طلبات اليوم');return}
+    
+    var archive=GA();
+    archive.unshift({
+        date:new Date().toLocaleDateString('ar-SA'),
+        closedAt:new Date().toISOString(),
+        totalOrders:today.length,
+        totalPaid:today.filter(function(o){return o.paymentStatus==='paid'}).length,
+        totalDebt:today.filter(function(o){return o.paymentStatus==='debt'}).length,
+        totalCash:today.filter(function(o){return o.paymentStatus==='paid'}).reduce(function(s,o){return s+(o.total||0)},0),
+        totalDebtMoney:today.filter(function(o){return o.paymentStatus==='debt'}).reduce(function(s,o){return s+(o.total||0)},0),
+        orders:today
+    });
+    SA(archive);
+    
+    // مسح طلبات اليوم من القائمة النشطة
+    var allOrders=GO();
+    var todayStr=new Date().toLocaleDateString('ar-SA');
+    var remaining=allOrders.filter(function(o){return new Date(o.timestamp||Date.now()).toLocaleDateString('ar-SA')!==todayStr});
+    SO(remaining);
+    
+    // تفريغ كل الطاولات
+    var tables=GT();
+    tables.forEach(function(t){t.status='free'});
+    ST(tables);
+    
+    alert('✅ تم إغلاق اليوم بنجاح!\n\nالطلبات: '+today.length+'\nالكاش: '+today.filter(function(o){return o.paymentStatus==='paid'}).reduce(function(s,o){return s+(o.total||0)},0).toLocaleString());
+    renderStats();
+}
+
+function renderArchive(){
+    var archive=GA();
+    var container=document.getElementById('archiveList');
+    if(archive.length===0){container.innerHTML='<div style="text-align:center;color:#6b6760;padding:12px;">الأرشيف فارغ</div>';return}
+    
+    var currency=localStorage.getItem('thana_currency_symbol')||'ل.س';
+    container.innerHTML=archive.map(function(a,i){
+        return'<div class="archive-item"><div><b>📅 '+a.date+'</b><br><span style="font-size:11px;color:#a8a49e;">طلبات: '+a.totalOrders+' | مدفوع: '+a.totalPaid+' | دين: '+a.totalDebt+'</span></div><div style="text-align:left"><b style="color:#d4a853;">'+(a.totalCash||0).toLocaleString()+' '+currency+'</b><br><button class="btn" style="font-size:10px;padding:4px 8px;background:rgba(56,189,248,0.1);color:#38bdf8;" onclick="viewArchive('+i+')">👁️ عرض</button></div></div>';
+    }).join('');
+}
+
+function viewArchive(i){
+    var archive=GA();
+    var day=archive[i];
+    if(!day)return;
+    var currency=localStorage.getItem('thana_currency_symbol')||'ل.س';
+    var items=day.orders.map(function(o){
+        return (o.items||[]).map(function(i){return i.name+'×'+(i.qty||1)}).join(', ')+' - '+(o.total||0).toLocaleString()+' '+currency;
+    }).join('\n');
+    alert('📅 '+day.date+'\n\nالطلبات:\n'+items+'\n\nالإجمالي: '+day.totalCash.toLocaleString()+' '+currency);
+}
+
+function exportToday(){
+    var today=getTodayOrders();
+    if(today.length===0){alert('لا توجد طلبات');return}
+    var currency=localStorage.getItem('thana_currency_symbol')||'ل.س';
+    var report='تقرير يوم: '+new Date().toLocaleDateString('ar-SA')+'\n\n';
+    today.forEach(function(o){
+        report+='طاولة '+o.table+' | '+(o.items||[]).map(function(i){return i.name+'×'+i.qty}).join(', ')+' | '+(o.total||0).toLocaleString()+' '+currency+' | '+(o.paymentStatus||'جديد')+'\n';
+    });
+    var blob=new Blob([report],{type:'text/plain;charset=utf-8'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    a.download='تقرير_'+new Date().toISOString().slice(0,10)+'.txt';a.click();
+}
+
+function clearArchive(){if(confirm('مسح كل الأرشيف؟')){SA([]);renderStats()}}
+
+renderStats();
+</script>
+</body>
+</html>
