@@ -276,6 +276,7 @@
             <button class="tab-btn active" onclick="switchTab('login')">🔑 دخول</button>
             <button class="tab-btn" onclick="switchTab('register')">🖐️ تسجيل بصمة</button>
             <button class="tab-btn" onclick="switchTab('encrypt')">🔒 تشفير</button>
+            <button class="tab-btn" onclick="switchTab('change-pin')">🔢 PIN</button>
             <button class="tab-btn" onclick="switchTab('users')">👥 مستخدمين</button>
         </div>
 
@@ -709,5 +710,22 @@
             document.getElementById('fpRegister').classList.add('registered');
         }
     </script>
+<div class="card" id="tab-change-pin" style="display:none;">
+            <h3 style="text-align:center;margin-bottom:16px;">🔢 تغيير رمز PIN</h3>
+            <div style="max-width:300px;margin:0 auto;">
+                <label>الدور</label>
+                <select id="changePinRole" style="width:100%;padding:10px;margin-bottom:10px;border-radius:8px;background:var(--bg-input);border:1px solid var(--border);color:#fff;font-family:inherit;">
+                    <option value="admin">🔑 مدير</option>
+                    <option value="waiter">📋 نادل</option>
+                    <option value="kitchen">🍳 مطبخ</option>
+                    <option value="cashier">💰 كاشير</option>
+                    <option value="manager">📊 مدير مناوب</option>
+                </select>
+                <label>PIN الجديد (4 أرقام)</label>
+                <input type="password" id="newPin" maxlength="4" placeholder="****" style="width:100%;padding:10px;margin-bottom:10px;border-radius:8px;background:var(--bg-input);border:1px solid var(--border);color:#fff;font-family:inherit;font-size:20px;text-align:center;letter-spacing:8px;">
+                <button class="btn btn-gold" onclick="changePin()" style="width:100%;">💾 حفظ PIN الجديد</button>
+            </div>
+        </div>
+
 </body>
 </html>
