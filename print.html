@@ -361,7 +361,6 @@
             let itemsHtml = (order.items||[]).map(i => `<tr><td>${i.name} ×${i.qty||1}</td><td style="text-align:left;">${((i.price||0)*(i.qty||1)).toLocaleString()}</td></tr>`).join('');
             
             const pw = window.open('', '_blank', 'width=300,height=600');
-            pw.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><style>@page{size:58mm auto;margin:2mm;}body{font-family:'Courier New',monospace;font-size:11px;width:54mm;margin:0 auto;line-height:1.4;}.center{text-align:center;}.title{font-size:14px;font-weight:bold;}.total{font-size:15px;font-weight:bold;}table{width:100%;border-collapse:collapse;}td{padding:2px 0;}hr{border:none;border-top:1px dashed #ccc;margin:4px 0;}</style></head><body><div class="center title">${shopName}</div><div class="center">${shopAddr}</div><div class="center">${shopTel}</div><hr><div class="center">${now.toLocaleDateString('ar-SA')} ${now.toLocaleTimeString('ar-SA')}</div><div class="center">طاولة: ${order.table} | #${order.id.toString().slice(-4)}</div><hr><table>${itemsHtml}</table><hr><div class="center total">الإجمالي: ${(order.total||0).toLocaleString()} ل.س</div>${order.note?`<div class="center">📝 ${order.note}</div>`:''}<hr><div class="center">${footer}</div><script src="swipe-nav.js"></script>
 </body></html>`);
             pw.document.close();
             setTimeout(() => { for (let i=0;i<copies;i++) pw.print(); showToast('✅ تم فتح نافذة الطباعة'); }, 500);
@@ -372,7 +371,6 @@
             const shopName = s.shopName || 'Thana Restaurant';
             const now = new Date();
             const pw = window.open('', '_blank', 'width=300,height=600');
-            pw.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><style>@page{size:58mm auto;margin:2mm;}body{font-family:'Courier New',monospace;font-size:12px;text-align:center;}</style></head><body><h3>${shopName}</h3><p>صفحة اختبار 🧪</p><p>${now.toLocaleString('ar-SA')}</p><hr><p>✅ الطابعة تعمل بشكل صحيح</p><script src="swipe-nav.js"></script>
 </body></html>`);
             pw.document.close();
             setTimeout(() => pw.print(), 500);
@@ -382,6 +380,5 @@
         loadSettings();
         loadOrders();
     </script>
-<script src="swipe-nav.js"></script>
 </body>
 </html>
