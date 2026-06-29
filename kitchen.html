@@ -98,7 +98,7 @@ function loadOrders(){
             actionHtml='<div style="text-align:center;color:#10b981;font-size:11px;">✅ تم التقديم</div>';
         }
 
-        return'<div class="order-card'+ (isCooking?' cooking':'') + (isDone?' done':'') +'">'+
+        return'<div class="order-card flash"'+ (isCooking?' cooking':'') + (isDone?' done':'') +'">'+
             '<div class="order-header">'+
             '<span class="order-table">🪑 طاولة '+o.table+'</span>'+
             '<span class="order-time">'+new Date(o.timestamp||Date.now()).toLocaleTimeString('ar-SA')+'</span>'+
@@ -138,3 +138,13 @@ window.addEventListener('storage',function(e){
 </script>
 </body>
 </html>
+<style>
+@keyframes flashNew {
+    0%,100% { box-shadow: 0 0 0 0 rgba(212,168,83,0.6); }
+    50% { box-shadow: 0 0 20px 5px rgba(212,168,83,0.8); }
+}
+.order-card.flash {
+    animation: flashNew 0.8s ease 5;
+    border-right-color: #d4a853 !important;
+}
+</style>
