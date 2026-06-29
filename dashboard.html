@@ -445,7 +445,8 @@
                 </div>
             `).join('');
         }
-        function refreshAll() {
+        function toggleFullscreen(){if(!document.fullscreenElement){document.documentElement.requestFullscreen()}else{document.exitFullscreen()}}
+function refreshAll() {
             updateDate();
             updateKPIs();
             updateHourlyChart();
