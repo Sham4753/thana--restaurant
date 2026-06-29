@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توليد أكواد - المطور فقط</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background: #0a0f1e;
+        }
+        .container { max-width: 600px; width: 100%; }
+        .card {
+            background: rgba(15,23,42,0.8);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 28px;
+        }
+        h1 { color: #38bdf8; text-align: center; margin-bottom: 20px; }
+        label { display: block; color: #94a3b8; font-size: 13px; margin: 10px 0 4px; }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            color: #fff;
+            border: none;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        .result {
+            background: rgba(52,211,153,0.1);
+            border: 1px solid rgba(52,211,153,0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+            font-family: monospace;
+            font-size: 13px;
+            color: #34d399;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .warning {
+            background: rgba(251,191,36,0.1);
+            border: 1px solid rgba(251,191,36,0.3);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 12px;
+            color: #fbbf24;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>🔐 توليد أكواد الترخيص</h1>
+            <div class="warning">⚠️ هذه الصفحة للمطور فقط - لا تشاركها مع أي أحد</div>
+            
+            <label>اسم المطعم</label>
+            <input type="text" id="restaurantName" placeholder="مثال: مطعم أبا عمر">
+            
+            <label>مدة الاشتراك (شهور)</label>
+            <select id="months">
+                <option value="1">شهر واحد</option>
+                <option value="3">3 شهور</option>
+                <option value="6">6 شهور</option>
+                <option value="12" selected>12 شهر (سنة)</option>
+                <option value="24">24 شهر (سنتين)</option>
+                <option value="999">دائم</option>
+            </select>
+            
+            <label>كلمة سر المطور</label>
+            <input type="password" id="secretKey" placeholder="أدخل كلمة السر">
+            
+            <button onclick="generate()">🔑 توليد الكود</button>
+            
+            <div class="result" id="result" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script src="license.js"></script>
+    <script>
+        function generate() {
+            const name = document.getElementById('restaurantName').value.trim();
+            const months = parseInt(document.getElementById('months').value);
+            const secret = document.getElementById('secretKey').value;
+            
+            if (!name) { alert('أدخل اسم المطعم'); return; }
+            if (!secret) { alert('أدخل كلمة سر المطور'); return; }
+            
+            const result = developerGenerateKey(name, months, secret);
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            
+            if (typeof result === 'string') {
+                resultDiv.innerHTML = result;
+                return;
+            }
+            
+            resultDiv.innerHTML = `
+✅ تم توليد الكود بنجاح!
+
+📋 <b>كود الترخيص:</b>
+<code style="font-size:18px;color:#fff;">${result.key}</code>
+
+🏪 <b>المطعم:</b> ${result.restaurant}
+📅 <b>المدة:</b> ${result.months} شهر
+⏰ <b>تاريخ الانتهاء:</b> ${result.expiry}
+
+📝 <b>أضف هذا السطر في ملف license.js:</b>
+<code style="font-size:11px;">${result.code}</code>
+            `;
+        }
+    </script>
+</body>
+</html>

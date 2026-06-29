@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفعيل الترخيص - Thana Restaurant</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0f1e">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background-image: 
+                radial-gradient(ellipse at 50% 0%, rgba(56,189,248,0.08) 0%, transparent 60%);
+        }
+        .container { max-width: 500px; width: 100%; text-align: center; }
+        
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 32px 24px;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: var(--shadow-lg);
+        }
+        .icon { font-size: 64px; margin-bottom: 12px; }
+        .title {
+            font-size: 24px;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subtitle { color: var(--text-muted); font-size: 13px; margin: 8px 0 20px; }
+
+        .key-input-group {
+            display: flex;
+            gap: 0;
+            margin: 16px 0;
+        }
+        .key-input-group input {
+            flex: 1;
+            padding: 14px 16px;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-medium);
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            text-align: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .key-input-group input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+        .key-input-group button {
+            padding: 14px 20px;
+            border-radius: var(--radius-md) 0 0 var(--radius-md);
+            background: var(--accent-gradient);
+            color: #fff;
+            border: none;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .status-box {
+            padding: 12px;
+            border-radius: var(--radius-md);
+            margin: 12px 0;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .status-box.success {
+            background: rgba(52,211,153,0.12);
+            color: var(--success);
+            border: 1px solid rgba(52,211,153,0.3);
+        }
+        .status-box.error {
+            background: rgba(248,113,113,0.12);
+            color: var(--danger);
+            border: 1px solid rgba(248,113,113,0.3);
+        }
+        .status-box.info {
+            background: rgba(56,189,248,0.12);
+            color: var(--accent-primary);
+            border: 1px solid rgba(56,189,248,0.3);
+        }
+
+        .info-table {
+            text-align: right;
+            margin-top: 16px;
+            font-size: 13px;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .info-row .label { color: var(--text-muted); }
+        .info-row .value { font-weight: 600; }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            font-family: inherit;
+        }
+        .btn-primary { background: var(--accent-gradient); color: #fff; }
+        .btn-outline { background: transparent; border: 1px solid var(--border-medium); color: var(--text-primary); }
+
+        .note {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 16px;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="icon">🔐</div>
+            <div class="title">تفعيل الترخيص</div>
+            <div class="subtitle">أدخل كود الترخيص الخاص بمطعمك</div>
+
+            <!-- حالة الترخيص الحالي -->
+            <div id="currentStatus"></div>
+
+            <!-- إدخال الكود -->
+            <div class="key-input-group">
+                <input type="text" id="licenseKey" placeholder="THANA-XXXX-YYYY-ZZZZ" maxlength="23" autocomplete="off">
+                <button onclick="activate()">تفعيل ✓</button>
+            </div>
+
+            <!-- رسالة -->
+            <div id="statusMsg"></div>
+
+            <!-- معلومات الترخيص -->
+            <div id="licenseInfo" style="display:none;">
+                <div class="info-table">
+                    <div class="info-row">
+                        <span class="label">اسم المطعم</span>
+                        <span class="value" id="infoName">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">تاريخ الانتهاء</span>
+                        <span class="value" id="infoExpiry">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">الأيام المتبقية</span>
+                        <span class="value" id="infoDays">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">تاريخ التفعيل</span>
+                        <span class="value" id="infoActivated">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="btnEnter" onclick="goToApp()" style="display:none;">🚀 دخول للنظام</button>
+            <button class="btn btn-outline" onclick="clearActivation()">🗑️ إزالة الترخيص</button>
+
+            <div class="note">
+                💡 للحصول على كود الترخيص، تواصل مع الدعم الفني<br>
+                📞 +963 0999-000-000<br>
+                ✉️ thana@restaurant.com
+            </div>
+        </div>
+    </div>
+
+    <script src="license.js"></script>
+    <script>
+        function checkStatus() {
+            const info = getLicenseInfo();
+            const currentStatus = document.getElementById('currentStatus');
+            const licenseInfo = document.getElementById('licenseInfo');
+            const btnEnter = document.getElementById('btnEnter');
+
+            if (info.valid) {
+                currentStatus.innerHTML = `<div class="status-box success">✅ النظام مفعل - ${info.name || 'مرحباً'}</div>`;
+                
+                if (info.warning) {
+                    currentStatus.innerHTML += `<div class="status-box info">${info.warning}</div>`;
+                }
+                
+                licenseInfo.style.display = 'block';
+                btnEnter.style.display = 'block';
+                
+                document.getElementById('infoName').textContent = info.name || '--';
+                document.getElementById('infoExpiry').textContent = info.expiry || '--';
+                document.getElementById('infoDays').textContent = info.daysLeft + ' يوم';
+                document.getElementById('infoActivated').textContent = info.activatedAt 
+                    ? new Date(info.activatedAt).toLocaleDateString('ar-SA') 
+                    : '--';
+            } else {
+                currentStatus.innerHTML = `<div class="status-box error">⛔ ${info.message}</div>`;
+                licenseInfo.style.display = 'none';
+                btnEnter.style.display = 'none';
+            }
+        }
+
+        function activate() {
+            const keyInput = document.getElementById('licenseKey');
+            const key = keyInput.value.trim();
+            const msg = document.getElementById('statusMsg');
+            
+            if (!key) {
+                msg.innerHTML = '<div class="status-box error">الرجاء إدخال كود الترخيص</div>';
+                return;
+            }
+
+            const result = activateLicense(key);
+            
+            if (result.success) {
+                msg.innerHTML = `<div class="status-box success">${result.message}</div>`;
+                keyInput.value = '';
+                if (navigator.vibrate) navigator.vibrate([50, 30, 100]);
+                setTimeout(checkStatus, 500);
+            } else {
+                msg.innerHTML = `<div class="status-box error">${result.message}</div>`;
+                if (navigator.vibrate) navigator.vibrate(200);
+            }
+        }
+
+        function clearActivation() {
+            if (confirm('هل أنت متأكد من إزالة الترخيص؟ سيتوقف النظام عن العمل.')) {
+                clearLicense();
+                document.getElementById('statusMsg').innerHTML = '';
+                document.getElementById('currentStatus').innerHTML = '<div class="status-box info">🔄 تم إزالة الترخيص - أدخل كوداً جديداً</div>';
+                document.getElementById('licenseInfo').style.display = 'none';
+                document.getElementById('btnEnter').style.display = 'none';
+            }
+        }
+
+        function goToApp() {
+            window.location.href = 'index.html';
+        }
+
+        // السماح بالضغط على Enter
+        document.getElementById('licenseKey').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') activate();
+        });
+
+        // تحويل الحروف لكبيرة تلقائياً
+        document.getElementById('licenseKey').addEventListener('input', function(e) {
+            this.value = this.value.toUpperCase();
+        });
+
+        // فحص الحالة عند التحميل
+        checkStatus();
+    </script>
+</body>
+</html>
