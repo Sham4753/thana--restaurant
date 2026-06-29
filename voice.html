@@ -4,84 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الأوامر الصوتية - Thana Restaurant</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="theme-v2.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1e3a5f">
+    <meta name="theme-color" content="#0a0f1e">
+    <script src="bridge.js" defer></script>
+    <script src="nav-component.js" defer></script>
     <script src="pwa-register.js" defer></script>
     <style>
-        :root {
-            --bg: #0a0f1e;
-            --card: rgba(15,23,42,0.8);
-            --accent: #38bdf8;
-            --accent2: #818cf8;
-            --success: #34d399;
-            --warning: #fbbf24;
-            --danger: #f87171;
-            --text: #e2e8f0;
-            --text-muted: #94a3b8;
-            --radius: 20px;
-            --glass-border: rgba(255,255,255,0.08);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', 'Cairo', sans-serif;
-            background: var(--bg);
-            background-image: 
-                radial-gradient(ellipse at 50% 0%, rgba(56,189,248,0.08) 0%, transparent 60%);
-            color: var(--text);
-            min-height: 100vh;
-            padding: 16px;
-        }
-        .container { max-width: 700px; margin: 0 auto; text-align: center; }
+        body { padding: 16px; }
+        .container { max-width: 600px; margin: 0 auto; text-align: center; }
 
-        .header {
-            padding: 30px 0;
-        }
-        .header .icon {
-            font-size: 64px;
-            animation: float 3s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%,100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+        .header { padding: 20px 0; }
+        .header .icon { font-size: 56px; }
         .header h1 {
             font-size: 26px;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            background: var(--accent-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-top: 10px;
+            margin-top: 8px;
         }
-        .header .subtitle {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-top: 6px;
-        }
+        .header .subtitle { color: var(--text-muted); font-size: 14px; }
 
-        /* دائرة التسجيل */
         .mic-circle {
-            width: 140px;
-            height: 140px;
+            width: 120px; height: 120px;
             border-radius: 50%;
-            background: var(--card);
-            border: 3px solid var(--glass-border);
-            margin: 20px auto;
+            background: var(--glass-bg);
+            border: 3px solid var(--border-medium);
+            margin: 16px auto;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.4s;
-            position: relative;
-            backdrop-filter: blur(10px);
-        }
-        .mic-circle::before {
-            content: '';
-            position: absolute;
-            inset: -8px;
-            border-radius: 50%;
-            border: 2px solid transparent;
             transition: all 0.4s;
         }
         .mic-circle.listening {
@@ -89,144 +43,99 @@
             background: rgba(248,113,113,0.1);
             animation: pulse-ring 1.5s infinite;
         }
-        .mic-circle.listening::before {
-            border-color: rgba(248,113,113,0.4);
-            animation: pulse-ring-outer 1.5s infinite;
-        }
-        .mic-circle.processing {
-            border-color: var(--warning);
-            background: rgba(251,191,36,0.1);
-        }
-        .mic-circle .mic-icon {
-            font-size: 56px;
-            transition: all 0.3s;
-        }
-        .mic-circle.listening .mic-icon {
-            animation: pulse-icon 0.8s infinite;
-            color: var(--danger);
-        }
         @keyframes pulse-ring {
             0%,100% { box-shadow: 0 0 0 0 rgba(248,113,113,0.4); }
-            50% { box-shadow: 0 0 0 20px rgba(248,113,113,0); }
+            50% { box-shadow: 0 0 0 25px rgba(248,113,113,0); }
         }
-        @keyframes pulse-ring-outer {
-            0%,100% { box-shadow: 0 0 0 0 rgba(248,113,113,0.2); }
-            50% { box-shadow: 0 0 0 30px rgba(248,113,113,0); }
-        }
-        @keyframes pulse-icon {
-            0%,100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
+        .mic-circle .mic-icon { font-size: 50px; }
 
         .status-text {
-            font-size: 16px;
-            margin: 10px 0;
-            min-height: 24px;
-        }
-        .status-text.idle { color: var(--text-muted); }
-        .status-text.listening { color: var(--danger); }
-        .status-text.success { color: var(--success); }
-
-        /* النص اللي انفهم */
-        .transcript-box {
-            background: var(--card);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius);
-            padding: 16px;
-            margin: 16px 0;
-            min-height: 60px;
-            backdrop-filter: blur(10px);
-        }
-        .transcript-box .label {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-        }
-        .transcript-box .text {
-            font-size: 20px;
+            font-size: 15px;
+            margin: 8px 0;
+            min-height: 22px;
             font-weight: 600;
         }
-        .transcript-box .parsed {
-            font-size: 13px;
-            color: var(--success);
-            margin-top: 6px;
-        }
 
-        /* آخر الأوامر */
-        .history {
-            text-align: right;
-            margin-top: 20px;
-        }
-        .history h3 {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-        }
-        .history-item {
-            background: var(--card);
+        .card {
+            background: var(--glass-bg);
             border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 8px;
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin: 12px 0;
+            backdrop-filter: var(--glass-blur);
+            text-align: right;
+        }
+        .card h3 { font-size: 14px; color: var(--accent-primary); margin-bottom: 10px; }
+
+        .parsed-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 14px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 15px;
         }
-        .history-item.success { border-right: 3px solid var(--success); }
-        .history-item.fail { border-right: 3px solid var(--danger); }
+        .parsed-item .qty-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .parsed-item button {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--border-medium);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            font-family: inherit;
+            transition: all var(--transition-fast);
+        }
+        .btn-primary { background: var(--accent-gradient); color: #fff; }
+        .btn-success { background: var(--success); color: #000; }
+        .btn-danger { background: var(--danger-bg); color: var(--danger); }
+        .btn-outline { background: transparent; border: 1px solid var(--border-medium); color: var(--text-primary); }
 
         .voice-hint {
-            background: rgba(56,189,248,0.08);
-            border-radius: 12px;
+            background: rgba(56,189,248,0.06);
+            border-radius: var(--radius-md);
             padding: 12px;
-            margin-top: 16px;
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-muted);
             line-height: 1.8;
         }
-        .voice-hint b { color: var(--accent); }
+        .voice-hint b { color: var(--accent-primary); }
 
-        /* أزرار يدوية */
-        .manual-section {
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px solid var(--glass-border);
+        input[type="number"] {
+            width: 60px;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-input);
+            border: 1px solid var(--border-medium);
+            color: #fff;
+            font-size: 14px;
+            text-align: center;
+            font-family: inherit;
         }
-        .manual-row {
+
+        .history-item {
             display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .manual-row input {
-            padding: 10px;
-            border-radius: 10px;
-            background: var(--card);
-            border: 1px solid var(--glass-border);
-            color: #fff;
-            font-size: 14px;
-            font-family: inherit;
-        }
-        .manual-row select {
-            padding: 10px;
-            border-radius: 10px;
-            background: var(--card);
-            border: 1px solid var(--glass-border);
-            color: #fff;
-            font-size: 14px;
-            font-family: inherit;
-        }
-        .btn-sm {
-            padding: 10px 16px;
-            border-radius: 10px;
-            border: none;
-            background: var(--accent);
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            font-size: 13px;
         }
     </style>
 </head>
@@ -235,117 +144,115 @@
         <div class="header">
             <div class="icon">🎤</div>
             <h1>الأوامر الصوتية</h1>
-            <div class="subtitle">تكلم والنظام يفهم الطلب تلقائياً</div>
+            <div class="subtitle">تكلم - راجع - عدل - أرسل</div>
         </div>
 
+        <!-- المايك -->
         <div class="mic-circle" id="micButton" onclick="toggleMic()">
             <span class="mic-icon">🎙️</span>
         </div>
-        <div class="status-text idle" id="statusText">اضغط على المايك وابدأ التحدث</div>
+        <div class="status-text" id="statusText">اضغط على المايك وتكلم</div>
 
-        <div class="transcript-box">
-            <div class="label">📝 النص المنطوق</div>
-            <div class="text" id="transcript">--</div>
-            <div class="parsed" id="parsedResult"></div>
+        <!-- النص المنطوق -->
+        <div class="card">
+            <h3>🗣️ اللي انفهم</h3>
+            <div id="transcript" style="font-size:18px;font-weight:600;">--</div>
+            <div id="parsedResult" style="font-size:13px;color:var(--text-muted);margin-top:4px;"></div>
         </div>
 
-        <div class="voice-hint">
-            <b>💡 أمثلة للأوامر:</b><br>
-            • "طاولة 3 شاورما 2"<br>
-            • "الطاولة خمسة بدها فلافل و برجر"<br>
-            • "طاولة 1 شاورما دجاج 3 و كولا 2"<br>
-            • "Table 3 shawarma 2 cola 1"
+        <!-- مراجعة الطلب قبل الإرسال -->
+        <div class="card" id="reviewCard" style="display:none;">
+            <h3>📋 راجع الطلب قبل الإرسال</h3>
+            <div style="margin-bottom:8px;">
+                <label style="font-size:13px;color:var(--text-muted);">🪑 رقم الطاولة:</label>
+                <input type="number" id="reviewTable" value="1" min="1" max="15" style="width:70px;margin-right:8px;">
+            </div>
+            <div id="reviewItems"></div>
+            <div style="margin-top:8px;">
+                <label style="font-size:13px;color:var(--text-muted);">📝 ملاحظة:</label>
+                <input type="text" id="reviewNote" placeholder="بدون بصل... إلخ" style="width:100%;padding:8px;border-radius:var(--radius-sm);background:var(--bg-input);border:1px solid var(--border-medium);color:#fff;margin-top:4px;font-family:inherit;">
+            </div>
+            <div style="font-size:18px;font-weight:700;text-align:center;margin:12px 0;" id="reviewTotal"></div>
+            <button class="btn btn-success" onclick="confirmAndSend()">✅ تأكيد وإرسال للمطبخ</button>
+            <button class="btn btn-outline" onclick="cancelReview()">↩️ إلغاء</button>
         </div>
 
-        <div class="history">
-            <h3>📋 آخر الأوامر</h3>
+        <!-- إدخال يدوي -->
+        <div class="card">
+            <h3>✍️ إدخال يدوي</h3>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                <span style="font-size:13px;">طاولة</span>
+                <input type="number" id="manualTable" value="1" min="1" max="15" style="width:55px;">
+                <select id="manualItem" style="padding:8px;border-radius:var(--radius-sm);background:var(--bg-input);border:1px solid var(--border-medium);color:#fff;font-family:inherit;flex:1;min-width:120px;"></select>
+                <span style="font-size:13px;">×</span>
+                <input type="number" id="manualQty" value="1" min="1" max="99" style="width:50px;">
+                <button class="btn btn-primary" onclick="manualAdd()" style="width:auto;padding:8px 12px;">➕</button>
+            </div>
+            <div id="manualCart" style="margin-top:8px;font-size:13px;"></div>
+            <button class="btn btn-success" onclick="manualSubmit()" style="margin-top:6px;">📤 إرسال اليدوي للمطبخ</button>
+        </div>
+
+        <!-- آخر الأوامر -->
+        <div class="card">
+            <h3>📋 آخر الأوامر المرسلة</h3>
             <div id="historyList"></div>
         </div>
 
-        <div class="manual-section">
-            <h3 style="color:var(--text-muted);margin-bottom:10px;">✍️ إدخال يدوي</h3>
-            <div class="manual-row">
-                <input type="number" id="manualTable" placeholder="رقم الطاولة" value="1" min="1" max="15" style="width:70px;">
-                <select id="manualItem">
-                    <option value="">اختر الصنف...</option>
-                </select>
-                <input type="number" id="manualQty" placeholder="الكمية" value="1" min="1" max="99" style="width:60px;">
-                <button class="btn-sm" onclick="manualAdd()">➕ إضافة</button>
-            </div>
-            <button class="btn-sm" style="background:var(--success);width:100%;margin-top:8px;" onclick="manualSubmit()">📤 إرسال الطلب للمطبخ</button>
-            <div id="manualCart" style="margin-top:10px;text-align:right;font-size:13px;"></div>
+        <div class="voice-hint">
+            <b>💡 أمثلة:</b><br>
+            "طاولة 3 شاورما 2 و كولا 1"<br>
+            "الطاولة خمسة بدها فلافل وبرجر"<br>
+            <b>⚠️ الطلب ما بنرسل إلا لما تضغط "تأكيد وإرسال"</b>
         </div>
     </div>
 
-    <script src="bridge.js"></script>
-<script>
-        // ==================== محرك الأوامر الصوتية ====================
+    <script>
+        // ==================== Voice Engine v2 ====================
         
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         let recognition;
         let isListening = false;
+        let pendingOrder = null; // الطلب بانتظار التأكيد
         let manualCartItems = [];
         let voiceHistory = JSON.parse(localStorage.getItem('thana_voice_history') || '[]');
 
-        // تهيئة التعرف الصوتي
         function initSpeech() {
-            if (!SpeechRecognition) {
-                document.getElementById('statusText').textContent = '❌ المتصفح لا يدعم الأوامر الصوتية';
-                document.getElementById('statusText').className = 'status-text listening';
-                return false;
-            }
-
+            if (!SpeechRecognition) return false;
             recognition = new SpeechRecognition();
-            recognition.lang = 'ar-SA'; // العربية أساسي
+            recognition.lang = 'ar-SA';
             recognition.interimResults = false;
-            recognition.maxAlternatives = 3;
+            recognition.maxAlternatives = 2;
             recognition.continuous = false;
 
             recognition.onresult = function(event) {
                 const transcript = event.results[0][0].transcript;
-                const confidence = event.results[0][0].confidence;
-                
                 document.getElementById('transcript').textContent = transcript;
                 document.getElementById('statusText').textContent = '🔄 جاري تحليل الأمر...';
-                document.getElementById('statusText').className = 'status-text listening';
-                document.getElementById('micButton').classList.remove('listening');
-                document.getElementById('micButton').classList.add('processing');
-
-                // تحليل الأمر الصوتي
+                
                 const parsed = parseVoiceCommand(transcript);
                 
-                if (parsed) {
+                if (parsed && parsed.items.length > 0) {
                     document.getElementById('parsedResult').textContent = 
-                        `✅ طاولة ${parsed.table} | ${parsed.items.map(i => `${i.name} ×${i.qty}`).join(' | ')} | المجموع: ${parsed.total.toLocaleString()} ل.س`;
-                    document.getElementById('statusText').textContent = '✅ تم فهم الطلب وإرساله!';
-                    document.getElementById('statusText').className = 'status-text success';
+                        '✅ تم الفهم: ' + parsed.items.map(i => `${i.name} ×${i.qty}`).join(' | ');
+                    document.getElementById('statusText').textContent = '👆 راجع الطلب ثم اضغط تأكيد';
+                    document.getElementById('statusText').style.color = 'var(--success)';
                     
-                    // حفظ الطلب
-                    saveOrder(parsed);
-                    
-                    // إضافة للتاريخ
-                    addToHistory(transcript, parsed, true);
+                    // خزن الطلب للمراجعة - ما نرسله مباشرة
+                    pendingOrder = parsed;
+                    showReview(parsed);
                 } else {
-                    document.getElementById('parsedResult').textContent = '⚠️ لم يتم فهم الطلب، حاول مرة أخرى';
-                    document.getElementById('statusText').textContent = '⚠️ لم يتم الفهم - اضغط مجدداً';
-                    document.getElementById('statusText').className = 'status-text idle';
-                    addToHistory(transcript, null, false);
+                    document.getElementById('parsedResult').textContent = '⚠️ لم يتم فهم الطلب';
+                    document.getElementById('statusText').textContent = '⚠️ حاول مرة أخرى';
+                    document.getElementById('statusText').style.color = 'var(--warning)';
                 }
 
-                setTimeout(() => {
-                    document.getElementById('micButton').classList.remove('processing');
-                    document.getElementById('statusText').textContent = 'اضغط على المايك وابدأ التحدث';
-                    document.getElementById('statusText').className = 'status-text idle';
-                }, 2500);
-
+                document.getElementById('micButton').classList.remove('listening');
                 isListening = false;
             };
 
-            recognition.onerror = function(event) {
-                console.log('Speech error:', event.error);
+            recognition.onerror = function() {
                 document.getElementById('statusText').textContent = '⚠️ خطأ - حاول مرة أخرى';
-                document.getElementById('statusText').className = 'status-text idle';
-                document.getElementById('micButton').classList.remove('listening', 'processing');
+                document.getElementById('micButton').classList.remove('listening');
                 isListening = false;
             };
 
@@ -357,75 +264,45 @@
             return true;
         }
 
-        // تحليل النص الصوتي إلى أمر
         function parseVoiceCommand(text) {
-            const original = text.trim();
-            let t = ' ' + original + ' ';
-
-            // استخراج رقم الطاولة
-            const tablePatterns = [
-                /طاولة\s*(\d+)/,
-                /طاوله\s*(\d+)/,
-                /الطاولة\s*(\d+)/,
-                /table\s*(\d+)/i,
-                /رقم\s*(\d+)/,
-            ];
-
-            // تحويل الأرقام العربية
-            const arabicNums = { 'واحد':1,'واحدة':1,'اثنين':2,'اثنان':2,'اثنتين':2,'ثلاثة':3,'ثلاث':3,'اربعة':4,'اربع':4,'خمسة':5,'خمس':5,'ستة':6,'ست':6,'سبعة':7,'سبع':7,'ثمانية':8,'ثمان':8,'تسعة':9,'تسع':9,'عشرة':10,'عشر':10 };
+            let t = ' ' + text.trim() + ' ';
+            
+            const arabicNums = { 'واحد':1,'واحدة':1,'اثنين':2,'اثنان':2,'ثلاثة':3,'ثلاث':3,'اربعة':4,'اربع':4,'خمسة':5,'خمس':5,'ستة':6,'ست':6,'سبعة':7,'سبع':7,'ثمانية':8,'ثمان':8,'تسعة':9,'تسع':9,'عشرة':10,'عشر':10 };
             for (const [word, num] of Object.entries(arabicNums)) {
                 t = t.replace(new RegExp(word, 'g'), String(num));
             }
 
+            const tablePatterns = [/طاولة\s*(\d+)/, /طاوله\s*(\d+)/, /الطاولة\s*(\d+)/, /table\s*(\d+)/i, /رقم\s*(\d+)/];
             let table = null;
             for (const pattern of tablePatterns) {
                 const match = t.match(pattern);
                 if (match) { table = parseInt(match[1]); break; }
             }
-            if (!table || table < 1 || table > 15) return null;
+            if (!table || table < 1 || table > 15) table = 1;
 
-            // قائمة الأصناف المتاحة
             const menu = JSON.parse(localStorage.getItem('thana_menu') || '[]');
-            if (menu.length === 0) {
-                // قائمة افتراضية
-                menu.push(
-                    { name: 'شاورما', price: 25000 },
-                    { name: 'شاورما دجاج', price: 25000 },
-                    { name: 'شاورما لحم', price: 30000 },
-                    { name: 'فلافل', price: 15000 },
-                    { name: 'برجر', price: 35000 },
-                    { name: 'بيتزا', price: 40000 },
-                    { name: 'كولا', price: 5000 },
-                    { name: 'عصير', price: 7000 },
-                    { name: 'ماء', price: 2000 },
-                    { name: 'تبولة', price: 10000 },
-                    { name: 'حمص', price: 10000 },
-                    { name: 'بطاطا', price: 8000 },
-                    { name: 'كنافة', price: 20000 },
-                );
-            }
+            const defaultMenu = [
+                { name: 'شاورما دجاج', price: 25000 }, { name: 'شاورما لحم', price: 30000 },
+                { name: 'فلافل', price: 15000 }, { name: 'برجر', price: 35000 },
+                { name: 'بيتزا', price: 40000 }, { name: 'كولا', price: 5000 },
+                { name: 'عصير', price: 7000 }, { name: 'ماء', price: 2000 },
+                { name: 'تبولة', price: 10000 }, { name: 'حمص', price: 10000 },
+                { name: 'بطاطا', price: 8000 }, { name: 'كنافة', price: 20000 },
+            ];
+            const searchMenu = menu.length > 0 ? menu : defaultMenu;
 
-            // البحث عن الأصناف المذكورة مع كمياتها
             const items = [];
-            const remainingText = t;
-
-            for (const item of menu) {
-                const itemName = item.name;
-                // أنماط: "شاورما 2" أو "2 شاورما" أو "شاورما"
+            for (const item of searchMenu) {
                 const patterns = [
-                    new RegExp(`${itemName}\\s+(\\d+)`, 'i'),
-                    new RegExp(`(\\d+)\\s+${itemName}`, 'i'),
-                    new RegExp(`${itemName}`, 'i'),
+                    new RegExp(`${item.name}\\s+(\\d+)`, 'i'),
+                    new RegExp(`(\\d+)\\s+${item.name}`, 'i'),
+                    new RegExp(`${item.name}`, 'i'),
                 ];
-
                 for (const pattern of patterns) {
-                    const match = remainingText.match(pattern);
-                    if (match) {
+                    const match = t.match(pattern);
+                    if (match && !items.find(i => i.name === item.name)) {
                         const qty = match[1] ? parseInt(match[1]) : 1;
-                        // تجنب التكرار
-                        if (!items.find(i => i.name === itemName)) {
-                            items.push({ name: itemName, price: item.price, qty: Math.min(qty, 99) });
-                        }
+                        items.push({ name: item.name, price: item.price, qty: Math.min(qty, 99) });
                         break;
                     }
                 }
@@ -434,60 +311,121 @@
             if (items.length === 0) return null;
 
             const total = items.reduce((sum, i) => sum + (i.price * i.qty), 0);
-
-            return {
-                table: table,
-                items: items,
-                total: total,
-                raw: original
-            };
+            return { table, items, total, raw: text.trim() };
         }
 
-        function saveOrder(parsed) {
+        // ========== شاشة المراجعة ==========
+        function showReview(order) {
+            document.getElementById('reviewCard').style.display = 'block';
+            document.getElementById('reviewTable').value = order.table;
+            document.getElementById('reviewNote').value = '';
+            renderReviewItems(order);
+        }
+
+        function renderReviewItems(order) {
+            const container = document.getElementById('reviewItems');
+            container.innerHTML = order.items.map((item, i) => `
+                <div class="parsed-item">
+                    <span>${item.name}</span>
+                    <div class="qty-control">
+                        <button onclick="changeQty(${i}, -1)">−</button>
+                        <span>${item.qty}</span>
+                        <button onclick="changeQty(${i}, 1)">+</button>
+                        <span style="color:var(--accent-primary);min-width:70px;text-align:left;">${(item.price * item.qty).toLocaleString()} ل.س</span>
+                        <button onclick="removeItem(${i})" style="color:var(--danger);">✕</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('reviewTotal').textContent = 
+                `💰 المجموع: ${order.items.reduce((s, i) => s + (i.price * i.qty), 0).toLocaleString()} ل.س`;
+        }
+
+        function changeQty(index, delta) {
+            if (!pendingOrder) return;
+            pendingOrder.items[index].qty = Math.max(1, pendingOrder.items[index].qty + delta);
+            pendingOrder.total = pendingOrder.items.reduce((s, i) => s + (i.price * i.qty), 0);
+            renderReviewItems(pendingOrder);
+        }
+
+        function removeItem(index) {
+            if (!pendingOrder) return;
+            pendingOrder.items.splice(index, 1);
+            if (pendingOrder.items.length === 0) {
+                cancelReview();
+                return;
+            }
+            pendingOrder.total = pendingOrder.items.reduce((s, i) => s + (i.price * i.qty), 0);
+            renderReviewItems(pendingOrder);
+        }
+
+        function confirmAndSend() {
+            if (!pendingOrder || pendingOrder.items.length === 0) return;
+            
+            pendingOrder.table = parseInt(document.getElementById('reviewTable').value) || pendingOrder.table;
+            pendingOrder.note = document.getElementById('reviewNote').value;
+            pendingOrder.total = pendingOrder.items.reduce((s, i) => s + (i.price * i.qty), 0);
+
             const order = {
                 id: Date.now(),
-                table: parsed.table,
-                items: parsed.items,
-                total: parsed.total,
+                table: pendingOrder.table,
+                items: [...pendingOrder.items],
+                total: pendingOrder.total,
+                note: pendingOrder.note || '',
                 status: 'new',
                 timestamp: new Date().toISOString(),
                 source: 'voice',
-                voiceRaw: parsed.raw
+                voiceRaw: pendingOrder.raw
             };
 
-            const orders = JSON.parse(localStorage.getItem('thana_orders') || '[]');
-            orders.push(order);
             bridgeSendOrder(order);
 
-            // إشعار
-            
-
-            // تحديث الطاولة
-            updateTable(parsed.table);
-
-            // هزة
-            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-        }
-
-        function updateTable(tableId) {
-            let tables = JSON.parse(localStorage.getItem('thana_tables') || '[]');
-            const table = tables.find(t => t.id == tableId);
-            if (table) {
-                table.status = 'busy';
-                localStorage.setItem('thana_tables', JSON.stringify(tables));
-            }
-        }
-
-        function addToHistory(raw, parsed, success) {
             voiceHistory.unshift({
-                raw: raw,
-                parsed: parsed,
-                success: success,
+                raw: pendingOrder.raw,
+                items: [...pendingOrder.items],
+                table: pendingOrder.table,
                 time: new Date().toISOString()
             });
             if (voiceHistory.length > 10) voiceHistory = voiceHistory.slice(0, 10);
             localStorage.setItem('thana_voice_history', JSON.stringify(voiceHistory));
+
+            document.getElementById('statusText').textContent = '✅ تم إرسال الطلب للمطبخ!';
+            document.getElementById('statusText').style.color = 'var(--success)';
+            document.getElementById('reviewCard').style.display = 'none';
+            pendingOrder = null;
+            document.getElementById('transcript').textContent = '--';
+            document.getElementById('parsedResult').textContent = '';
             renderHistory();
+
+            setTimeout(() => {
+                document.getElementById('statusText').textContent = 'اضغط على المايك وتكلم';
+                document.getElementById('statusText').style.color = '';
+            }, 3000);
+        }
+
+        function cancelReview() {
+            document.getElementById('reviewCard').style.display = 'none';
+            pendingOrder = null;
+            document.getElementById('statusText').textContent = 'اضغط على المايك وتكلم';
+            document.getElementById('statusText').style.color = '';
+        }
+
+        function toggleMic() {
+            if (!recognition) { if (!initSpeech()) return; }
+            if (isListening) {
+                recognition.stop();
+                document.getElementById('micButton').classList.remove('listening');
+                document.getElementById('statusText').textContent = 'اضغط على المايك وتكلم';
+                isListening = false;
+            } else {
+                recognition.start();
+                document.getElementById('micButton').classList.add('listening');
+                document.getElementById('statusText').textContent = '🎤 تكلم الآن...';
+                document.getElementById('statusText').style.color = 'var(--danger)';
+                document.getElementById('transcript').textContent = '...';
+                document.getElementById('parsedResult').textContent = '';
+                isListening = true;
+            }
         }
 
         function renderHistory() {
@@ -496,68 +434,36 @@
                 container.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">لا توجد أوامر سابقة</p>';
                 return;
             }
-            container.innerHTML = voiceHistory.map(h => `
-                <div class="history-item ${h.success ? 'success' : 'fail'}">
+            container.innerHTML = voiceHistory.slice(0, 5).map(h => `
+                <div class="history-item">
                     <div>
-                        <div>${h.raw}</div>
-                        <div style="font-size:11px;color:var(--text-muted);">${new Date(h.time).toLocaleTimeString('ar-SA')}</div>
+                        <span>🪑 ${h.table}</span> | 
+                        ${h.items.map(i => `${i.name}×${i.qty}`).join(', ')}
                     </div>
-                    <div>${h.success ? '✅' : '❌'}</div>
+                    <span style="font-size:11px;color:var(--text-muted);">${new Date(h.time).toLocaleTimeString('ar-SA')}</span>
                 </div>
             `).join('');
         }
 
-        function toggleMic() {
-            if (!recognition) {
-                if (!initSpeech()) return;
-            }
-
-            if (isListening) {
-                recognition.stop();
-                document.getElementById('micButton').classList.remove('listening');
-                document.getElementById('statusText').textContent = 'تم الإيقاف';
-                document.getElementById('statusText').className = 'status-text idle';
-                isListening = false;
-            } else {
-                recognition.start();
-                document.getElementById('micButton').classList.add('listening');
-                document.getElementById('statusText').textContent = '🎤 استمع... تكلم الآن';
-                document.getElementById('statusText').className = 'status-text listening';
-                document.getElementById('transcript').textContent = '...';
-                document.getElementById('parsedResult').textContent = '';
-                isListening = true;
-            }
-        }
-
-        // ==================== الإدخال اليدوي ====================
+        // ========== إدخال يدوي ==========
         function loadMenuForManual() {
             const menu = JSON.parse(localStorage.getItem('thana_menu') || '[]');
             const select = document.getElementById('manualItem');
-            if (menu.length === 0) {
-                const defaults = ['شاورما دجاج','شاورما لحم','فلافل','برجر','بيتزا','كولا','عصير','ماء','تبولة','حمص','بطاطا','كنافة'];
-                select.innerHTML = defaults.map(n => `<option value="${n}">${n}</option>`).join('');
-            } else {
-                select.innerHTML = menu.map(i => `<option value="${i.name}">${i.name} - ${(i.price||0).toLocaleString()} ل.س</option>`).join('');
-            }
+            const defaults = ['شاورما دجاج','شاورما لحم','فلافل','برجر','بيتزا','كولا','عصير','ماء','تبولة','حمص','بطاطا','كنافة'];
+            const items = menu.length > 0 ? menu.map(i => ({ name: i.name, price: i.price })) : defaults.map(n => ({ name: n, price: 0 }));
+            select.innerHTML = items.map(i => `<option value="${i.name}">${i.name}</option>`).join('');
         }
 
         function manualAdd() {
-            const table = document.getElementById('manualTable').value;
             const itemName = document.getElementById('manualItem').value;
             const qty = parseInt(document.getElementById('manualQty').value) || 1;
-
             if (!itemName) return;
-
             const menu = JSON.parse(localStorage.getItem('thana_menu') || '[]');
             const menuItem = menu.find(i => i.name === itemName);
             const price = menuItem ? menuItem.price : 0;
-
             const existing = manualCartItems.find(i => i.name === itemName);
-            if (existing) {
-                existing.qty += qty;
-            } else {
-                manualCartItems.push({ name: itemName, price: price, qty: qty });
-            }
+            if (existing) { existing.qty += qty; }
+            else { manualCartItems.push({ name: itemName, price, qty }); }
             renderManualCart();
         }
 
@@ -565,50 +471,53 @@
             const container = document.getElementById('manualCart');
             if (manualCartItems.length === 0) {
                 container.innerHTML = '<span style="color:var(--text-muted);">لا توجد أصناف مضافة</span>';
-            } else {
-                const total = manualCartItems.reduce((sum, i) => sum + (i.price * i.qty), 0);
-                container.innerHTML = manualCartItems.map(i => 
-                    `<div style="padding:4px 0;">${i.name} ×${i.qty} = ${(i.price*i.qty).toLocaleString()} ل.س 
-                    <span onclick="removeManual('${i.name}')" style="color:var(--danger);cursor:pointer;">🗑️</span></div>`
-                ).join('') + `<div style="font-weight:700;margin-top:4px;">المجموع: ${total.toLocaleString()} ل.س</div>`;
+                return;
             }
+            const total = manualCartItems.reduce((s, i) => s + (i.price * i.qty), 0);
+            container.innerHTML = manualCartItems.map((i, idx) => 
+                `<div style="padding:4px 0;">${i.name} ×${i.qty} = ${(i.price*i.qty).toLocaleString()} ل.س 
+                <span onclick="removeManual(${idx})" style="color:var(--danger);cursor:pointer;">🗑️</span></div>`
+            ).join('') + `<div style="font-weight:700;margin-top:4px;">المجموع: ${total.toLocaleString()} ل.س</div>`;
         }
 
-        function removeManual(name) {
-            manualCartItems = manualCartItems.filter(i => i.name !== name);
+        function removeManual(idx) {
+            manualCartItems.splice(idx, 1);
             renderManualCart();
         }
 
         function manualSubmit() {
             if (manualCartItems.length === 0) return;
             const table = parseInt(document.getElementById('manualTable').value) || 1;
-            const total = manualCartItems.reduce((sum, i) => sum + (i.price * i.qty), 0);
-            
-            const parsed = {
-                table: table,
+            const total = manualCartItems.reduce((s, i) => s + (i.price * i.qty), 0);
+            const order = {
+                id: Date.now(),
+                table,
                 items: [...manualCartItems],
-                total: total,
-                raw: 'manual'
+                total,
+                status: 'new',
+                timestamp: new Date().toISOString(),
+                source: 'voice',
+                voiceRaw: 'إدخال يدوي'
             };
-            
-            saveOrder(parsed);
-            addToHistory('إدخال يدوي: ' + manualCartItems.map(i => `${i.name}×${i.qty}`).join(', '), parsed, true);
+            bridgeSendOrder(order);
+            voiceHistory.unshift({ raw: 'إدخال يدوي', items: [...manualCartItems], table, time: new Date().toISOString() });
+            if (voiceHistory.length > 10) voiceHistory = voiceHistory.slice(0, 10);
+            localStorage.setItem('thana_voice_history', JSON.stringify(voiceHistory));
             manualCartItems = [];
             renderManualCart();
+            renderHistory();
             document.getElementById('statusText').textContent = '✅ تم إرسال الطلب اليدوي!';
-            document.getElementById('statusText').className = 'status-text success';
+            document.getElementById('statusText').style.color = 'var(--success)';
             setTimeout(() => {
-                document.getElementById('statusText').textContent = 'اضغط على المايك وابدأ التحدث';
-                document.getElementById('statusText').className = 'status-text idle';
+                document.getElementById('statusText').textContent = 'اضغط على المايك وتكلم';
+                document.getElementById('statusText').style.color = '';
             }, 2500);
         }
 
-        // بدء التشغيل
         initSpeech();
         renderHistory();
         loadMenuForManual();
         renderManualCart();
     </script>
-<script src="nav-component.js"></script>
 </body>
 </html>
