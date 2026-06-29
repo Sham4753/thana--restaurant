@@ -8,207 +8,132 @@
     <meta name="theme-color" content="#0a0b0f">
     <script src="nav-component.js" defer></script>
     <script src="pwa-register.js" defer></script>
-    <script src="bridge.js" defer></script>
     <style>
-        body { padding: 16px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        .header { text-align: center; padding: 16px 0; }
-        .header h1 { font-size: 26px; color: var(--gold); }
-        .stats { display: flex; gap: 10px; justify-content: center; margin: 12px 0; flex-wrap: wrap; }
-        .stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; text-align: center; min-width: 80px; }
-        .stat .num { font-size: 24px; font-weight: 700; }
-        .stat .lbl { font-size: 10px; color: var(--text-muted); }
-        .stat.pending .num { color: var(--warning); }
-        .stat.cooking .num { color: #38bdf8; }
-        .stat.done .num { color: var(--success); }
+        body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
+        .container{max-width:900px;margin:0 auto}
+        .header{text-align:center;padding:10px 0}
+        .header h1{font-size:26px;color:#d4a853}
+        .stats{display:flex;gap:8px;justify-content:center;margin:10px 0;flex-wrap:wrap}
+        .stat{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:10px 14px;text-align:center;min-width:70px}
+        .stat .num{font-size:22px;font-weight:700}
+        .stat .lbl{font-size:9px;color:#6b6760}
+        .stat.pend .num{color:#f59e0b}.stat.cook .num{color:#38bdf8}.stat.done .num{color:#10b981}
 
-        .order-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 16px;
-            margin-bottom: 10px;
-            border-right: 4px solid var(--warning);
-        }
-        .order-card.cooking { border-right-color: #38bdf8; }
-        .order-card.done { border-right-color: var(--success); opacity: 0.6; }
-        .order-card.urgent { animation: pulse 1s infinite; border-right-color: #ef4444; }
-        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.7;} }
-        
-        .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .order-table { font-size: 18px; font-weight: 700; }
-        .order-time { font-size: 11px; color: var(--text-muted); }
-        .order-source { font-size: 10px; padding: 2px 8px; border-radius: 20px; }
-        .source-qr { background: rgba(167,139,250,0.2); color: #a78bfa; }
-        .source-voice { background: rgba(251,191,36,0.2); color: #fbbf24; }
-        .source-waiter { background: rgba(56,189,248,0.2); color: #38bdf8; }
+        .order-card{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px;margin-bottom:8px;border-right:4px solid #f59e0b}
+        .order-card.cooking{border-right-color:#38bdf8}
+        .order-card.done{border-right-color:#10b981;opacity:0.6}
+        .order-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+        .order-table{font-size:16px;font-weight:700}
+        .order-time{font-size:10px;color:#6b6760}
+        .order-items{list-style:none}
+        .order-items li{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.02);font-size:13px}
+        .order-actions{display:flex;gap:5px;margin-top:8px}
+        .btn{padding:7px 12px;border-radius:8px;border:none;font-weight:600;font-size:11px;cursor:pointer;font-family:'Cairo',sans-serif}
+        .btn-cook{background:#f59e0b;color:#000}
+        .btn-done{background:#10b981;color:#fff}
+        .btn-back{background:rgba(255,255,255,0.08);color:#fff}
+        .btn-refresh{background:rgba(212,168,83,0.15);color:#d4a853;border:1px solid rgba(212,168,83,0.3);display:block;width:100%;padding:10px;margin-top:8px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Cairo',sans-serif;font-weight:700}
 
-        .order-items { list-style: none; }
-        .order-items li { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 14px; }
-        .item-qty { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 20px; font-size: 12px; margin-left: 6px; }
-
-        .order-actions { display: flex; gap: 6px; margin-top: 8px; }
-        .btn { padding: 8px 14px; border-radius: 8px; border: none; font-weight: 600; font-size: 12px; cursor: pointer; font-family: var(--font); }
-        .btn-cook { background: var(--warning); color: #000; }
-        .btn-done { background: var(--success); color: #fff; }
-        .btn-back { background: rgba(255,255,255,0.08); color: #fff; }
-
-        .empty-state { text-align: center; padding: 40px; color: var(--text-muted); }
-        .auto-refresh { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 16px; }
-        .timer { font-size: 16px; font-weight: 700; }
-        .timer.hot { color: #ef4444; }
-        .timer.warm { color: var(--warning); }
+        .empty{text-align:center;padding:30px;color:#6b6760}
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div style="font-size:48px;">🍳</div>
-            <h1>شاشة المطبخ KDS</h1>
-        </div>
+<div class="container">
+<div class="header">
+    <div style="font-size:40px;">🍳</div>
+    <h1>شاشة المطبخ</h1>
+</div>
 
-        <div class="stats">
-            <div class="stat pending"><div class="num" id="pendingCount">0</div><div class="lbl">جديد</div></div>
-            <div class="stat cooking"><div class="num" id="cookingCount">0</div><div class="lbl">يطبخ</div></div>
-            <div class="stat done"><div class="num" id="doneCount">0</div><div class="lbl">جاهز</div></div>
-        </div>
+<div class="stats">
+    <div class="stat pend"><div class="num" id="pendCount">0</div><div class="lbl">جديد</div></div>
+    <div class="stat cook"><div class="num" id="cookCount">0</div><div class="lbl">يطبخ</div></div>
+    <div class="stat done"><div class="num" id="doneCount">0</div><div class="lbl">جاهز</div></div>
+</div>
 
-        <div id="ordersContainer">
-            <div class="empty-state">
-                <div style="font-size:48px;">🍽️</div>
-                <div>بانتظار الطلبات...</div>
-            </div>
-        </div>
+<button class="btn-refresh" onclick="loadOrders()">🔄 تحديث الطلبات الآن</button>
 
-        <div class="auto-refresh">⏳ تحديث كل 3 ثوان | <span id="lastUpdate">--</span></div>
-    </div>
+<div id="ordersContainer">
+    <div class="empty"><div style="font-size:40px;">🍽️</div><div>لا توجد طلبات - اضغط تحديث</div></div>
+</div>
+</div>
 
-    <script>
-        function getOrders() {
-            return JSON.parse(localStorage.getItem('thana_orders') || '[]');
-        }
+<script>
+function loadOrders(){
+    var orders=JSON.parse(localStorage.getItem('thana_orders')||'[]');
+    var today=new Date().toLocaleDateString('ar-SA');
+    var todayOrders=orders.filter(function(o){
+        return new Date(o.timestamp||Date.now()).toLocaleDateString('ar-SA')===today;
+    });
 
-        function saveOrders(orders) {
-            localStorage.setItem('thana_orders', JSON.stringify(orders));
-        }
+    var sorted=[];
+    todayOrders.filter(function(o){return o.status==='new'}).forEach(function(o){sorted.push(o)});
+    todayOrders.filter(function(o){return o.status==='cooking'}).forEach(function(o){sorted.push(o)});
+    todayOrders.filter(function(o){return o.status==='done'}).slice(-3).forEach(function(o){sorted.push(o)});
 
-        function getTodayOrders() {
-            const orders = getOrders();
-            const today = new Date().toLocaleDateString('ar-SA');
-            return orders.filter(o => {
-                const d = new Date(o.timestamp || Date.now()).toLocaleDateString('ar-SA');
-                return d === today;
-            });
-        }
+    document.getElementById('pendCount').textContent=todayOrders.filter(function(o){return o.status==='new'}).length;
+    document.getElementById('cookCount').textContent=todayOrders.filter(function(o){return o.status==='cooking'}).length;
+    document.getElementById('doneCount').textContent=todayOrders.filter(function(o){return o.status==='done'}).length;
 
-        function updateStats() {
-            const orders = getTodayOrders();
-            document.getElementById('pendingCount').textContent = orders.filter(o => o.status === 'new').length;
-            document.getElementById('cookingCount').textContent = orders.filter(o => o.status === 'cooking').length;
-            document.getElementById('doneCount').textContent = orders.filter(o => o.status === 'done').length;
-        }
+    var container=document.getElementById('ordersContainer');
+    if(sorted.length===0){
+        container.innerHTML='<div class="empty"><div style="font-size:40px;">🍽️</div><div>لا توجد طلبات</div></div>';
+        return;
+    }
 
-        function getSourceLabel(source) {
-            if (source === 'qr') return '<span class="order-source source-qr">📱 QR</span>';
-            if (source === 'voice') return '<span class="order-source source-voice">🎤 صوتي</span>';
-            return '<span class="order-source source-waiter">📋 نادل</span>';
-        }
-
-        function getTimer(startTime) {
-            if (!startTime) return '';
-            const mins = Math.floor((Date.now() - new Date(startTime).getTime()) / 60000);
-            if (mins < 1) return '<span class="timer">⏱ الآن</span>';
-            if (mins > 15) return '<span class="timer hot">🔥 ' + mins + 'د</span>';
-            if (mins > 8) return '<span class="timer warm">⏰ ' + mins + 'د</span>';
-            return '<span class="timer">⏱ ' + mins + 'د</span>';
-        }
-
-        function renderOrders() {
-            const orders = getTodayOrders();
-            const sorted = [
-                ...orders.filter(o => o.status === 'new'),
-                ...orders.filter(o => o.status === 'cooking'),
-                ...orders.filter(o => o.status === 'done').slice(-3)
-            ];
-
-            const container = document.getElementById('ordersContainer');
-
-            if (sorted.length === 0) {
-                container.innerHTML = '<div class="empty-state"><div style="font-size:48px;">🍽️</div><div>لا توجد طلبات</div></div>';
-                updateStats();
-                return;
+    container.innerHTML=sorted.map(function(o){
+        var itemsHtml=(o.items||[]).map(function(i){return'<li><span>'+i.name+' ×'+(i.qty||1)+'</span></li>'}).join('');
+        var isCooking=o.status==='cooking';
+        var isDone=o.status==='done';
+        var actionHtml='';
+        if(!isDone){
+            actionHtml='<div class="order-actions">';
+            if(!isCooking){
+                actionHtml+='<button class="btn btn-cook" onclick="startCooking('+o.id+')">🔥 بدء الطبخ</button>';
+            }else{
+                actionHtml+='<button class="btn btn-done" onclick="markDone('+o.id+')">✅ جاهز</button>';
             }
-
-            container.innerHTML = sorted.map(o => {
-                const isUrgent = o.status === 'new' && (Date.now() - new Date(o.timestamp || Date.now()).getTime()) > 600000;
-                return `
-                    <div class="order-card ${o.status} ${isUrgent ? 'urgent' : ''}">
-                        <div class="order-header">
-                            <span class="order-table">🪑 طاولة ${o.table}</span>
-                            ${getSourceLabel(o.source || 'waiter')}
-                            <span class="order-time">
-                                ${new Date(o.timestamp || Date.now()).toLocaleTimeString('ar-SA')}
-                                ${o.status === 'cooking' ? getTimer(o.cookStart) : ''}
-                            </span>
-                        </div>
-                        <ul class="order-items">
-                            ${(o.items || []).map(i => `
-                                <li><span><span class="item-qty">${i.qty || 1}</span> ${i.name}</span></li>
-                            `).join('')}
-                        </ul>
-                        ${o.note ? `<div style="background:rgba(251,191,36,0.1);padding:6px 10px;border-radius:6px;margin-top:6px;font-size:12px;">📝 ${o.note}</div>` : ''}
-                        ${o.status !== 'done' ? `
-                            <div class="order-actions">
-                                ${o.status === 'new' ? 
-                                    `<button class="btn btn-cook" onclick="startCooking(${o.id})">🔥 بدء الطبخ</button>` :
-                                    `<button class="btn btn-done" onclick="markDone(${o.id})">✅ جاهز</button>`
-                                }
-                                <button class="btn btn-back" onclick="backToNew(${o.id})">↩️ إعادة</button>
-                            </div>
-                        ` : `<div style="text-align:center;color:var(--success);font-size:12px;margin-top:6px;">✅ تم التقديم</div>`}
-                    </div>
-                `;
-            }).join('');
-
-            updateStats();
-            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('ar-SA');
+            actionHtml+='<button class="btn btn-back" onclick="backToNew('+o.id+')">↩️ إعادة</button></div>';
+        }else{
+            actionHtml='<div style="text-align:center;color:#10b981;font-size:11px;">✅ تم التقديم</div>';
         }
 
-        function startCooking(id) {
-            const orders = getOrders();
-            const order = orders.find(o => o.id === id);
-            if (order) { order.status = 'cooking'; order.cookStart = new Date().toISOString(); saveOrders(orders); renderOrders(); }
-        }
+        return'<div class="order-card'+ (isCooking?' cooking':'') + (isDone?' done':'') +'">'+
+            '<div class="order-header">'+
+            '<span class="order-table">🪑 طاولة '+o.table+'</span>'+
+            '<span class="order-time">'+new Date(o.timestamp||Date.now()).toLocaleTimeString('ar-SA')+'</span>'+
+            '</div>'+
+            '<ul class="order-items">'+itemsHtml+'</ul>'+
+            (o.note?'<div style="font-size:11px;color:#f59e0b;margin-top:4px;">📝 '+o.note+'</div>':'')+
+            actionHtml+
+            '</div>';
+    }).join('');
+}
 
-        function markDone(id) {
-            const orders = getOrders();
-            const order = orders.find(o => o.id === id);
-            if (order) { order.status = 'done'; order.cookEnd = new Date().toISOString(); saveOrders(orders); renderOrders(); }
-        }
+function updateOrder(id,status,extra){
+    var orders=JSON.parse(localStorage.getItem('thana_orders')||'[]');
+    var order=orders.find(function(o){return o.id===id});
+    if(order){
+        order.status=status;
+        if(extra)Object.assign(order,extra);
+        localStorage.setItem('thana_orders',JSON.stringify(orders));
+        loadOrders();
+    }
+}
 
-        function backToNew(id) {
-            const orders = getOrders();
-            const order = orders.find(o => o.id === id);
-            if (order) { order.status = 'new'; order.cookStart = null; order.cookEnd = null; saveOrders(orders); renderOrders(); }
-        }
+function startCooking(id){updateOrder(id,'cooking',{cookStart:new Date().toISOString()})}
+function markDone(id){updateOrder(id,'done',{cookEnd:new Date().toISOString()})}
+function backToNew(id){updateOrder(id,'new',{cookStart:null,cookEnd:null})}
 
-        // استماع للتغييرات من الصفحات الأخرى
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'thana_orders' || e.key === 'thana_new_order_notify') {
-                renderOrders();
-            }
-        });
+// تحميل أول مرة
+loadOrders();
 
-        // تحديث كل 3 ثواني
-        setInterval(renderOrders, 3000);
+// تحديث تلقائي كل 5 ثواني
+setInterval(loadOrders, 5000);
 
-        // بدء
-        renderOrders();
-
-        // طلب إذن الإشعارات
-        if ('Notification' in window && Notification.permission === 'default') {
-            Notification.requestPermission();
-        }
-    </script>
+// استماع للتغييرات
+window.addEventListener('storage',function(e){
+    if(e.key==='thana_orders'||e.key==='thana_new_order_notify') loadOrders();
+});
+</script>
 </body>
 </html>
