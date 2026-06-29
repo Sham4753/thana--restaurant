@@ -3,56 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thana Settings</title>
     <link rel="stylesheet" href="theme.css">
-<title>Thana Settings</title>
-    <style>
-        :root{--bg:#0a0a0a;--accent:#e94560;--accent2:#00a884;--text:#fff;--glass:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.1)}
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:system-ui,sans-serif;background:linear-gradient(135deg,#0a0a0a,#1a1a2e);color:var(--text);min-height:100vh;padding:16px}
-        .app{max-width:500px;margin:0 auto}
-        .header{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
-        .header-icon{font-size:2em}.header-title{font-size:1.3em;font-weight:700}
-        .card{background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px}
-        .card h3{margin-bottom:8px}
-        .card label{display:block;font-size:0.85em;opacity:0.7;margin-bottom:4px}
-        .card input{width:100%;padding:10px;margin-bottom:8px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px;font-size:1em}
-        .btn{width:100%;padding:12px;border:none;border-radius:12px;font-size:1em;font-weight:600;cursor:pointer;margin:6px 0}
-        .btn-save{background:var(--accent2);color:white}
-        .btn-danger{background:var(--accent);color:white}
-        .btn:active{transform:scale(0.95)}
+</head>
+<body>
+    <div class="app">
+        <div class="header"><div class="header-icon">⚙️</div><div class="header-title">الإعدادات</div></div>
+
+        <div class="card">
+            <h3>🏪 اسم المطعم</h3>
+            <input type="text" id="restaurantName" placeholder="اسم المطعم">
+            <button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="saveName()">💾 حفظ</button>
+        </div>
+
+        <div class="card">
+            <h3>🔐 رمز المدير</h3>
+            <input type="password" id="newPIN" placeholder="رمز جديد (4 أرقام)" maxlength="4">
+            <button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="changePIN()">💾 تغيير</button>
+        </div>
+
+        <div class="card">
+            <h3>💾 نسخ احتياطي</h3>
+            <button class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="backup()">📥 تصدير</button>
+            <input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restore(event)">
+            <button class="btn btn-ghost" style="width:100%" onclick="document.getElementById('restoreFile').click()">📤 استيراد</button>
+        </div>
+
+        <div class="card">
+            <h3>ℹ️ عن النظام</h3>
+            <p>Thana Restaurant v1.0</p>
+            <p>ERP ذكي للمطاعم</p>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a>
+            <a href="tables.html">🪑</a><a href="staff.html">👥</a><a href="inventory.html">📦</a>
+            <a href="reports.html">📊</a><a href="admin.html">⚙️</a>
+        </nav>
+    </div>
+
+    <script>
+        document.getElementById('restaurantName').value = localStorage.getItem('thana_restaurant_name') || 'Thana Restaurant';
+
+        function saveName() {
+            const name = document.getElementById('restaurantName').value.trim();
+            if (!name) return;
+            localStorage.setItem('thana_restaurant_name', name);
+            alert('✅ تم الحفظ');
+        }
+
+        function changePIN() {
+            const pin = document.getElementById('newPIN').value.trim();
+            if (pin.length !== 4) { alert('أدخل 4 أرقام'); return; }
+            localStorage.setItem('thana_admin_pin', pin);
+            document.getElementById('newPIN').value = '';
+            alert('✅ تم تغيير الرمز');
+        }
+
+        function backup() {
+            const data = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('thana_')) data[key] = JSON.parse(localStorage.getItem(key));
+            }
+            const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'thana_backup.json';
+            a.click();
+        }
+
+        function restore(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (!confirm('استعادة النسخة؟')) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = JSON.parse(e.target.result);
+                for (const [key, value] of Object.entries(data)) localStorage.setItem(key, JSON.stringify(value));
+                alert('✅ تمت الاستعادة');
+                location.reload();
+            };
+            reader.readAsText(file);
+        }
+    </script>
 </body>
 </html>
-<script>
-function backup() {
-    const data = {};
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith('thana_')) {
-            data[key] = JSON.parse(localStorage.getItem(key));
-        }
-    }
-    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'thana_backup_' + new Date().toISOString().split('T')[0] + '.json';
-    a.click();
-    alert('✅ تم التصدير');
-}
-
-function restore(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    if (!confirm('⚠️ استعادة النسخة ستؤدي لفقدان البيانات الحالية. متابعة؟')) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const data = JSON.parse(e.target.result);
-        for (const [key, value] of Object.entries(data)) {
-            localStorage.setItem(key, JSON.stringify(value));
-        }
-        alert('✅ تمت الاستعادة. سيتم تحديث الصفحة.');
-        location.reload();
-    };
-    reader.readAsText(file);
-}
-</script>
-<nav class="bottom-nav"><a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a><a href="tables.html">🪑</a><a href="staff.html">👥</a><a href="inventory.html">📦</a><a href="reports.html">📊</a><a href="admin.html">⚙️</a></nav>
