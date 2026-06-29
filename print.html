@@ -4,134 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الطباعة - Thana Restaurant</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="theme-v2.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1e3a5f">
+    <meta name="theme-color" content="#0a0f1e">
+    <script src="nav-component.js" defer></script>
     <script src="pwa-register.js" defer></script>
     <style>
-        :root {
-            --bg: #0a0f1e;
-            --card: rgba(15,23,42,0.8);
-            --accent: #38bdf8;
-            --accent2: #818cf8;
-            --success: #34d399;
-            --warning: #fbbf24;
-            --danger: #f87171;
-            --text: #e2e8f0;
-            --text-muted: #94a3b8;
-            --radius: 20px;
-            --glass-border: rgba(255,255,255,0.08);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', 'Cairo', sans-serif;
-            background: var(--bg);
-            background-image: 
-                radial-gradient(ellipse at 50% 0%, rgba(56,189,248,0.08) 0%, transparent 60%);
-            color: var(--text);
-            min-height: 100vh;
-            padding: 16px;
-        }
-        .container { max-width: 700px; margin: 0 auto; }
-
-        .header {
-            text-align: center;
-            padding: 24px 0;
-        }
-        .header .icon { font-size: 56px; }
-        .header h1 {
-            font-size: 26px;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-top: 8px;
-        }
-        .header .subtitle { color: var(--text-muted); font-size: 14px; }
-
+        body { padding: 16px; }
+        .container { max-width: 650px; margin: 0 auto; }
         .card {
-            background: var(--card);
+            background: var(--glass-bg);
             border: 1px solid var(--glass-border);
-            border-radius: var(--radius);
-            padding: 20px;
-            margin-bottom: 16px;
-            backdrop-filter: blur(15px);
-        }
-        .card h3 { 
-            font-size: 16px; 
-            color: var(--accent); 
+            border-radius: var(--radius-lg);
+            padding: 18px;
             margin-bottom: 14px;
+            backdrop-filter: var(--glass-blur);
         }
+        .card h3 { color: var(--accent-primary); margin-bottom: 12px; font-size: 16px; }
 
-        /* بلوتوث */
         .bt-status {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 14px;
-            border-radius: 14px;
-            margin-bottom: 12px;
-            font-size: 14px;
+            gap: 10px;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            font-size: 13px;
         }
-        .bt-status.disconnected {
-            background: rgba(248,113,113,0.1);
-            border: 1px solid rgba(248,113,113,0.2);
-        }
-        .bt-status.connected {
-            background: rgba(52,211,153,0.1);
-            border: 1px solid rgba(52,211,153,0.2);
-        }
-        .bt-status.connecting {
-            background: rgba(251,191,36,0.1);
-            border: 1px solid rgba(251,191,36,0.2);
-        }
-        .bt-dot {
-            width: 12px; height: 12px;
-            border-radius: 50%;
-            animation: pulse-dot 2s infinite;
-        }
-        .bt-dot.on { background: var(--success); }
-        .bt-dot.off { background: var(--danger); animation: none; }
-        .bt-dot.connecting { background: var(--warning); }
-        @keyframes pulse-dot {
-            0%,100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
+        .bt-status.off { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.2); }
+        .bt-status.on { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.2); }
+        .bt-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .bt-dot.off { background: #f87171; }
+        .bt-dot.on { background: #34d399; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 
         .btn {
             display: block;
             width: 100%;
-            padding: 14px;
-            border-radius: 14px;
+            padding: 13px;
+            border-radius: 12px;
             border: none;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
-            margin-top: 8px;
-            transition: all 0.3s;
+            margin-top: 7px;
             font-family: inherit;
+            transition: all 0.2s;
         }
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            color: #fff;
-        }
-        .btn-success {
-            background: linear-gradient(135deg, var(--success), #10b981);
-            color: #fff;
-        }
-        .btn-warning {
-            background: rgba(251,191,36,0.2);
-            color: var(--warning);
-            border: 1px solid rgba(251,191,36,0.3);
-        }
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--glass-border);
-            color: var(--text);
-        }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: var(--accent-gradient); color: #fff; }
+        .btn-success { background: var(--success); color: #000; }
+        .btn-outline { background: transparent; border: 1px solid var(--border-medium); color: var(--text-primary); }
 
-        /* معاينة الفاتورة */
         .receipt-preview {
             background: #fff;
             color: #000;
@@ -140,173 +64,137 @@
             font-family: 'Courier New', monospace;
             font-size: 12px;
             line-height: 1.5;
-            max-width: 280px;
-            margin: 12px auto;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            max-width: 260px;
+            margin: 10px auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
         .receipt-preview .center { text-align: center; }
-        .receipt-preview .title { font-size: 16px; font-weight: bold; }
-        .receipt-preview .line { border-top: 1px dashed #ccc; margin: 6px 0; }
-        .receipt-preview .total { font-size: 16px; font-weight: bold; }
-        .receipt-preview .qr-placeholder {
-            text-align: center;
-            padding: 8px;
-            font-size: 10px;
-            color: #999;
-        }
+        .receipt-preview .title { font-size: 15px; font-weight: bold; }
+        .receipt-preview .line { border-top: 1px dashed #ccc; margin: 5px 0; }
+        .receipt-preview .total { font-size: 15px; font-weight: bold; }
 
-        /* قائمة الطلبات القابلة للطباعة */
         .order-select {
             background: rgba(255,255,255,0.03);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 8px;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 6px;
             cursor: pointer;
             border: 2px solid transparent;
-            transition: all 0.3s;
-            font-size: 14px;
+            transition: all 0.2s;
+            font-size: 13px;
         }
         .order-select:hover { background: rgba(255,255,255,0.06); }
-        .order-select.selected {
-            border-color: var(--accent);
-            background: rgba(56,189,248,0.1);
-        }
+        .order-select.selected { border-color: #38bdf8; background: rgba(56,189,248,0.1); }
 
-        /* إعدادات */
         .setting-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
+            padding: 9px 0;
             border-bottom: 1px solid rgba(255,255,255,0.03);
-            font-size: 14px;
+            font-size: 13px;
         }
-        .setting-row input[type="text"] {
-            width: 180px;
-            padding: 8px 12px;
+        .setting-row input {
+            padding: 8px 10px;
             border-radius: 8px;
             background: rgba(255,255,255,0.04);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--border-medium);
             color: #fff;
             font-family: inherit;
-            text-align: left;
+            font-size: 13px;
+            width: 160px;
         }
-        .setting-row input[type="number"] {
-            width: 80px;
-            padding: 8px 12px;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid var(--glass-border);
-            color: #fff;
-            font-family: inherit;
-            text-align: center;
-        }
+        .setting-row input[type="number"] { width: 70px; text-align: center; }
 
         .toast {
             position: fixed;
-            top: 20px;
+            top: 60px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--success);
+            background: #34d399;
             color: #000;
-            padding: 12px 24px;
+            padding: 10px 22px;
             border-radius: 30px;
             font-weight: 700;
             z-index: 300;
-            animation: slideDown 0.4s ease, slideUp 0.4s ease 2.5s forwards;
+            animation: slideDown 0.4s ease, slideUp 0.4s ease 2s forwards;
         }
-        @keyframes slideDown { from { transform: translateX(-50%) translateY(-100px); opacity: 0; } }
-        @keyframes slideUp { to { transform: translateX(-50%) translateY(-100px); opacity: 0; } }
+        @keyframes slideDown { from{opacity:0;transform:translateX(-50%) translateY(-80px);} }
+        @keyframes slideUp { to{opacity:0;transform:translateX(-50%) translateY(-80px);} }
     </style>
-<script src="nav-component.js" defer></script>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <div class="icon">🖨️</div>
-            <h1>الطباعة الحرارية</h1>
-            <div class="subtitle">بلوتوث · ESC/POS · فواتير 58mm</div>
-        </div>
-
-        <!-- حالة البلوتوث -->
         <div class="card">
             <h3>📡 اتصال البلوتوث</h3>
-            <div class="bt-status disconnected" id="btStatus">
+            <div class="bt-status off" id="btStatus">
                 <div class="bt-dot off" id="btDot"></div>
                 <span id="btText">غير متصل</span>
             </div>
-            <button class="btn btn-primary" onclick="connectBluetooth()">🔍 بحث عن طابعة بلوتوث</button>
+            <button class="btn btn-primary" onclick="connectBluetooth()">🔍 بحث عن طابعة</button>
             <button class="btn btn-outline" onclick="disconnectBluetooth()">🔌 قطع الاتصال</button>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">
-                ℹ️ يدعم طابعات ESC/POS الحرارية 58mm و 80mm
-            </div>
         </div>
 
-        <!-- اختيار طلب -->
         <div class="card">
             <h3>📋 اختر طلب للطباعة</h3>
             <div id="orderList"></div>
             <button class="btn btn-success" onclick="printSelected()">🖨️ طباعة الفاتورة</button>
-            <button class="btn btn-outline" onclick="printTestPage()">🧪 طباعة صفحة اختبار</button>
+            <button class="btn btn-outline" onclick="printTestPage()">🧪 طباعة اختبار</button>
         </div>
 
-        <!-- معاينة -->
         <div class="card">
-            <h3>📄 معاينة الفاتورة</h3>
+            <h3>📄 معاينة</h3>
             <div class="receipt-preview" id="receiptPreview">
                 <div class="center title">🍽️ Thana Restaurant</div>
-                <div class="center">حي المطاعم - شارع الرئيسي</div>
-                <div class="center">هاتف: 0999-000-000</div>
+                <div class="center">حي المطاعم</div>
+                <div class="center">0999-000-000</div>
                 <div class="line"></div>
-                <div id="previewContent">اختر طلباً للمعاينة</div>
+                <div class="center">اختر طلباً للمعاينة</div>
                 <div class="line"></div>
                 <div class="center" style="font-size:10px;">شكراً لزيارتكم 💙</div>
             </div>
         </div>
 
-        <!-- إعدادات -->
         <div class="card">
             <h3>⚙️ إعدادات الطباعة</h3>
             <div class="setting-row">
                 <span>اسم المطعم</span>
-                <input type="text" id="shopName" value="Thana Restaurant" onchange="saveSettings()">
+                <input type="text" id="shopName" value="Thana Restaurant">
             </div>
             <div class="setting-row">
                 <span>العنوان</span>
-                <input type="text" id="shopAddress" value="حي المطاعم - شارع الرئيسي" onchange="saveSettings()">
+                <input type="text" id="shopAddress" value="حي المطاعم">
             </div>
             <div class="setting-row">
                 <span>الهاتف</span>
-                <input type="text" id="shopPhone" value="0999-000-000" onchange="saveSettings()">
+                <input type="text" id="shopPhone" value="0999-000-000">
             </div>
             <div class="setting-row">
                 <span>عدد النسخ</span>
-                <input type="number" id="copyCount" value="1" min="1" max="5" onchange="saveSettings()">
+                <input type="number" id="copyCount" value="1" min="1" max="5">
             </div>
             <div class="setting-row">
-                <span>رسالة أسفل الفاتورة</span>
-                <input type="text" id="footerMsg" value="شكراً لزيارتكم 💙" onchange="saveSettings()">
+                <span>الرسالة السفلية</span>
+                <input type="text" id="footerMsg" value="شكراً لزيارتكم 💙">
             </div>
+            <button class="btn btn-primary" onclick="saveSettings()">💾 حفظ الإعدادات</button>
         </div>
     </div>
 
     <script>
-        // ==================== نظام الطباعة الحرارية ====================
-
         let bluetoothDevice = null;
         let gattServer = null;
         let printerCharacteristic = null;
-        let selectedOrderId = null;
         let printerReady = false;
+        let selectedOrderId = null;
 
-        // تحميل الإعدادات
         function loadSettings() {
-            const settings = JSON.parse(localStorage.getItem('thana_print_settings') || '{}');
-            if (settings.shopName) document.getElementById('shopName').value = settings.shopName;
-            if (settings.shopAddress) document.getElementById('shopAddress').value = settings.shopAddress;
-            if (settings.shopPhone) document.getElementById('shopPhone').value = settings.shopPhone;
-            if (settings.copyCount) document.getElementById('copyCount').value = settings.copyCount;
-            if (settings.footerMsg) document.getElementById('footerMsg').value = settings.footerMsg;
+            const s = JSON.parse(localStorage.getItem('thana_print_settings') || '{}');
+            if (s.shopName) document.getElementById('shopName').value = s.shopName;
+            if (s.shopAddress) document.getElementById('shopAddress').value = s.shopAddress;
+            if (s.shopPhone) document.getElementById('shopPhone').value = s.shopPhone;
+            if (s.copyCount) document.getElementById('copyCount').value = s.copyCount;
+            if (s.footerMsg) document.getElementById('footerMsg').value = s.footerMsg;
         }
 
         function saveSettings() {
@@ -318,32 +206,39 @@
                 footerMsg: document.getElementById('footerMsg').value
             };
             localStorage.setItem('thana_print_settings', JSON.stringify(settings));
+            showToast('✅ تم حفظ الإعدادات');
+            updatePreview();
         }
 
-        // ========== بلوتوث ==========
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        function updateBTStatus(status, text) {
+            const el = document.getElementById('btStatus');
+            const dot = document.getElementById('btDot');
+            const textEl = document.getElementById('btText');
+            el.className = 'bt-status ' + status;
+            dot.className = 'bt-dot ' + status;
+            textEl.textContent = text;
+        }
+
         async function connectBluetooth() {
             try {
-                if (!navigator.bluetooth) {
-                    showToast('⚠️ متصفحك لا يدعم Web Bluetooth');
-                    return;
-                }
-
-                updateBTStatus('connecting', '🔄 جاري البحث...');
-
-                bluetoothDevice = await navigator.bluetooth.requestDevice({
-                    acceptAllDevices: true,
-                    optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb'] // ESC/POS service
-                });
-
-                updateBTStatus('connecting', '🔄 جاري الاتصال بـ ' + bluetoothDevice.name + '...');
-
+                if (!navigator.bluetooth) { showToast('⚠️ المتصفح لا يدعم البلوتوث'); return; }
+                updateBTStatus('on', '🔄 جاري البحث...');
+                bluetoothDevice = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb'] });
                 gattServer = await bluetoothDevice.gatt.connect();
-                
-                // البحث عن خاصية الطباعة
                 const services = await gattServer.getPrimaryServices();
                 for (const service of services) {
-                    const characteristics = await service.getCharacteristics();
-                    for (const char of characteristics) {
+                    const chars = await service.getCharacteristics();
+                    for (const char of chars) {
                         if (char.properties.write || char.properties.writeWithoutResponse) {
                             printerCharacteristic = char;
                             break;
@@ -351,81 +246,48 @@
                     }
                     if (printerCharacteristic) break;
                 }
-
-                if (printerCharacteristic) {
-                    printerReady = true;
-                    updateBTStatus('connected', '✅ متصل: ' + bluetoothDevice.name);
-                    showToast('✅ تم الاتصال بالطابعة!');
-                } else {
-                    // إذا ما لقينا خاصية كتابة، نستخدم أول خاصية متاحة
-                    updateBTStatus('connected', '⚠️ متصل لكن قد لا يدعم الطباعة المباشرة');
-                    showToast('⚠️ الطابعة متصلة لكن قد تحتاج إعداد إضافي');
-                }
-
-                // مراقبة قطع الاتصال
+                printerReady = true;
+                updateBTStatus('on', '✅ متصل: ' + bluetoothDevice.name);
+                showToast('✅ تم الاتصال!');
                 bluetoothDevice.addEventListener('gattserverdisconnected', () => {
                     printerReady = false;
                     printerCharacteristic = null;
-                    updateBTStatus('disconnected', '❌ انقطع الاتصال');
+                    updateBTStatus('off', '❌ انقطع الاتصال');
                 });
-
             } catch (err) {
-                console.error(err);
-                if (err.name === 'NotFoundError' || err.message.includes('cancelled')) {
-                    updateBTStatus('disconnected', '❌ لم يتم العثور على جهاز');
-                } else {
-                    updateBTStatus('disconnected', '❌ فشل الاتصال: ' + (err.message || ''));
-                }
+                updateBTStatus('off', '❌ فشل الاتصال');
             }
         }
 
         function disconnectBluetooth() {
-            if (gattServer && gattServer.connected) {
-                gattServer.disconnect();
-            }
+            if (gattServer && gattServer.connected) gattServer.disconnect();
             bluetoothDevice = null;
             printerCharacteristic = null;
             printerReady = false;
-            updateBTStatus('disconnected', '🔌 غير متصل');
-            showToast('🔌 تم قطع الاتصال');
+            updateBTStatus('off', '🔌 غير متصل');
         }
 
-        function updateBTStatus(status, text) {
-            const el = document.getElementById('btStatus');
-            const dot = document.getElementById('btDot');
-            const textEl = document.getElementById('btText');
-            
-            el.className = 'bt-status ' + status;
-            dot.className = 'bt-dot ' + (status === 'connected' ? 'on' : status === 'connecting' ? 'connecting' : 'off');
-            textEl.textContent = text;
-        }
-
-        // ========== قائمة الطلبات ==========
         function loadOrders() {
             const orders = JSON.parse(localStorage.getItem('thana_orders') || '[]');
             const today = new Date().toLocaleDateString('ar-SA');
             const todayOrders = orders.filter(o => {
-                const orderDate = new Date(o.timestamp || Date.now()).toLocaleDateString('ar-SA');
-                return orderDate === today;
+                const d = new Date(o.timestamp || Date.now()).toLocaleDateString('ar-SA');
+                return d === today;
             }).reverse();
 
             const container = document.getElementById('orderList');
             if (todayOrders.length === 0) {
-                container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:12px;">لا توجد طلبات اليوم</p>';
+                container.innerHTML = '<p style="color:#94a3b8;text-align:center;padding:10px;">لا توجد طلبات اليوم</p>';
                 return;
             }
 
             container.innerHTML = todayOrders.slice(0, 10).map(o => `
-                <div class="order-select ${selectedOrderId === o.id ? 'selected' : ''}" 
-                     onclick="selectOrder(${o.id})">
+                <div class="order-select ${selectedOrderId === o.id ? 'selected' : ''}" onclick="selectOrder(${o.id})">
                     <div style="display:flex;justify-content:space-between;">
-                        <span>🪑 طاولة ${o.table} - ${(o.items || []).map(i => i.name).join(', ')}</span>
-                        <span style="color:var(--accent);">${(o.total || 0).toLocaleString()} ل.س</span>
+                        <span>🪑 طاولة ${o.table} - ${(o.items||[]).map(i=>i.name).join(', ')}</span>
+                        <span style="color:#38bdf8;">${(o.total||0).toLocaleString()} ل.س</span>
                     </div>
-                    <div style="font-size:11px;color:var(--text-muted);">
-                        ${new Date(o.timestamp || Date.now()).toLocaleTimeString('ar-SA')} | 
-                        ${o.status === 'done' ? '✅ مكتمل' : o.status === 'cooking' ? '🔥 يطبخ' : '🆕 جديد'}
-                    </div>
+                    <div style="font-size:10px;color:#94a3b8;">${new Date(o.timestamp||Date.now()).toLocaleTimeString('ar-SA')}</div>
                 </div>
             `).join('');
         }
@@ -436,239 +298,73 @@
             updatePreview();
         }
 
-        // ========== معاينة ==========
         function updatePreview() {
+            const preview = document.getElementById('receiptPreview');
             if (!selectedOrderId) {
-                document.getElementById('previewContent').innerHTML = 'اختر طلباً للمعاينة';
+                preview.innerHTML = '<div class="center title">🍽️ Thana Restaurant</div><div class="center">اختر طلباً للمعاينة</div>';
                 return;
             }
-
             const orders = JSON.parse(localStorage.getItem('thana_orders') || '[]');
             const order = orders.find(o => o.id === selectedOrderId);
             if (!order) return;
-
-            const settings = JSON.parse(localStorage.getItem('thana_print_settings') || '{}');
-            const shopName = settings.shopName || 'Thana Restaurant';
-            const shopAddr = settings.shopAddress || 'حي المطاعم';
-            const shopTel = settings.shopPhone || '0999-000-000';
-            const footer = settings.footerMsg || 'شكراً لزيارتكم 💙';
-
+            const s = JSON.parse(localStorage.getItem('thana_print_settings') || '{}');
+            const shopName = s.shopName || 'Thana Restaurant';
+            const shopAddr = s.shopAddress || '';
+            const shopTel = s.shopPhone || '';
+            const footer = s.footerMsg || 'شكراً لزيارتكم 💙';
             const now = new Date();
-            const dateStr = now.toLocaleDateString('ar-SA');
-            const timeStr = now.toLocaleTimeString('ar-SA');
-
-            let itemsHtml = (order.items || []).map(i => {
-                const lineTotal = (i.price || 0) * (i.qty || 1);
-                return `${i.name} ×${i.qty} ........ ${lineTotal.toLocaleString()}`;
-            }).join('\n');
-
-            document.getElementById('previewContent').innerHTML = `
-                <div class="center">${dateStr} ${timeStr}</div>
-                <div class="center">طاولة: ${order.table}</div>
-                <div class="center">طلب #${order.id.toString().slice(-4)}</div>
+            let itemsHtml = (order.items||[]).map(i => `${i.name} ×${i.qty||1} ........ ${((i.price||0)*(i.qty||1)).toLocaleString()}`).join('<br>');
+            preview.innerHTML = `
+                <div class="center title">${shopName}</div>
+                <div class="center">${shopAddr}</div>
+                <div class="center">${shopTel}</div>
+                <div class="line"></div>
+                <div class="center">${now.toLocaleDateString('ar-SA')} ${now.toLocaleTimeString('ar-SA')}</div>
+                <div class="center">طاولة: ${order.table} | #${order.id.toString().slice(-4)}</div>
                 <div class="line"></div>
                 ${itemsHtml}
                 <div class="line"></div>
-                <div class="center total">الإجمالي: ${(order.total || 0).toLocaleString()} ل.س</div>
+                <div class="center total">الإجمالي: ${(order.total||0).toLocaleString()} ل.س</div>
+                ${order.note ? `<div class="center">📝 ${order.note}</div>` : ''}
+                <div class="line"></div>
                 <div class="center" style="font-size:10px;">${footer}</div>
             `;
         }
 
-        // ========== بناء نص ESC/POS ==========
-        function buildESC(order) {
-            const settings = JSON.parse(localStorage.getItem('thana_print_settings') || '{}');
-            const shopName = settings.shopName || 'Thana Restaurant';
-            const shopAddr = settings.shopAddress || '';
-            const shopTel = settings.shopPhone || '';
-            const footer = settings.footerMsg || 'شكراً لزيارتكم';
-            const now = new Date();
-
-            let esc = '';
-            
-            // Initialize printer
-            esc += '\x1B\x40'; // ESC @ - Initialize
-            esc += '\x1B\x61\x01'; // ESC a 1 - Center align
-            
-            // Header
-            esc += '\x1B\x21\x30'; // ESC ! 0 - Double height
-            esc += shopName + '\n';
-            esc += '\x1B\x21\x00'; // Normal
-            esc += shopAddr + '\n';
-            esc += shopTel + '\n';
-            esc += now.toLocaleDateString('ar-SA') + ' ' + now.toLocaleTimeString('ar-SA') + '\n';
-            esc += 'طاولة: ' + order.table + '\n';
-            esc += 'طلب #' + order.id.toString().slice(-4) + '\n';
-            
-            esc += '\x1B\x61\x00'; // Left align
-            esc += '--------------------------------\n';
-            
-            // Items
-            (order.items || []).forEach(item => {
-                const lineTotal = (item.price || 0) * (item.qty || 1);
-                esc += `${item.name} ×${item.qty}\n`;
-                esc += `  ${lineTotal.toLocaleString()} ل.س\n`;
-            });
-            
-            esc += '--------------------------------\n';
-            esc += '\x1B\x61\x01'; // Center
-            esc += '\x1B\x21\x30'; // Double height
-            esc += `الإجمالي: ${(order.total || 0).toLocaleString()} ل.س\n`;
-            esc += '\x1B\x21\x00'; // Normal
-            
-            if (order.note) {
-                esc += 'ملاحظة: ' + order.note + '\n';
-            }
-            
-            esc += footer + '\n\n\n\n';
-            esc += '\x1D\x56\x00'; // Cut paper
-            
-            return esc;
-        }
-
-        // ========== طباعة ==========
-        async function printSelected() {
-            if (!selectedOrderId) {
-                showToast('⚠️ اختر طلباً أولاً');
-                return;
-            }
-
+        function printSelected() {
+            if (!selectedOrderId) { showToast('⚠️ اختر طلباً أولاً'); return; }
             const orders = JSON.parse(localStorage.getItem('thana_orders') || '[]');
             const order = orders.find(o => o.id === selectedOrderId);
             if (!order) return;
-
-            const copyCount = parseInt(document.getElementById('copyCount').value) || 1;
-
-            // أولاً: طباعة عبر البلوتوث إذا متصل
-            if (printerReady && printerCharacteristic) {
-                try {
-                    const escData = buildESC(order);
-                    const encoder = new TextEncoder();
-                    
-                    for (let i = 0; i < copyCount; i++) {
-                        await printerCharacteristic.writeValueWithoutResponse(encoder.encode(escData));
-                    }
-                    
-                    showToast('✅ تمت الطباعة عبر البلوتوث!');
-                    if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
-                    return;
-                } catch (err) {
-                    console.error('Bluetooth print failed:', err);
-                }
-            }
-
-            // ثانياً: طباعة عبر window.print() كبديل
-            printViaBrowser(order, copyCount);
-        }
-
-        function printViaBrowser(order, copies) {
-            const settings = JSON.parse(localStorage.getItem('thana_print_settings') || '{}');
-            const shopName = settings.shopName || 'Thana Restaurant';
-            const shopAddr = settings.shopAddress || '';
-            const shopTel = settings.shopPhone || '';
-            const footer = settings.footerMsg || 'شكراً لزيارتكم 💙';
+            const copies = parseInt(document.getElementById('copyCount').value) || 1;
+            const s = JSON.parse(localStorage.getItem('thana_print_settings') || '{}');
+            const shopName = s.shopName || 'Thana Restaurant';
+            const shopAddr = s.shopAddress || '';
+            const shopTel = s.shopPhone || '';
+            const footer = s.footerMsg || 'شكراً لزيارتكم 💙';
             const now = new Date();
-
-            const printWindow = window.open('', '_blank', 'width=300,height=600');
             
-            let itemsHtml = (order.items || []).map(i => {
-                const lineTotal = (i.price || 0) * (i.qty || 1);
-                return `<tr><td>${i.name} ×${i.qty}</td><td style="text-align:left;">${lineTotal.toLocaleString()}</td></tr>`;
-            }).join('');
-
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html dir="rtl">
-                <head>
-                    <meta charset="UTF-8">
-                    <style>
-                        @page { size: 58mm auto; margin: 2mm; }
-                        body { 
-                            font-family: 'Courier New', monospace; 
-                            font-size: 11px; 
-                            width: 54mm;
-                            margin: 0 auto;
-                            line-height: 1.4;
-                        }
-                        .center { text-align: center; }
-                        .title { font-size: 14px; font-weight: bold; }
-                        .total { font-size: 15px; font-weight: bold; }
-                        table { width: 100%; border-collapse: collapse; }
-                        td { padding: 2px 0; }
-                        hr { border: none; border-top: 1px dashed #ccc; margin: 4px 0; }
-                        @media print {
-                            body { -webkit-print-color-adjust: exact; }
-                        }
-                    </style>
-                <script src="nav-component.js" defer></script>
-</head>
-                <body>
-                    <div class="center title">${shopName}</div>
-                    <div class="center">${shopAddr}</div>
-                    <div class="center">${shopTel}</div>
-                    <hr>
-                    <div class="center">${now.toLocaleDateString('ar-SA')} ${now.toLocaleTimeString('ar-SA')}</div>
-                    <div class="center">طاولة: ${order.table} | #${order.id.toString().slice(-4)}</div>
-                    <hr>
-                    <table>${itemsHtml}</table>
-                    <hr>
-                    <div class="center total">الإجمالي: ${(order.total || 0).toLocaleString()} ل.س</div>
-                    ${order.note ? `<div class="center">ملاحظة: ${order.note}</div>` : ''}
-                    <hr>
-                    <div class="center">${footer}</div>
-</body>
-                </html>
-            `);
+            let itemsHtml = (order.items||[]).map(i => `<tr><td>${i.name} ×${i.qty||1}</td><td style="text-align:left;">${((i.price||0)*(i.qty||1)).toLocaleString()}</td></tr>`).join('');
             
-            printWindow.document.close();
-            
-            setTimeout(() => {
-                for (let i = 0; i < copies; i++) {
-                    printWindow.print();
-                }
-                showToast('✅ تم فتح نافذة الطباعة');
-            }, 500);
+            const pw = window.open('', '_blank', 'width=300,height=600');
+            pw.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><style>@page{size:58mm auto;margin:2mm;}body{font-family:'Courier New',monospace;font-size:11px;width:54mm;margin:0 auto;line-height:1.4;}.center{text-align:center;}.title{font-size:14px;font-weight:bold;}.total{font-size:15px;font-weight:bold;}table{width:100%;border-collapse:collapse;}td{padding:2px 0;}hr{border:none;border-top:1px dashed #ccc;margin:4px 0;}</style></head><body><div class="center title">${shopName}</div><div class="center">${shopAddr}</div><div class="center">${shopTel}</div><hr><div class="center">${now.toLocaleDateString('ar-SA')} ${now.toLocaleTimeString('ar-SA')}</div><div class="center">طاولة: ${order.table} | #${order.id.toString().slice(-4)}</div><hr><table>${itemsHtml}</table><hr><div class="center total">الإجمالي: ${(order.total||0).toLocaleString()} ل.س</div>${order.note?`<div class="center">📝 ${order.note}</div>`:''}<hr><div class="center">${footer}</div></body></html>`);
+            pw.document.close();
+            setTimeout(() => { for (let i=0;i<copies;i++) pw.print(); showToast('✅ تم فتح نافذة الطباعة'); }, 500);
         }
 
         function printTestPage() {
-            const settings = JSON.parse(localStorage.getItem('thana_print_settings') || '{}');
-            const shopName = settings.shopName || 'Thana Restaurant';
-
-            const testOrder = {
-                id: Date.now(),
-                table: '0',
-                items: [
-                    { name: 'عنوان اختبار', price: 99999, qty: 1 },
-                ],
-                total: 99999,
-                note: 'صفحة اختبار الطباعة'
-            };
-
-            printViaBrowser(testOrder, 1);
-            showToast('🧪 طباعة اختبارية...');
+            const s = JSON.parse(localStorage.getItem('thana_print_settings') || '{}');
+            const shopName = s.shopName || 'Thana Restaurant';
+            const now = new Date();
+            const pw = window.open('', '_blank', 'width=300,height=600');
+            pw.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><style>@page{size:58mm auto;margin:2mm;}body{font-family:'Courier New',monospace;font-size:12px;text-align:center;}</style></head><body><h3>${shopName}</h3><p>صفحة اختبار 🧪</p><p>${now.toLocaleString('ar-SA')}</p><hr><p>✅ الطابعة تعمل بشكل صحيح</p></body></html>`);
+            pw.document.close();
+            setTimeout(() => pw.print(), 500);
+            showToast('🧪 طباعة اختبارية');
         }
 
-        function showToast(msg) {
-            const existing = document.querySelector('.toast');
-            if (existing) existing.remove();
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = msg;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
-        // ========== بدء التشغيل ==========
         loadSettings();
         loadOrders();
-        
-        // فحص حالة البلوتوث عند التحميل
-        if (navigator.bluetooth) {
-            navigator.bluetooth.getAvailability().then(available => {
-                if (!available) {
-                    updateBTStatus('disconnected', '🔌 البلوتوث غير مفعل');
-                }
-            });
-        }
     </script>
 </body>
 </html>
