@@ -68,7 +68,7 @@ function loadOrders(){
     var sorted=[];
     todayOrders.filter(function(o){return o.status==='new'}).forEach(function(o){sorted.push(o)});
     todayOrders.filter(function(o){return o.status==='cooking'}).forEach(function(o){sorted.push(o)});
-    todayOrders.filter(function(o){return o.status==='done'}).slice(-3).forEach(function(o){sorted.push(o)});
+    todayOrders.filter(function(o){return o.status==='done'todayOrders.filter(function(o){return o.status==='done'}).slice(-3)todayOrders.filter(function(o){return o.status==='done'}).slice(-3)!o.paymentStatus}).slice(-5).forEach(function(o){sorted.push(o)});
 
     document.getElementById('pendCount').textContent=todayOrders.filter(function(o){return o.status==='new'}).length;
     document.getElementById('cookCount').textContent=todayOrders.filter(function(o){return o.status==='cooking'}).length;

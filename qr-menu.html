@@ -59,7 +59,7 @@
 <div class="header">
 <div class="logo">🍽️</div>
 <h1>Thana Restaurant</h1>
-<div class="table-badge">🪑 طاولة <span id="tableNumber">1</span></div><br>
+<a href="?table=safari" style="color:#10b981;font-size:11px;">🛍️ طلب سفري</a> 🪑 طاولة <span id="tableNumber">1</span></div><br>
 <span class="call-waiter" id="callWaiter" onclick="callWaiter()">🔔 مناداة النادل</span>
 </div>
 
@@ -83,7 +83,7 @@
 
 <script>
 var params=new URLSearchParams(window.location.search);
-var tableId=params.get('table')||'1';
+var tableId=params.get.'table')||'1';
 document.getElementById('tableNumber').textContent=tableId;
 
 // استخدام قائمة المخزون الفعلية
