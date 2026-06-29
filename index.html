@@ -3,96 +3,380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thana Restaurant</title>
+    <title>Thana Restaurant v2.0</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0b0f">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <script src="pwa-register.js" defer></script>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{background:#0a0b0f;font-family:'Cairo',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:16px}
-        .card{background:#161820;border-radius:18px;padding:30px 20px;text-align:center;max-width:380px;width:100%;border:1px solid rgba(255,255,255,0.06)}
-        h1{color:#d4a853;font-size:22px;margin:8px 0}
-        p{color:#a8a49e;font-size:12px;margin-bottom:20px}
-        .pin-row{display:flex;gap:8px;justify-content:center;margin:14px 0}
-        .pin-row span{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,0.2)}
-        .pin-row span.on{background:#d4a853;border-color:#d4a853}
-        .keys{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;max-width:220px;margin:0 auto}
-        .keys button{padding:14px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;font-size:18px;font-weight:600;cursor:pointer;font-family:'Cairo',sans-serif}
-        .keys button:active{background:rgba(212,168,83,0.3)}
-        .msg{min-height:22px;font-size:14px;font-weight:600;margin:8px 0}
-        .msg.bad{color:#ef4444}.msg.good{color:#10b981}
-        .btns{margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
-        .btns button{padding:10px 14px;border-radius:20px;font-size:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);color:#a8a49e;cursor:pointer;font-family:'Cairo',sans-serif;font-weight:600}
-        .btns button:hover{border-color:#d4a853;color:#d4a853}
-        .reset{width:100%;margin-top:12px;padding:10px;border-radius:10px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#ef4444;font-weight:700;font-size:12px;cursor:pointer;font-family:'Cairo',sans-serif}
+        body {
+            padding: 16px;
+            background-image: 
+                radial-gradient(ellipse at 20% 0%, rgba(56,189,248,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(129,140,248,0.06) 0%, transparent 50%);
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        .hero {
+            text-align: center;
+            padding: 30px 0 20px;
+        }
+        .hero .logo { font-size: 64px; }
+        .hero h1 {
+            font-size: 30px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 10px 0;
+        }
+        .hero .version {
+            display: inline-block;
+            background: var(--accent-gradient);
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .hero .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .install-banner {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 14px 18px;
+            margin: 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: var(--glass-blur);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+        .install-banner:hover { border-color: var(--accent-primary); }
+
+        .section-title {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 24px 0 12px;
+            padding-right: 8px;
+            border-right: 3px solid var(--accent-primary);
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+        }
+        .nav-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 16px 12px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-primary);
+            backdrop-filter: var(--glass-blur);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+        .nav-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-glow);
+        }
+        .nav-card .icon { font-size: 32px; display: block; margin-bottom: 6px; }
+        .nav-card .label { font-size: 12px; font-weight: 600; }
+        .nav-card .badge-new {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: var(--accent-gradient);
+            color: #fff;
+            font-size: 9px;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+        }
+
+        .live-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 16px 0;
+        }
+        .stat-mini {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            text-align: center;
+            backdrop-filter: var(--glass-blur);
+        }
+        .stat-mini .val { font-size: 22px; font-weight: 700; }
+        .stat-mini .lbl { font-size: 11px; color: var(--text-muted); }
+
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 16px 0;
+        }
+        .quick-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            backdrop-filter: var(--glass-blur);
+            transition: all var(--transition-fast);
+        }
+        .quick-btn:hover { border-color: var(--accent-primary); }
+
+        .footer {
+            text-align: center;
+            padding: 24px 0;
+            color: var(--text-muted);
+            font-size: 11px;
+        }
     </style>
+<script src="nav-component.js" defer></script>
 </head>
 <body>
-<div class="card">
-    <div style="font-size:48px">🍽️</div>
-    <h1>Thana Restaurant</h1>
-    <p>أدخل رمز PIN للدخول</p>
+    <div class="container">
+        <!-- Hero -->
+        <div class="hero">
+            <div class="logo">🍽️</div>
+            <h1>Thana Restaurant</h1>
+            <span class="version">v2.0</span>
+            <div class="subtitle">نظام إدارة مطعم متكامل · 2026</div>
+        </div>
 
-    <div class="pin-row" id="dots">
-        <span></span><span></span><span></span><span></span>
+        <!-- تثبيت التطبيق -->
+        <div class="install-banner" id="installBanner" style="display:none;" onclick="installApp()">
+            <span style="font-size:28px;">📲</span>
+            <div>
+                <div style="font-weight:600;">تثبيت التطبيق</div>
+                <div style="font-size:11px;color:var(--text-muted);">أيقونة على الشاشة الرئيسية</div>
+            </div>
+            <span style="margin-right:auto;color:var(--accent-primary);">تثبيت ←</span>
+        </div>
+
+        <!-- إحصائيات سريعة -->
+        <div class="section-title">📊 نظرة سريعة</div>
+        <div class="live-stats" id="liveStats">
+            <div class="stat-mini"><div class="val">--</div><div class="lbl">طلبات اليوم</div></div>
+            <div class="stat-mini"><div class="val">--</div><div class="lbl">طاولات مشغولة</div></div>
+            <div class="stat-mini"><div class="val">--</div><div class="lbl">متوسط الوقت</div></div>
+        </div>
+
+        <!-- أزرار سريعة -->
+        <div class="quick-actions">
+            <a href="waiter.html" class="quick-btn">📋 طلب جديد</a>
+            <a href="qr-menu.html?table=1" class="quick-btn">📱 قائمة QR</a>
+            <a href="voice.html" class="quick-btn">🎤 أمر صوتي</a>
+            <a href="dashboard.html" class="quick-btn">📊 لوحة التحكم</a>
+        </div>
+
+        <!-- صفحات v2.0 الجديدة -->
+        <div class="section-title">🚀 مميزات v2.0</div>
+        <div class="nav-grid">
+            <a href="dashboard.html" class="nav-card">
+                <span class="badge-new">جديد</span>
+                <span class="icon">📊</span>
+                <span class="label">لوحة التحكم</span>
+            </a>
+            <a href="qr-menu.html?table=1" class="nav-card">
+                <span class="badge-new">جديد</span>
+                <span class="icon">📱</span>
+                <span class="label">قائمة QR</span>
+            </a>
+            <a href="voice.html" class="nav-card">
+                <span class="badge-new">جديد</span>
+                <span class="icon">🎤</span>
+                <span class="label">أوامر صوتية</span>
+            </a>
+            <a href="ai.html" class="nav-card">
+                <span class="badge-new">جديد</span>
+                <span class="icon">🧠</span>
+                <span class="label">الذكاء الاصطناعي</span>
+            </a>
+            <a href="auth.html" class="nav-card">
+                <span class="badge-new">جديد</span>
+                <span class="icon">🔐</span>
+                <span class="label">الأمان والبصمة</span>
+            </a>
+            <a href="print.html" class="nav-card">
+                <span class="badge-new">جديد</span>
+                <span class="icon">🖨️</span>
+                <span class="label">الطباعة</span>
+            </a>
+            <a href="theme-settings.html" class="nav-card">
+                <span class="badge-new">جديد</span>
+                <span class="icon">🎨</span>
+                <span class="label">تخصيص المظهر</span>
+            </a>
+        </div>
+
+        <!-- صفحات v1.0 -->
+        <div class="section-title">📋 الإدارة</div>
+        <div class="nav-grid">
+            <a href="waiter.html" class="nav-card">
+                <span class="icon">📋</span>
+                <span class="label">النادل</span>
+            </a>
+            <a href="kitchen.html" class="nav-card">
+                <span class="icon">🍳</span>
+                <span class="label">المطبخ</span>
+            </a>
+            <a href="tables.html" class="nav-card">
+                <span class="icon">🪑</span>
+                <span class="label">الطاولات</span>
+            </a>
+            <a href="staff.html" class="nav-card">
+                <span class="icon">👥</span>
+                <span class="label">الموظفين</span>
+            </a>
+            <a href="menu.html" class="nav-card">
+                <span class="icon">🍽️</span>
+                <span class="label">القائمة</span>
+            </a>
+            <a href="inventory.html" class="nav-card">
+                <span class="icon">📦</span>
+                <span class="label">المخزون</span>
+            </a>
+            <a href="reports.html" class="nav-card">
+                <span class="icon">📊</span>
+                <span class="label">التقارير</span>
+            </a>
+            <a href="customers.html" class="nav-card">
+                <span class="icon">👤</span>
+                <span class="label">العملاء CRM</span>
+            </a>
+        </div>
+
+        <div class="section-title">⚙️ النظام</div>
+        <div class="nav-grid">
+            <a href="settings.html" class="nav-card">
+                <span class="icon">⚙️</span>
+                <span class="label">الإعدادات</span>
+            </a>
+            <a href="admin.html" class="nav-card">
+                <span class="icon">🔑</span>
+                <span class="label">المدير</span>
+            </a>
+            <a href="close.html" class="nav-card">
+                <span class="icon">🔒</span>
+                <span class="label">الإغلاق اليومي</span>
+            </a>
+            <a href="waste_report.html" class="nav-card">
+                <span class="icon">🗑️</span>
+                <span class="label">تقرير الهدر</span>
+            </a>
+            <a href="velocity.html" class="nav-card">
+                <span class="icon">⚡</span>
+                <span class="label">سرعة المطبخ</span>
+            </a>
+            <a href="procurement.html" class="nav-card">
+                <span class="icon">🛒</span>
+                <span class="label">المشتريات</span>
+            </a>
+            <a href="invoice.html" class="nav-card">
+            <a href="docs.html" class="nav-card">
+                <span class="icon">📋</span>
+                <span class="label">التوثيق PDF</span>
+            </a>
+            <a href="help.html" class="nav-card">
+                <span class="icon">📖</span>
+                <span class="label">المساعدة</span>
+            </a>
+            <a href="backup.html" class="nav-card">
+                <span class="icon">💾</span>
+                <span class="label">نسخ احتياطي</span>
+            </a>
+            <a href="activate.html" class="nav-card">
+                <span class="icon">🔑</span>
+                <span class="label">الترخيص</span>
+            </a>
+                <span class="icon">🧾</span>
+                <span class="label">الفاتورة</span>
+            </a>
+        </div>
+
+        <div class="footer">
+            Thana Restaurant v2.0 · 2026 · <span style="color:var(--success);">تكلفة $0</span> · بدون سيرفر
+        </div>
     </div>
-    <div class="msg" id="msg"></div>
-    <div class="keys" id="keys"></div>
 
-    <div class="btns">
-        <button onclick="go('2026')">🔑 مدير (2026)</button>
-        <button onclick="go('1111')">📋 نادل (1111)</button>
-        <button onclick="go('2222')">🍳 مطبخ (2222)</button>
-        <button onclick="go('3333')">💰 كاشير (3333)</button>
-    </div>
-    <button class="reset" onclick="localStorage.clear();location.reload()">🗑️ مسح البيانات وإعادة ضبط</button>
-</div>
-
+    <script src="auth-v2.js"></script>
 <script>
-var users={
-    '2026':{n:'المدير',r:'admin'},
-    '1111':{n:'النادل',r:'waiter'},
-    '2222':{n:'المطبخ',r:'kitchen'},
-    '3333':{n:'الكاشير',r:'cashier'},
-    '4444':{n:'مدير مناوب',r:'manager'}
-};
-var pin='';
+        // إحصائيات سريعة
+        function updateStats() {
+            const orders = JSON.parse(localStorage.getItem('thana_orders') || '[]');
+            const tables = JSON.parse(localStorage.getItem('thana_tables') || '[]');
+            const today = new Date().toLocaleDateString('ar-SA');
+            
+            const todayOrders = orders.filter(o => {
+                const d = new Date(o.timestamp || Date.now()).toLocaleDateString('ar-SA');
+                return d === today;
+            });
+            
+            const busyTables = tables.filter(t => t.status === 'busy' || t.status === 'waiting').length;
+            
+            const times = orders.filter(o => o.cookStart && o.cookEnd)
+                .map(o => (new Date(o.cookEnd) - new Date(o.cookStart)) / 60000);
+            const avgTime = times.length > 0 ? Math.round(times.reduce((a,b)=>a+b,0)/times.length) : 0;
+            
+            const stats = document.querySelectorAll('#liveStats .val');
+            if (stats[0]) stats[0].textContent = todayOrders.length;
+            if (stats[1]) stats[1].textContent = busyTables + '/15';
+            if (stats[2]) stats[2].textContent = avgTime + ' د';
+        }
 
-function dots(){
-    var d=document.querySelectorAll('#dots span');
-    d.forEach(function(x,i){x.classList.toggle('on',i<pin.length)});
-}
+        updateStats();
+        setInterval(updateStats, 30000);
 
-function go(p){pin=p;dots();setTimeout(check,200)}
+        // PWA install
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBanner').style.display = 'flex';
+        });
 
-function check(){
-    var m=document.getElementById('msg');
-    if(users[pin]){
-        var u=users[pin];
-        localStorage.setItem('thana_auth_session',JSON.stringify({role:u.role,userId:u.r,loginTime:new Date().toISOString()}));
-        m.textContent='✅ مرحباً '+u.n+'!';
-        m.className='msg good';
-        setTimeout(function(){location.href='index.html'},400);
-    }else{
-        m.textContent='❌ PIN غلط - جرب 2026';
-        m.className='msg bad';
-        pin='';dots();
-    }
-}
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(() => {
+                    document.getElementById('installBanner').style.display = 'none';
+                });
+            }
+        }
 
-function tap(k){
-    document.getElementById('msg').textContent='';document.getElementById('msg').className='msg';
-    if(k==='C'){pin=''}
-    else if(k==='⌫'){pin=pin.slice(0,-1)}
-    else if(k==='✓'){check();return}
-    else{if(pin.length<4){pin+=k;if(pin.length===4)setTimeout(check,300)}}
-    dots();
-}
-
-var pad=document.getElementById('keys');
-'123456789C0⌫✓'.split('').forEach(function(k){
-    var b=document.createElement('button');
-    b.textContent=k;
-    b.onclick=function(){tap(k)};
-    pad.appendChild(b);
-});
-</script>
+        window.addEventListener('appinstalled', () => {
+            document.getElementById('installBanner').style.display = 'none';
+        });
+    </script>
 </body>
 </html>
