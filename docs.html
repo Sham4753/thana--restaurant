@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التوثيق - Thana Restaurant</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <style>
+        body { padding: 16px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+        h1 { color: var(--gold); font-family: var(--font-display); text-align: center; font-size: 28px; }
+        h2 { color: var(--gold); font-family: var(--font-display); margin: 20px 0 10px; font-size: 20px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+        h3 { color: var(--text); margin: 14px 0 6px; font-size: 16px; }
+        p, li { color: var(--text-secondary); font-size: 14px; line-height: 2; }
+        code { background: var(--bg-input); padding: 2px 8px; border-radius: 4px; font-size: 13px; color: var(--gold); }
+        table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+        th { background: rgba(212,168,83,0.1); padding: 10px; font-size: 13px; color: var(--gold); border: 1px solid var(--border); }
+        td { padding: 8px 10px; font-size: 13px; border: 1px solid var(--border); }
+        .note { background: rgba(212,168,83,0.08); border-right: 3px solid var(--gold); padding: 12px 16px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 12px 0; }
+        @media print {
+            body { background: #fff; color: #000; }
+            .card { border: 1px solid #ddd; box-shadow: none; break-inside: avoid; }
+            h1, h2 { color: #333; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="btn btn-gold no-print" onclick="window.print()" style="margin:12px 0;display:block;width:100%;">🖨️ طباعة/حفظ PDF</button>
+
+        <div class="card">
+            <h1>🍽️ Thana Restaurant</h1>
+            <p style="text-align:center;color:var(--text-muted);">نظام إدارة مطعم متكامل - التوثيق الرسمي v2.1</p>
+        </div>
+
+        <div class="card">
+            <h2>📋 جدول المحتويات</h2>
+            <ol>
+                <li>نظرة عامة</li>
+                <li>متطلبات التشغيل</li>
+                <li>تسجيل الدخول والصلاحيات</li>
+                <li>إدارة القائمة</li>
+                <li>إدارة المخزون</li>
+                <li>استقبال الطلبات</li>
+                <li>شاشة المطبخ KDS</li>
+                <li>التقارير ولوحة التحكم</li>
+                <li>الطباعة الحرارية</li>
+                <li>النسخ الاحتياطي</li>
+                <li>العمل بدون إنترنت</li>
+                <li>الأسئلة الشائعة</li>
+            </ol>
+        </div>
+
+        <div class="card">
+            <h2>١. نظرة عامة</h2>
+            <p>نظام Thana Restaurant هو نظام إدارة مطعم متكامل يعمل عبر المتصفح. لا يحتاج إلى سيرفر أو إنترنت دائم. يمكن تثبيته كتطبيق على الجوال (PWA) أو استخدامه على أي جهاز لوحي أو لابتوب.</p>
+            
+            <div class="note">
+                <b>الميزات الرئيسية:</b><br>
+                ✅ إدارة طلبات - قائمة - مخزون - موظفين - تقارير<br>
+                ✅ دعم QR Menu للزبائن<br>
+                ✅ أوامر صوتية بالعربية<br>
+                ✅ ذكاء اصطناعي للتنبؤات<br>
+                ✅ طباعة حرارية Bluetooth<br>
+                ✅ نظام صلاحيات 5 أدوار<br>
+                ✅ يعمل بالكامل بدون إنترنت<br>
+                ✅ تكلفة تشغيل: $0
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>٢. متطلبات التشغيل</h2>
+            <table>
+                <tr><th>المتطلب</th><th>الحد الأدنى</th></tr>
+                <tr><td>المتصفح</td><td>Chrome 90+ / Edge 90+ / Firefox 90+</td></tr>
+                <tr><td>النظام</td><td>Windows / macOS / Android / iOS</td></tr>
+                <tr><td>الإنترنت</td><td>للتثبيت الأول فقط - ثم يعمل أوفلاين</td></tr>
+                <tr><td>المساحة</td><td>أقل من 3MB</td></tr>
+                <tr><td>طابعة</td><td>أي طابعة ESC/POS 58mm مع Bluetooth (اختياري)</td></tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>٣. تسجيل الدخول والصلاحيات</h2>
+            <p>النظام يدعم 5 أدوار مختلفة:</p>
+            <table>
+                <tr><th>الدور</th><th>PIN</th><th>الصلاحيات</th></tr>
+                <tr><td>🔑 المدير</td><td><code>2026</code></td><td>كل الصلاحيات - 24 صفحة</td></tr>
+                <tr><td>📋 النادل</td><td><code>1111</code></td><td>الطلبات - الطاولات - QR - صوتي</td></tr>
+                <tr><td>🍳 المطبخ</td><td><code>2222</code></td><td>شاشة الطبخ - المخزون - الهدر</td></tr>
+                <tr><td>💰 الكاشير</td><td><code>3333</code></td><td>الفواتير - التقارير - الطباعة</td></tr>
+                <tr><td>📊 مدير مناوب</td><td><code>4444</code></td><td>التقارير - المخزون - الموظفين</td></tr>
+            </table>
+            <div class="note">يمكن تغيير رموز PIN من صفحة <code>🔐 الأمان</code></div>
+        </div>
+
+        <div class="card">
+            <h2>٤. إدارة القائمة</h2>
+            <p>من صفحة <code>🍽️ القائمة</code> يمكنك:</p>
+            <ul>
+                <li>➕ إضافة صنف جديد مع السعر والوصف والفئة</li>
+                <li>✏️ تعديل السعر بالضغط المباشر عليه</li>
+                <li>🗑️ حذف صنف</li>
+                <li>📋 تنظيم الأصناف في فئات</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>٥. إدارة المخزون</h2>
+            <p>من صفحة <code>📦 المخزون</code> يمكنك:</p>
+            <ul>
+                <li>➕ إضافة مواد بعد الجرد الفعلي</li>
+                <li>📊 تحديد حد أدنى لكل مادة</li>
+                <li>🔴 النظام ينبهك عند انخفاض المخزون</li>
+                <li>📤 تصدير الجرد كـ CSV</li>
+                <li>🔄 الخصم التلقائي مع كل طلب</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>٦. استقبال الطلبات - 3 طرق</h2>
+            <h3>📋 النادل</h3>
+            <p>يسجل الطلب مباشرة من صفحة النادل - يختار الطاولة - الأصناف - الكميات</p>
+            
+            <h3>📱 QR Menu</h3>
+            <p>الزبون يمسح كود QR على الطاولة ← يفتح القائمة على جواله ← يطلب بنفسه ← الطلب يذهب للمطبخ تلقائياً</p>
+            
+            <h3>🎤 الأوامر الصوتية</h3>
+            <p>النادل يقول "طاولة 3 شاورما 2 وكولا 1" ← النظام يفهم ← يراجع الطلب ← يرسل للمطبخ</p>
+        </div>
+
+        <div class="card">
+            <h2>٧. شاشة المطبخ KDS</h2>
+            <p>تعرض الطلبات فور وصولها مع:</p>
+            <ul>
+                <li>⏱️ مؤقت لكل طلب</li>
+                <li>🔴 الطلبات المتأخرة تظهر باللون الأحمر</li>
+                <li>🔥 مراحل: جديد → جاري الطبخ → جاهز</li>
+                <li>🔔 إشعارات صوتية و Push</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>٨. التقارير ولوحة التحكم</h2>
+            <p>لوحة التحكم تعرض:</p>
+            <ul>
+                <li>💰 إيراد اليوم - عدد الطلبات - متوسط الوقت</li>
+                <li>📈 رسم بياني للمبيعات بالساعة</li>
+                <li>🏆 أكثر الأصناف مبيعاً</li>
+                <li>🧠 توقعات ذكاء اصطناعي للطلب</li>
+                <li>📊 تقارير قابلة للتصدير CSV</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>٩. الطباعة الحرارية</h2>
+            <p>من صفحة <code>🖨️ الطباعة</code>:</p>
+            <ul>
+                <li>📡 اتصال Bluetooth بطابعة ESC/POS 58mm</li>
+                <li>📄 معاينة الفاتورة قبل الطباعة</li>
+                <li>📑 دعم نسخ متعددة</li>
+                <li>⚙️ تخصيص اسم المطعم والعنوان</li>
+                <li>🔄 Fallback تلقائي للطباعة العادية</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>١٠. النسخ الاحتياطي</h2>
+            <p>من صفحة <code>💾 النسخ الاحتياطي</code>:</p>
+            <ul>
+                <li>📤 تصدير جميع البيانات كـ JSON</li>
+                <li>📥 استعادة نسخة احتياطية</li>
+                <li>📋 نسخ سريع للنص</li>
+                <li>⚠️ ينصح بعمل نسخة يومياً</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>١١. العمل بدون إنترنت</h2>
+            <div class="note">
+                <b>📴 النظام يعمل بالكامل بدون إنترنت!</b><br>
+                • جميع البيانات تحفظ محلياً في المتصفح<br>
+                • الطلبات تستمر بشكل طبيعي<br>
+                • المخزون يحدث تلقائياً<br>
+                • عند عودة الإنترنت، تتم المزامنة تلقائياً
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>١٢. الأسئلة الشائعة</h2>
+            <h3>كيف أثبت النظام على الجوال؟</h3>
+            <p>افتح الرابط ← اضغط "تثبيت التطبيق" أو من إعدادات المتصفح ← "Add to Home Screen"</p>
+            
+            <h3>هل البيانات آمنة؟</h3>
+            <p>✅ البيانات تحفظ محلياً في جهازك فقط. لا ترسل لأي سيرفر خارجي. يمكنك تفعيل تشفير AES من صفحة الأمان.</p>
+            
+            <h3>كيف أضيف طابعة؟</h3>
+            <p>شغل بلوتوث الجهاز ← افتح صفحة الطباعة ← اضغط "بحث عن طابعة" ← اختر الطابعة من القائمة.</p>
+            
+            <h3>هل يمكن استخدام أكثر من جهاز؟</h3>
+            <p>نعم! افتح الرابط على أي عدد من الأجهزة. كل جهاز يعمل بشكل مستقل. للمزامنة بين الأجهزة، استخدم النسخ الاحتياطي.</p>
+        </div>
+    </div>
+</body>
+</html>

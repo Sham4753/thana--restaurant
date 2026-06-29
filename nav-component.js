@@ -42,6 +42,7 @@ function getNavConfig() {
                 { href: 'activate.html', icon: '🔑', label: 'الترخيص' },
                 { href: 'backup.html', icon: '💾', label: 'نسخ احتياطي' },
                 { href: 'help.html', icon: '📖', label: 'مساعدة' },
+                { href: 'docs.html', icon: '📋', label: 'التوثيق' },
             ]
         },
         waiter: {
