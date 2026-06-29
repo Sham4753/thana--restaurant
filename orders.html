@@ -86,12 +86,12 @@ function renderList(orders,type){
         
         var actions='';
         if(type==='active'){
-            actions+='<button class="btn btn-paid" onclick="markPaid('+o.id+')">💵 دفع</button>';
+            actions+='<button class="btn" style="background:#38bdf8;color:#fff;font-size:10px" onclick="quickPrint('+o.id+')">🖨️</button><button class="btn btn-paid" onclick="markPaid';
             actions+='<button class="btn btn-debt" onclick="markDebt('+o.id+')">📝 دين</button>';
             actions+='<button class="btn btn-cancel" onclick="markCancel('+o.id+')">❌ إلغاء</button>';
         }
         if(type==='debt'){
-            actions+='<button class="btn btn-paid" onclick="markPaid('+o.id+')">💵 سدد الدين</button>';
+            actions+='<button class="btn" style="background:#38bdf8;color:#fff;font-size:10px" onclick="quickPrint('+o.id+')">💵 سدد الدين</button>';
             actions+='<button class="btn btn-cancel" onclick="markCancel('+o.id+')">❌ إلغاء</button>';
         }
         actions+='<button class="btn btn-del" onclick="delOrder('+o.id+')">🗑️</button>';

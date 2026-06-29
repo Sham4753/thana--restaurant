@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الموردين - Thana Restaurant</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <script src="nav-component.js" defer></script>
+    <style>
+        body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
+        .container{max-width:600px;margin:0 auto}
+        .card{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:16px;margin-bottom:12px}
+        h2{color:#d4a853;text-align:center;margin-bottom:14px}
+        input{padding:10px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;font-family:'Cairo',sans-serif;font-size:13px;width:100%;margin-bottom:6px}
+        .btn{display:block;width:100%;padding:10px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;margin-top:6px;font-family:'Cairo',sans-serif}
+        .btn-gold{background:linear-gradient(135deg,#b8942e,#d4a853);color:#1a1814}
+        .supplier-row{display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(255,255,255,0.02);border-radius:10px;margin-bottom:6px;font-size:13px}
+        .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:30px;font-weight:700;z-index:300}
+    </style>
+</head>
+<body>
+<div class="container">
+<div class="card"><div style="font-size:44px;text-align:center">🏢</div><h2>سجل الموردين</h2></div>
+<div class="card">
+    <input type="text" id="supName" placeholder="اسم المورد">
+    <input type="text" id="supPhone" placeholder="رقم الجوال">
+    <input type="text" id="supItem" placeholder="المواد الموردة (مثال: خضار، لحوم)">
+    <button class="btn btn-gold" onclick="addSupplier()">➕ إضافة مورد</button>
+</div>
+<div class="card"><div id="supplierList"></div></div>
+</div>
+<script>
+function GS(){return JSON.parse(localStorage.getItem('thana_suppliers')||'[]')}
+function SS(s){localStorage.setItem('thana_suppliers',JSON.stringify(s))}
+function addSupplier(){
+    var n=document.getElementById('supName').value.trim();
+    var p=document.getElementById('supPhone').value.trim();
+    var i=document.getElementById('supItem').value.trim();
+    if(!n||!p)return;
+    var s=GS();s.push({name:n,phone:p,item:i,date:new Date().toISOString()});SS(s);
+    document.getElementById('supName').value='';document.getElementById('supPhone').value='';document.getElementById('supItem').value='';
+    render();showToast('✅ تمت الإضافة');
+}
+function delSup(i){if(confirm('حذف؟')){var s=GS();s.splice(i,1);SS(s);render()}}
+function render(){
+    var s=GS();
+    document.getElementById('supplierList').innerHTML=s.length===0?'<div style="text-align:center;color:#6b6760;padding:12px;">لا يوجد موردين</div>':
+    s.map(function(x,i){return'<div class="supplier-row"><div><b>'+x.name+'</b><br><span style="font-size:10px;color:#a8a49e;">📞 '+x.phone+' | 📦 '+x.item+'</span></div><span onclick="delSup('+i+')" style="color:#ef4444;cursor:pointer">🗑️</span></div>'}).join('');
+}
+function showToast(m){var t=document.querySelector('.toast');if(t)t.remove();t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},2000)}
+render();
+</script>
+</body>
+</html>

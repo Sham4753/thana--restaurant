@@ -169,7 +169,7 @@ function submitOrder(){
     if(t){t.status='busy';localStorage.setItem('thana_tables',JSON.stringify(tables))}
     
     currentOrder=[];document.getElementById('orderNote').value='';
-    renderOrder();loadTables();loadRecent();
+    renderOrder();loadTables();loadRecent();setInterval(function(){var ready=localStorage.getItem('thana_order_ready');if(ready){alert('✅ طلب #'+ready+' جاهز للتقديم!');localStorage.removeItem('thana_order_ready')}},3000);
     showToast('✅ تم إرسال الطلب للمطبخ!');
 }
 
@@ -190,7 +190,7 @@ function showToast(msg){
     document.body.appendChild(t);setTimeout(function(){t.remove()},2500);
 }
 
-loadTables();loadMenu();renderOrder();loadRecent();
+loadTables();loadMenu();renderOrder();loadRecent();setInterval(function(){var ready=localStorage.getItem('thana_order_ready');if(ready){alert('✅ طلب #'+ready+' جاهز للتقديم!');localStorage.removeItem('thana_order_ready')}},3000);
 </script>
 </body>
 </html>
