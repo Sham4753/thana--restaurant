@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مرحباً بك - Thana Restaurant</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: var(--bg);
+        }
+        .onboard-container {
+            max-width: 500px;
+            width: 100%;
+        }
+        .onboard-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 32px 24px;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+        .onboard-logo {
+            font-size: 56px;
+            margin-bottom: 12px;
+        }
+        .onboard-title {
+            font-family: var(--font-display);
+            font-size: 26px;
+            color: var(--gold);
+            margin-bottom: 6px;
+        }
+        .onboard-subtitle {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+
+        .steps {
+            text-align: right;
+            margin-bottom: 24px;
+        }
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.02);
+            border-radius: var(--radius);
+            transition: all var(--transition);
+        }
+        .step:hover { background: rgba(212,168,83,0.04); }
+        .step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gold);
+            color: #1a1814;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .step-text { font-size: 13px; color: var(--text); }
+        .step-text small { color: var(--text-muted); display: block; margin-top: 2px; }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            color: #1a1814;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            border: none;
+            cursor: pointer;
+            font-family: var(--font);
+            transition: all var(--transition);
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,168,83,0.3); }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+            margin-top: 8px;
+        }
+        .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+        .skip-link {
+            display: block;
+            margin-top: 12px;
+            color: var(--text-muted);
+            font-size: 12px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="onboard-container">
+        <div class="onboard-card">
+            <div class="onboard-logo">🍽️</div>
+            <div class="onboard-title">Thana Restaurant</div>
+            <div class="onboard-subtitle">نظام إدارة المطعم الذكي</div>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-text">
+                        <b>سجل الدخول</b>
+                        <small>اختر دورك وأدخل رمز PIN</small>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-text">
+                        <b>أضف القائمة والمخزون</b>
+                        <small>من صفحة القائمة والمخزون</small>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-text">
+                        <b>ابدأ باستقبال الطلبات</b>
+                        <small>النادل · QR Menu · الأوامر الصوتية</small>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">4</div>
+                    <div class="step-text">
+                        <b>راقب الأداء</b>
+                        <small>لوحة التحكم · التقارير · الذكاء الاصطناعي</small>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn" onclick="startApp()">🚀 ابدأ الآن</button>
+            <button class="btn btn-outline" onclick="skipOnboarding()">تخطي ←</button>
+        </div>
+    </div>
+
+    <script>
+        function startApp() {
+            localStorage.setItem('thana_onboarding_done', 'true');
+            window.location.href = 'login.html';
+        }
+        function skipOnboarding() {
+            localStorage.setItem('thana_onboarding_done', 'true');
+            window.location.href = 'login.html';
+        }
+        // إذا خلص الـ onboarding من قبل، روح على login مباشرة
+        if (localStorage.getItem('thana_onboarding_done') === 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
