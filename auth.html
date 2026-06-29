@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأمان - Thana Restaurant</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e3a5f">
+    <script src="pwa-register.js" defer></script>
+    <style>
+        :root {
+            --bg: #0a0f1e;
+            --card: rgba(15,23,42,0.8);
+            --accent: #38bdf8;
+            --accent2: #818cf8;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --radius: 20px;
+            --glass-border: rgba(255,255,255,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'Cairo', sans-serif;
+            background: var(--bg);
+            background-image: 
+                radial-gradient(ellipse at 50% 0%, rgba(129,140,248,0.1) 0%, transparent 60%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .lock-icon {
+            font-size: 72px;
+            animation: float 3s ease-in-out infinite;
+            margin-bottom: 16px;
+        }
+        @keyframes float {
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        h1 {
+            font-size: 26px;
+            background: linear-gradient(135deg, var(--accent2), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin: 8px 0 24px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(15px);
+        }
+
+        .fingerprint-area {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(56,189,248,0.08);
+            border: 2px dashed rgba(56,189,248,0.3);
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s;
+            font-size: 48px;
+        }
+        .fingerprint-area:hover {
+            border-color: var(--accent);
+            background: rgba(56,189,248,0.15);
+            transform: scale(1.05);
+        }
+        .fingerprint-area.active {
+            border-color: var(--success);
+            background: rgba(52,211,153,0.15);
+            animation: pulse-finger 1s infinite;
+        }
+        .fingerprint-area.registered {
+            border: 2px solid var(--success);
+            background: rgba(52,211,153,0.1);
+        }
+        @keyframes pulse-finger {
+            0%,100% { box-shadow: 0 0 0 0 rgba(52,211,153,0.3); }
+            50% { box-shadow: 0 0 0 20px rgba(52,211,153,0); }
+        }
+
+        .status-msg {
+            margin-top: 12px;
+            font-size: 14px;
+            min-height: 20px;
+        }
+        .status-msg.success { color: var(--success); }
+        .status-msg.error { color: var(--danger); }
+        .status-msg.info { color: var(--accent); }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+        }
+        .btn-danger {
+            background: rgba(248,113,113,0.2);
+            color: var(--danger);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+        }
+
+        /* PIN pad */
+        .pin-dots {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 16px 0;
+        }
+        .pin-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid var(--glass-border);
+            transition: all 0.3s;
+        }
+        .pin-dot.filled {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        .pin-keys {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-width: 260px;
+            margin: 0 auto;
+        }
+        .pin-key {
+            padding: 16px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pin-key:hover { background: rgba(255,255,255,0.1); }
+        .pin-key:active { transform: scale(0.93); }
+
+        /* قسم التشفير */
+        .encrypt-section {
+            text-align: right;
+        }
+        .encrypt-section label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .encrypt-section input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .encrypt-section textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            font-family: monospace;
+            font-size: 12px;
+            margin-bottom: 10px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* مستخدمين */
+        .user-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 12px;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        .badge {
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-admin { background: rgba(129,140,248,0.3); color: var(--accent2); }
+        .badge-staff { background: rgba(56,189,248,0.2); color: var(--accent); }
+
+        .tab-row {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 14px;
+            padding: 4px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        .tab-btn.active {
+            background: rgba(56,189,248,0.2);
+            color: var(--accent);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="lock-icon">🔐</div>
+        <h1>مركز الأمان</h1>
+        <div class="subtitle">بصمة · تشفير · PIN · إدارة المستخدمين</div>
+
+        <div class="tab-row">
+            <button class="tab-btn active" onclick="switchTab('login')">🔑 دخول</button>
+            <button class="tab-btn" onclick="switchTab('register')">🖐️ تسجيل بصمة</button>
+            <button class="tab-btn" onclick="switchTab('encrypt')">🔒 تشفير</button>
+            <button class="tab-btn" onclick="switchTab('users')">👥 مستخدمين</button>
+        </div>
+
+        <!-- تبويب تسجيل الدخول -->
+        <div class="card" id="tab-login">
+            <h3 style="margin-bottom:16px;">تسجيل الدخول</h3>
+            
+            <div class="fingerprint-area" id="fpLogin" onclick="loginWithBiometric()" title="اضغط للدخول بالبصمة">
+                🖐️
+            </div>
+            <div class="status-msg" id="loginMsg"></div>
+            <div style="color:var(--text-muted);font-size:12px;margin:8px 0;">أو استخدم PIN</div>
+            
+            <div class="pin-dots" id="loginDots">
+                <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
+            </div>
+            <div id="loginMsg2" style="font-size:13px;min-height:18px;"></div>
+            <div class="pin-keys" id="loginKeys"></div>
+        </div>
+
+        <!-- تبويب تسجيل البصمة -->
+        <div class="card" id="tab-register" style="display:none;">
+            <h3 style="margin-bottom:16px;">تسجيل بصمة جديدة</h3>
+            <div class="fingerprint-area" id="fpRegister" onclick="registerBiometric()">
+                🖐️
+            </div>
+            <div class="status-msg" id="registerMsg"></div>
+            <div style="margin-top:12px;">
+                <input type="text" id="regName" placeholder="اسم المستخدم" style="width:100%;padding:12px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);color:#fff;font-family:inherit;font-size:14px;margin-bottom:8px;">
+                <select id="regRole" style="width:100%;padding:12px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);color:#fff;font-family:inherit;font-size:14px;">
+                    <option value="staff">موظف</option>
+                    <option value="admin">مدير</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- تبويب التشفير -->
+        <div class="card encrypt-section" id="tab-encrypt" style="display:none;">
+            <h3 style="margin-bottom:16px;text-align:center;">🔒 تشفير وفك تشفير البيانات</h3>
+            
+            <label>🔑 مفتاح التشفير</label>
+            <input type="text" id="encKey" placeholder="أدخل كلمة سر للتشفير...">
+            
+            <label>📝 نص للاختبار</label>
+            <textarea id="encInput" placeholder="اكتب نصاً لتشفيره..."></textarea>
+            
+            <button class="btn btn-primary" onclick="encryptText()">🔒 تشفير</button>
+            
+            <label style="margin-top:12px;">🔓 نص مشفر</label>
+            <textarea id="encOutput" placeholder="النص المشفر يظهر هنا..." readonly></textarea>
+            
+            <button class="btn btn-outline" onclick="decryptText()">🔓 فك التشفير</button>
+            
+            <div style="margin-top:12px;font-size:12px;color:var(--text-muted);">
+                ℹ️ استخدم نفس المفتاح للتشفير وفك التشفير
+            </div>
+
+            <hr style="border-color:var(--glass-border);margin:16px 0;">
+
+            <button class="btn btn-primary" onclick="encryptAllData()">🔐 تشفير كل بيانات المطعم</button>
+            <button class="btn btn-outline" onclick="decryptAllData()">🔓 فك تشفير كل البيانات</button>
+            <button class="btn btn-danger" onclick="exportEncrypted()">📤 تصدير البيانات مشفرة</button>
+        </div>
+
+        <!-- تبويب المستخدمين -->
+        <div class="card" id="tab-users" style="display:none;">
+            <h3 style="margin-bottom:16px;">👥 المستخدمين المسجلين</h3>
+            <div id="usersList"></div>
+            <button class="btn btn-danger" onclick="resetAllAuth()" style="margin-top:16px;">🗑️ مسح كل البصمات</button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== نظام المصادقة والأمان ====================
+
+        let loginPin = '';
+        const CORRECT_PIN = localStorage.getItem('thana_auth_pin') || '2026';
+
+        // ========== تبويبات ==========
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('[id^="tab-"]').forEach(d => d.style.display = 'none');
+            document.getElementById('tab-' + tab).style.display = 'block';
+            
+            if (tab === 'login') buildPinPad('login');
+            if (tab === 'users') renderUsers();
+        }
+
+        // ========== PIN Pad ==========
+        function buildPinPad(type) {
+            const container = document.getElementById(type + 'Keys');
+            const keys = ['1','2','3','4','5','6','7','8','9','مسح','0','تم'];
+            container.innerHTML = keys.map(k => {
+                if (k === 'مسح') return `<button class="pin-key" onclick="pinAction('${type}','clear')" style="font-size:14px;">⌫</button>`;
+                if (k === 'تم') return `<button class="pin-key" onclick="pinAction('${type}','enter')" style="font-size:14px;background:rgba(52,211,153,0.2);">✓</button>`;
+                return `<button class="pin-key" onclick="pinAction('${type}','${k}')">${k}</button>`;
+            }).join('');
+        }
+
+        function pinAction(type, action) {
+            if (type === 'login') {
+                if (action === 'clear') { loginPin = ''; }
+                else if (action === 'enter') { verifyPin(); return; }
+                else { loginPin += action; if (loginPin.length > 4) loginPin = loginPin.slice(0,4); }
+                
+                // تحديث النقاط
+                const dots = document.querySelectorAll('#loginDots .pin-dot');
+                dots.forEach((d, i) => d.classList.toggle('filled', i < loginPin.length));
+                
+                if (loginPin.length === 4) verifyPin();
+            }
+        }
+
+        function verifyPin() {
+            if (loginPin === CORRECT_PIN) {
+                document.getElementById('loginMsg').textContent = '✅ دخول ناجح - مرحباً بك';
+                document.getElementById('loginMsg').className = 'status-msg success';
+                document.getElementById('loginMsg2').textContent = '';
+                loginPin = '';
+                document.querySelectorAll('#loginDots .pin-dot').forEach(d => d.classList.remove('filled'));
+                // تعيين جلسة
+                localStorage.setItem('thana_session', JSON.stringify({
+                    user: 'admin',
+                    time: new Date().toISOString(),
+                    method: 'pin'
+                }));
+            } else if (loginPin.length === 4) {
+                document.getElementById('loginMsg2').textContent = '❌ PIN خاطئ';
+                loginPin = '';
+                document.querySelectorAll('#loginDots .pin-dot').forEach(d => d.classList.remove('filled'));
+            }
+        }
+
+        // ========== WebAuthn - بصمة الإصبع ==========
+        async function registerBiometric() {
+            const name = document.getElementById('regName').value || 'مستخدم';
+            const role = document.getElementById('regRole').value;
+            const msg = document.getElementById('registerMsg');
+
+            if (!window.PublicKeyCredential) {
+                msg.textContent = '⚠️ جهازك لا يدعم البصمة';
+                msg.className = 'status-msg error';
+                return;
+            }
+
+            try {
+                msg.textContent = '🔄 جاري التسجيل... ضع إصبعك';
+                msg.className = 'status-msg info';
+                document.getElementById('fpRegister').classList.add('active');
+
+                const challenge = new Uint8Array(32);
+                crypto.getRandomValues(challenge);
+
+                const credential = await navigator.credentials.create({
+                    publicKey: {
+                        rp: { name: 'Thana Restaurant', id: window.location.hostname },
+                        user: {
+                            id: new Uint8Array(16),
+                            name: name,
+                            displayName: name
+                        },
+                        pubKeyCredParams: [{ type: 'public-key', alg: -7 }],
+                        challenge: challenge,
+                        authenticatorSelection: {
+                            authenticatorAttachment: 'platform',
+                            userVerification: 'required'
+                        },
+                        timeout: 60000
+                    }
+                });
+
+                // حفظ بيانات المستخدم
+                const users = JSON.parse(localStorage.getItem('thana_users') || '[]');
+                users.push({
+                    id: btoa(String.fromCharCode(...new Uint8Array(credential.rawId))),
+                    name: name,
+                    role: role,
+                    registered: new Date().toISOString()
+                });
+                localStorage.setItem('thana_users', JSON.stringify(users));
+                localStorage.setItem('thana_biometric_registered', 'true');
+
+                document.getElementById('fpRegister').classList.add('registered');
+                document.getElementById('fpRegister').classList.remove('active');
+                msg.textContent = '✅ تم تسجيل البصمة بنجاح!';
+                msg.className = 'status-msg success';
+                
+                if (navigator.vibrate) navigator.vibrate([50, 50, 100]);
+
+            } catch (err) {
+                document.getElementById('fpRegister').classList.remove('active');
+                msg.textContent = '❌ فشل التسجيل: ' + (err.message || 'حاول مرة أخرى');
+                msg.className = 'status-msg error';
+                console.error(err);
+            }
+        }
+
+        async function loginWithBiometric() {
+            const msg = document.getElementById('loginMsg');
+            const isRegistered = localStorage.getItem('thana_biometric_registered');
+
+            if (!window.PublicKeyCredential) {
+                msg.textContent = '⚠️ جهازك لا يدعم البصمة - استخدم PIN';
+                msg.className = 'status-msg error';
+                return;
+            }
+
+            try {
+                msg.textContent = '🖐️ ضع إصبعك على المستشعر...';
+                msg.className = 'status-msg info';
+                document.getElementById('fpLogin').classList.add('active');
+
+                const challenge = new Uint8Array(32);
+                crypto.getRandomValues(challenge);
+
+                const assertion = await navigator.credentials.get({
+                    publicKey: {
+                        challenge: challenge,
+                        timeout: 60000,
+                        userVerification: 'required',
+                        rpId: window.location.hostname
+                    }
+                });
+
+                document.getElementById('fpLogin').classList.add('registered');
+                document.getElementById('fpLogin').classList.remove('active');
+                msg.textContent = '✅ تم التحقق - مرحباً بك!';
+                msg.className = 'status-msg success';
+
+                // جلسة
+                localStorage.setItem('thana_session', JSON.stringify({
+                    user: 'biometric_user',
+                    time: new Date().toISOString(),
+                    method: 'fingerprint'
+                }));
+
+                if (navigator.vibrate) navigator.vibrate(100);
+
+            } catch (err) {
+                document.getElementById('fpLogin').classList.remove('active');
+                msg.textContent = '❌ فشل التحقق - استخدم PIN';
+                msg.className = 'status-msg error';
+            }
+        }
+
+        // ========== تشفير AES ==========
+        async function encryptText() {
+            const key = document.getElementById('encKey').value;
+            const text = document.getElementById('encInput').value;
+            
+            if (!key || !text) {
+                alert('أدخل المفتاح والنص');
+                return;
+            }
+
+            try {
+                const encKey = await deriveKey(key);
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const encoded = new TextEncoder().encode(text);
+                const encrypted = await crypto.subtle.encrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    encKey,
+                    encoded
+                );
+                
+                const combined = new Uint8Array(iv.length + encrypted.byteLength);
+                combined.set(iv);
+                combined.set(new Uint8Array(encrypted), iv.length);
+                
+                document.getElementById('encOutput').value = btoa(String.fromCharCode(...combined));
+            } catch (err) {
+                alert('خطأ في التشفير: ' + err.message);
+            }
+        }
+
+        async function decryptText() {
+            const key = document.getElementById('encKey').value;
+            const encryptedText = document.getElementById('encOutput').value;
+            
+            if (!key || !encryptedText) {
+                alert('أدخل المفتاح والنص المشفر');
+                return;
+            }
+
+            try {
+                const encKey = await deriveKey(key);
+                const combined = new Uint8Array(atob(encryptedText).split('').map(c => c.charCodeAt(0)));
+                const iv = combined.slice(0, 12);
+                const data = combined.slice(12);
+                
+                const decrypted = await crypto.subtle.decrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    encKey,
+                    data
+                );
+                
+                document.getElementById('encInput').value = new TextDecoder().decode(decrypted);
+            } catch (err) {
+                alert('❌ فشل فك التشفير - تأكد من المفتاح');
+            }
+        }
+
+        async function deriveKey(password) {
+            const enc = new TextEncoder().encode(password);
+            const keyMaterial = await crypto.subtle.importKey('raw', enc, 'PBKDF2', false, ['deriveKey']);
+            return crypto.subtle.deriveKey(
+                { name: 'PBKDF2', salt: new TextEncoder().encode('thana-salt'), iterations: 100000, hash: 'SHA-256' },
+                keyMaterial,
+                { name: 'AES-GCM', length: 256 },
+                false,
+                ['encrypt', 'decrypt']
+            );
+        }
+
+        async function encryptAllData() {
+            const key = document.getElementById('encKey').value;
+            if (!key) { alert('أدخل مفتاح التشفير أولاً'); return; }
+            if (!confirm('سيتم تشفير جميع بيانات المطعم. استخدم نفس المفتاح لفك التشفير لاحقاً. استمر؟')) return;
+
+            try {
+                const allData = {};
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k.startsWith('thana_') && !k.includes('session') && !k.includes('auth')) {
+                        allData[k] = localStorage.getItem(k);
+                    }
+                }
+
+                const encKey = await deriveKey(key);
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const encoded = new TextEncoder().encode(JSON.stringify(allData));
+                const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, encKey, encoded);
+                
+                const combined = new Uint8Array(iv.length + encrypted.byteLength);
+                combined.set(iv);
+                combined.set(new Uint8Array(encrypted), iv.length);
+                
+                localStorage.setItem('thana_encrypted_backup', btoa(String.fromCharCode(...combined)));
+                alert('✅ تم تشفير جميع البيانات بنجاح!\nالنسخة المشفرة محفوظة في thana_encrypted_backup');
+            } catch (err) {
+                alert('❌ خطأ: ' + err.message);
+            }
+        }
+
+        async function decryptAllData() {
+            const key = document.getElementById('encKey').value;
+            const backup = localStorage.getItem('thana_encrypted_backup');
+            if (!key || !backup) { alert('أدخل المفتاح وتأكد من وجود نسخة مشفرة'); return; }
+            if (!confirm('سيتم استعادة البيانات من النسخة المشفرة. استمر؟')) return;
+
+            try {
+                const encKey = await deriveKey(key);
+                const combined = new Uint8Array(atob(backup).split('').map(c => c.charCodeAt(0)));
+                const iv = combined.slice(0, 12);
+                const data = combined.slice(12);
+                
+                const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, encKey, data);
+                const allData = JSON.parse(new TextDecoder().decode(decrypted));
+                
+                for (const [k, v] of Object.entries(allData)) {
+                    localStorage.setItem(k, v);
+                }
+                alert('✅ تم فك التشفير واستعادة البيانات!');
+            } catch (err) {
+                alert('❌ فشل - تأكد من المفتاح الصحيح');
+            }
+        }
+
+        function exportEncrypted() {
+            const backup = localStorage.getItem('thana_encrypted_backup');
+            if (!backup) { alert('لا توجد نسخة مشفرة. نفذ تشفير الكل أولاً.'); return; }
+            
+            const blob = new Blob([backup], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `thana-encrypted-${new Date().toISOString().slice(0,10)}.enc`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ========== إدارة المستخدمين ==========
+        function renderUsers() {
+            const users = JSON.parse(localStorage.getItem('thana_users') || '[]');
+            const container = document.getElementById('usersList');
+            
+            if (users.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:16px;">لا يوجد مستخدمين مسجلين بالبصمة</p>';
+                return;
+            }
+            
+            container.innerHTML = users.map((u, i) => `
+                <div class="user-row">
+                    <div>
+                        <div>${u.name}</div>
+                        <div style="font-size:11px;color:var(--text-muted);">${new Date(u.registered).toLocaleDateString('ar-SA')}</div>
+                    </div>
+                    <span class="badge ${u.role === 'admin' ? 'badge-admin' : 'badge-staff'}">${u.role === 'admin' ? 'مدير' : 'موظف'}</span>
+                    <span onclick="deleteUser(${i})" style="color:var(--danger);cursor:pointer;">🗑️</span>
+                </div>
+            `).join('');
+        }
+
+        function deleteUser(index) {
+            if (!confirm('حذف هذا المستخدم؟')) return;
+            const users = JSON.parse(localStorage.getItem('thana_users') || '[]');
+            users.splice(index, 1);
+            localStorage.setItem('thana_users', JSON.stringify(users));
+            if (users.length === 0) localStorage.removeItem('thana_biometric_registered');
+            renderUsers();
+        }
+
+        function resetAllAuth() {
+            if (!confirm('⚠️ سيتم مسح جميع البصمات والمستخدمين. استمر؟')) return;
+            localStorage.removeItem('thana_users');
+            localStorage.removeItem('thana_biometric_registered');
+            localStorage.removeItem('thana_session');
+            document.getElementById('fpRegister').classList.remove('registered');
+            document.getElementById('fpLogin').classList.remove('registered');
+            renderUsers();
+            alert('✅ تم مسح جميع بيانات المصادقة');
+        }
+
+        // ========== بدء التشغيل ==========
+        buildPinPad('login');
+        
+        // فحص إذا فيه بصمة مسجلة
+        if (localStorage.getItem('thana_biometric_registered') === 'true') {
+            document.getElementById('fpLogin').classList.add('registered');
+            document.getElementById('fpRegister').classList.add('registered');
+        }
+    </script>
+</body>
+</html>
