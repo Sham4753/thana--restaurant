@@ -3,30 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><span id="shopTitle">Thana Restaurant</span></title>
+    <title>Thana Restaurant</title>
     <link rel="stylesheet" href="theme-v2.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0a0b0f">
     <script src="nav-component.js" defer></script>
     <script src="pwa-register.js" defer></script>
     <style>
-        body{padding:16px}
+        body{padding:16px;font-family:'Cairo',sans-serif}
         .container{max-width:900px;margin:0 auto}
         .hero{text-align:center;padding:20px 0}
         .hero .logo{font-size:56px}
         .hero h1{font-size:28px;color:#d4a853;margin:8px 0}
         .hero .sub{color:#a8a49e;font-size:13px}
-        
         .nav-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:16px 0}
-        .nav-card{
-            background:#161820;border:1px solid rgba(255,255,255,0.06);
-            border-radius:12px;padding:14px 10px;text-align:center;
-            text-decoration:none;color:#e8e4dd;transition:all 0.2s;display:block;
-        }
+        .nav-card{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:14px 10px;text-align:center;text-decoration:none;color:#e8e4dd;transition:all 0.2s;display:block}
         .nav-card:hover{border-color:#d4a853;transform:translateY(-2px)}
         .nav-card .icon{font-size:28px;display:block;margin-bottom:4px}
         .nav-card .label{font-size:11px;font-weight:600}
-        
         .section-title{color:#d4a853;font-size:13px;margin:20px 0 10px;padding-right:8px;border-right:3px solid #d4a853}
         .footer{text-align:center;padding:20px;color:#6b6760;font-size:11px}
     </style>
@@ -35,18 +29,18 @@
 <div class="container">
     <div class="hero">
         <div class="logo">🍽️</div>
-        <h1><span id="shopTitle">Thana Restaurant</span></h1>
+        <h1 id="shopNameDisplay">Thana Restaurant</h1>
         <div class="sub">نظام إدارة مطعم متكامل · v2.1</div>
     </div>
 
     <div class="section-title">🚀 الوصول السريع</div>
     <div class="nav-grid">
         <a href="dashboard.html" class="nav-card"><span class="icon">📊</span><span class="label">لوحة التحكم</span></a>
+        <a href="orders.html" class="nav-card"><span class="icon">📊</span><span class="label">الطلبات</span></a>
         <a href="waiter.html" class="nav-card"><span class="icon">📋</span><span class="label">النادل</span></a>
         <a href="kitchen.html" class="nav-card"><span class="icon">🍳</span><span class="label">المطبخ</span></a>
         <a href="qr-menu.html?table=1" class="nav-card"><span class="icon">📱</span><span class="label">QR Menu</span></a>
         <a href="voice.html" class="nav-card"><span class="icon">🎤</span><span class="label">صوتي</span></a>
-        <a href="ai.html" class="nav-card"><span class="icon">🧠</span><span class="label">ذكاء</span></a>
     </div>
 
     <div class="section-title">📋 الإدارة</div>
@@ -56,19 +50,23 @@
         <a href="menu.html" class="nav-card"><span class="icon">🍽️</span><span class="label">القائمة</span></a>
         <a href="inventory.html" class="nav-card"><span class="icon">📦</span><span class="label">المخزون</span></a>
         <a href="reports.html" class="nav-card"><span class="icon">📈</span><span class="label">التقارير</span></a>
-        <a href="customers.html" class="nav-card"><span class="icon">👤</span><span class="label">العملاء</span></a>
+        <a href="close.html" class="nav-card"><span class="icon">🔒</span><span class="label">الإغلاق</span></a>
     </div>
 
     <div class="section-title">⚙️ النظام</div>
     <div class="nav-grid">
-        <a href="setup.html" class="nav-card"><span class="icon">🏪</span><span class="label">هوية المطعم</span></a><a href="settings.html" class="nav-card"><span class="icon">⚙️</span><span class="label">الإعدادات</span></a>
-        <a href="auth.html" class="nav-card"><span class="icon">🔐</span><span class="label">الأمان</span></a>
-        <a href="print.html" class="nav-card"><span class="icon">🖨️</span><span class="label">الطباعة</span></a>
+        <a href="setup.html" class="nav-card"><span class="icon">🏪</span><span class="label">الهوية</span></a>
+        <a href="settings.html" class="nav-card"><span class="icon">⚙️</span><span class="label">الإعدادات</span></a>
+        <a href="pin-settings.html" class="nav-card"><span class="icon">🔢</span><span class="label">PIN</span></a>
         <a href="backup.html" class="nav-card"><span class="icon">💾</span><span class="label">نسخ احتياطي</span></a>
         <a href="help.html" class="nav-card"><span class="icon">📖</span><span class="label">مساعدة</span></a>
     </div>
 
-    <div class="footer"><span id="shopTitle">Thana Restaurant</span> v2.1 · تكلفة $0 · بدون سيرفر</div>
+    <div class="footer">Thana Restaurant v2.1 · تكلفة $0</div>
 </div>
+<script>
+var s=JSON.parse(localStorage.getItem('thana_shop_settings')||'{}');
+if(s.name){document.getElementById('shopNameDisplay').textContent=s.name;document.title=s.name}
+</script>
 </body>
 </html>
