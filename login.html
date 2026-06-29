@@ -47,7 +47,7 @@ function D(){document.querySelectorAll('#dots span').forEach(function(d,i){d.cla
 function go(p){P=p;D();setTimeout(C,200)}
 function C(){
     var m=document.getElementById('msg');
-    if(U[P]){var u=U[P];localStorage.setItem('thana_auth_session',JSON.stringify({role:u.r}));m.textContent='✅ '+u.n;m.className='msg s';setTimeout(function(){location.href='index.html'},400)}
+    if(U[P]){var u=U[P];localStorage.setItem('thana_auth_session',JSON.stringify({role:u.r}));m.textContent='✅ '+u.n;m.className='msg s';setTimeout(function(){window.window.location.href='index.html'},400)}
     else{m.textContent='❌ غلط - جرب 2026';m.className='msg e';P='';D()}
 }
 function T(k){
