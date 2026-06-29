@@ -3,453 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0a0b0f">
     <title>تسجيل الدخول - Thana Restaurant</title>
     <link rel="stylesheet" href="theme-v2.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0b0f">
+    <script src="auth-v2.js"></script>
     <style>
         body {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-            background: var(--bg);
-            background-image:
-                radial-gradient(ellipse at 50% 0%, rgba(212,168,83,0.06) 0%, transparent 60%),
-                radial-gradient(ellipse at 50% 100%, rgba(114,47,55,0.06) 0%, transparent 60%);
+            padding: 16px;
         }
-
-        .login-container {
-            width: 100%;
-            max-width: 380px;
-            animation: fadeInUp 0.5s ease;
-        }
-
-        .login-logo {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-        .login-logo .emoji {
-            font-size: 56px;
-            display: block;
-            margin-bottom: 10px;
-            filter: drop-shadow(0 4px 12px rgba(212,168,83,0.3));
-        }
-        .login-logo h1 {
-            font-size: 26px;
-            font-weight: 800;
-            color: var(--gold);
-            letter-spacing: -0.5px;
-        }
-        .login-logo p {
-            color: var(--text-muted);
-            font-size: 12px;
-            margin-top: 4px;
-        }
-
+        .login-container { max-width: 420px; width: 100%; text-align: center; }
         .login-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: var(--radius-2xl);
-            padding: 28px 24px;
+            border-radius: var(--radius-xl);
+            padding: 32px 24px;
             box-shadow: var(--shadow-lg);
         }
-
-        /* اختيار الدور */
-        .role-section { margin-bottom: 24px; }
-        .role-section label {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-        }
-        .role-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-        .role-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            padding: 12px 6px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            background: var(--bg);
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all var(--transition);
-            font-family: var(--font);
-            font-size: 10px;
-            font-weight: 600;
-        }
-        .role-btn .role-icon { font-size: 22px; }
-        .role-btn:hover {
-            border-color: var(--border-gold);
+        .login-logo { font-size: 56px; margin-bottom: 8px; }
+        .login-title {
+            font-size: 24px;
+            font-weight: 800;
             color: var(--gold);
-            background: rgba(212,168,83,0.05);
+            font-family: var(--font-display);
         }
-        .role-btn.selected {
-            border-color: var(--gold);
-            background: rgba(212,168,83,0.1);
-            color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(212,168,83,0.08);
-        }
+        .login-subtitle { color: var(--text-secondary); font-size: 13px; margin: 8px 0 24px; }
 
-        /* فاصل */
-        .divider-text {
-            text-align: center;
-            position: relative;
-            margin: 20px 0;
-            color: var(--text-muted);
-            font-size: 11px;
-        }
-        .divider-text::before, .divider-text::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 40%;
-            height: 1px;
-            background: var(--border);
-        }
-        .divider-text::before { right: 0; }
-        .divider-text::after { left: 0; }
-
-        /* PIN */
-        .pin-section label {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-        }
-        .pin-dots {
+        .pin-display {
             display: flex;
+            gap: 10px;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 16px;
+            margin: 16px 0;
         }
         .pin-dot {
-            width: 14px;
-            height: 14px;
+            width: 18px; height: 18px;
             border-radius: 50%;
-            border: 2px solid var(--border);
-            background: transparent;
-            transition: all 0.2s;
+            border: 2px solid var(--border-hover);
+            transition: all var(--transition);
         }
         .pin-dot.filled {
             background: var(--gold);
             border-color: var(--gold);
-            box-shadow: 0 0 8px rgba(212,168,83,0.4);
+            box-shadow: 0 0 10px rgba(212,168,83,0.4);
+        }
+        .pin-dot.error {
+            background: var(--danger);
+            border-color: var(--danger);
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
         }
 
-        /* لوحة الأرقام */
-        .numpad {
+        .pin-pad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 8px;
-            margin-bottom: 16px;
+            max-width: 240px;
+            margin: 0 auto;
         }
-        .num-btn {
-            padding: 14px;
+        .pin-key {
+            padding: 16px;
             border-radius: var(--radius);
+            background: var(--bg-input);
             border: 1px solid var(--border);
-            background: var(--bg);
-            color: var(--text);
-            font-family: var(--font);
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all var(--transition);
-            text-align: center;
-        }
-        .num-btn:hover {
-            background: rgba(212,168,83,0.08);
-            border-color: var(--border-gold);
-            color: var(--gold);
-        }
-        .num-btn:active { transform: scale(0.94); }
-        .num-btn.del {
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-        .num-btn.zero { grid-column: 2; }
-
-        /* بصمة */
-        .biometric-btn {
-            width: 100%;
-            padding: 12px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border-gold);
-            background: rgba(212,168,83,0.05);
-            color: var(--gold);
-            font-family: var(--font);
-            font-size: 13px;
+            color: #fff;
+            font-size: 20px;
             font-weight: 600;
             cursor: pointer;
             transition: all var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        .biometric-btn:hover {
-            background: rgba(212,168,83,0.12);
-            box-shadow: 0 4px 16px rgba(212,168,83,0.15);
-        }
-
-        /* زر الدخول */
-        .login-btn {
-            width: 100%;
-            padding: 14px;
-            border-radius: var(--radius-lg);
-            border: none;
-            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
-            color: #1a1814;
             font-family: var(--font);
-            font-size: 15px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all var(--transition);
-            box-shadow: 0 4px 16px rgba(212,168,83,0.25);
         }
-        .login-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(212,168,83,0.35);
-        }
-        .login-btn:active { transform: scale(0.98); }
-        .login-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .pin-key:hover { background: var(--border-hover); }
+        .pin-key:active { transform: scale(0.9); }
 
-        /* خطأ */
-        .error-msg {
-            text-align: center;
-            color: var(--danger);
+        .login-msg {
+            margin-top: 12px;
+            min-height: 22px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .login-msg.error { color: var(--danger); }
+        .login-msg.success { color: var(--success); }
+
+        .quick-pins {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        .quick-pin {
+            padding: 8px 14px;
+            border-radius: var(--radius-full);
             font-size: 12px;
-            margin-top: 10px;
-            min-height: 18px;
-            animation: fadeIn 0.3s ease;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: var(--font);
+            transition: all var(--transition);
         }
+        .quick-pin:hover { border-color: var(--gold); color: var(--gold); }
 
-        /* shake */
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20% { transform: translateX(-8px); }
-            40% { transform: translateX(8px); }
-            60% { transform: translateX(-6px); }
-            80% { transform: translateX(6px); }
-        }
-        .shake { animation: shake 0.4s ease; }
-
-        .footer-text {
-            text-align: center;
+        .info-text {
+            font-size: 10px;
             color: var(--text-muted);
-            font-size: 11px;
-            margin-top: 20px;
+            margin-top: 16px;
+            line-height: 1.6;
         }
     </style>
 </head>
 <body>
-<div class="login-container">
-    <div class="login-logo">
-        <span class="emoji">🍽️</span>
-        <h1>Thana Restaurant</h1>
-        <p>نظام إدارة ذكي · 2026</p>
-    </div>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-logo">🍽️</div>
+            <div class="login-title">Thana Restaurant</div>
+            <div class="login-subtitle">أدخل رمز PIN للدخول</div>
 
-    <div class="login-card">
-        <!-- اختيار الدور -->
-        <div class="role-section">
-            <label>اختر دورك</label>
-            <div class="role-grid">
-                <button class="role-btn selected" data-role="admin" onclick="selectRole(this)">
-                    <span class="role-icon">🔑</span>
-                    المدير
-                </button>
-                <button class="role-btn" data-role="manager" onclick="selectRole(this)">
-                    <span class="role-icon">📊</span>
-                    مناوب
-                </button>
-                <button class="role-btn" data-role="waiter" onclick="selectRole(this)">
-                    <span class="role-icon">📋</span>
-                    نادل
-                </button>
-                <button class="role-btn" data-role="kitchen" onclick="selectRole(this)">
-                    <span class="role-icon">🍳</span>
-                    مطبخ
-                </button>
-                <button class="role-btn" data-role="cashier" onclick="selectRole(this)">
-                    <span class="role-icon">💰</span>
-                    كاشير
-                </button>
-                <button class="role-btn" data-role="guest" onclick="selectRole(this)">
-                    <span class="role-icon">👁️</span>
-                    زائر
-                </button>
+            <div class="pin-display" id="pinDots">
+                <span class="pin-dot"></span>
+                <span class="pin-dot"></span>
+                <span class="pin-dot"></span>
+                <span class="pin-dot"></span>
+            </div>
+
+            <div class="login-msg" id="loginMsg"></div>
+
+            <div class="pin-pad" id="pinPad"></div>
+
+            <div class="quick-pins">
+                <span style="color:var(--text-muted);font-size:11px;width:100%;text-align:center;margin-bottom:4px;">👆 حسابات تجريبية - اضغط للدخول السريع</span>
+                <button class="quick-pin" onclick="quickLogin('2026')">🔑 مدير</button>
+                <button class="quick-pin" onclick="quickLogin('1111')">📋 نادل</button>
+                <button class="quick-pin" onclick="quickLogin('2222')">🍳 مطبخ</button>
+                <button class="quick-pin" onclick="quickLogin('3333')">💰 كاشير</button>
+            </div>
+
+            <div class="info-text">
+                💡 أدخل PIN من 4 أرقام أو اختر حساب جاهز
             </div>
         </div>
-
-        <div class="divider-text">أدخل PIN</div>
-
-        <!-- PIN -->
-        <div class="pin-section">
-            <div class="pin-dots" id="pinDots">
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-            </div>
-
-            <div class="numpad">
-                <button class="num-btn" onclick="addPin('1')">1</button>
-                <button class="num-btn" onclick="addPin('2')">2</button>
-                <button class="num-btn" onclick="addPin('3')">3</button>
-                <button class="num-btn" onclick="addPin('4')">4</button>
-                <button class="num-btn" onclick="addPin('5')">5</button>
-                <button class="num-btn" onclick="addPin('6')">6</button>
-                <button class="num-btn" onclick="addPin('7')">7</button>
-                <button class="num-btn" onclick="addPin('8')">8</button>
-                <button class="num-btn" onclick="addPin('9')">9</button>
-                <button class="num-btn zero" onclick="addPin('0')">0</button>
-                <button class="num-btn del" onclick="delPin()">⌫</button>
-            </div>
-        </div>
-
-        <!-- بصمة -->
-        <button class="biometric-btn" onclick="tryBiometric()" id="bioBtn">
-            <span>👆</span> دخول بالبصمة
-        </button>
-
-        <!-- دخول -->
-        <button class="login-btn" onclick="doLogin()" id="loginBtn" disabled>
-            دخول ←
-        </button>
-
-        <div class="error-msg" id="errorMsg"></div>
     </div>
 
-    <div class="footer-text">
-        Thana Restaurant v2.1 · $0 تكلفة
-    </div>
-</div>
+    <script>
+        let enteredPin = '';
 
-<script>
-    // PINs حسب الدور (في الواقع تجيب من localStorage أو settings)
-    const PINS = {
-        admin: '0000',
-        manager: '1111',
-        waiter: '2222',
-        kitchen: '3333',
-        cashier: '4444',
-        guest: '0000'
-    };
-
-    let selectedRole = 'admin';
-    let pin = '';
-    const MAX_PIN = 4;
-
-    function selectRole(btn) {
-        document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        selectedRole = btn.dataset.role;
-        pin = '';
-        updateDots();
-        document.getElementById('errorMsg').textContent = '';
-    }
-
-    function addPin(digit) {
-        if (pin.length >= MAX_PIN) return;
-        pin += digit;
-        updateDots();
-        if (pin.length === MAX_PIN) {
-            document.getElementById('loginBtn').disabled = false;
-            setTimeout(doLogin, 300);
+        function buildPinPad() {
+            const pad = document.getElementById('pinPad');
+            const keys = ['1','2','3','4','5','6','7','8','9','⌫','0','✓'];
+            pad.innerHTML = keys.map(k => {
+                let cls = 'pin-key';
+                return `<button class="${cls}" onclick="pinPress('${k}')">${k}</button>`;
+            }).join('');
         }
-    }
 
-    function delPin() {
-        pin = pin.slice(0, -1);
-        updateDots();
-        document.getElementById('loginBtn').disabled = pin.length < MAX_PIN;
-    }
+        function pinPress(key) {
+            const msg = document.getElementById('loginMsg');
+            msg.textContent = '';
+            msg.className = 'login-msg';
 
-    function updateDots() {
-        const dots = document.querySelectorAll('.pin-dot');
-        dots.forEach((dot, i) => {
-            dot.classList.toggle('filled', i < pin.length);
-        });
-    }
-
-    function doLogin() {
-        const correctPin = localStorage.getItem('thana_pin_' + selectedRole) || PINS[selectedRole];
-        if (pin === correctPin) {
-            const session = {
-                role: selectedRole,
-                time: Date.now(),
-                expires: Date.now() + (8 * 60 * 60 * 1000) // 8 ساعات
-            };
-            localStorage.setItem('thana_auth_session', JSON.stringify(session));
-            document.querySelector('.login-card').style.transform = 'scale(0.95)';
-            document.querySelector('.login-card').style.opacity = '0';
-            setTimeout(() => { window.location.href = 'index.html'; }, 300);
-        } else {
-            document.getElementById('errorMsg').textContent = '❌ PIN غلط، حاول مرة ثانية';
-            document.querySelector('.login-card').classList.add('shake');
-            setTimeout(() => document.querySelector('.login-card').classList.remove('shake'), 400);
-            pin = '';
-            updateDots();
-            document.getElementById('loginBtn').disabled = true;
-        }
-    }
-
-    async function tryBiometric() {
-        if (!window.PublicKeyCredential) {
-            document.getElementById('errorMsg').textContent = '⚠️ البصمة غير مدعومة على هذا الجهاز';
-            return;
-        }
-        try {
-            const cred = await navigator.credentials.get({
-                publicKey: {
-                    challenge: new Uint8Array(32),
-                    timeout: 60000,
-                    userVerification: 'required'
+            if (key === '⌫') {
+                enteredPin = enteredPin.slice(0, -1);
+            } else if (key === '✓') {
+                doLogin();
+                return;
+            } else {
+                if (enteredPin.length < 4) {
+                    enteredPin += key;
+                    if (enteredPin.length === 4) {
+                        setTimeout(doLogin, 300);
+                    }
                 }
+            }
+            updateDots();
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.pin-dot');
+            dots.forEach((d, i) => {
+                d.classList.toggle('filled', i < enteredPin.length);
+                d.classList.remove('error');
             });
-            if (cred) {
-                const session = {
-                    role: selectedRole,
-                    time: Date.now(),
-                    expires: Date.now() + (8 * 60 * 60 * 1000),
-                    biometric: true
-                };
-                localStorage.setItem('thana_auth_session', JSON.stringify(session));
-                window.location.href = 'index.html';
-            }
-        } catch(e) {
-            document.getElementById('errorMsg').textContent = '⚠️ فشل التحقق بالبصمة';
         }
-    }
 
-    // تحقق إذا فيه session نشطة
-    window.addEventListener('load', () => {
-        try {
-            const session = JSON.parse(localStorage.getItem('thana_auth_session') || 'null');
-            if (session && session.expires > Date.now()) {
-                window.location.href = 'index.html';
-            }
-        } catch(e) {}
-
-        // إخفاء زر البصمة إذا غير مدعوم
-        if (!window.PublicKeyCredential) {
-            document.getElementById('bioBtn').style.display = 'none';
+        function showError() {
+            const dots = document.querySelectorAll('.pin-dot');
+            dots.forEach(d => d.classList.add('error'));
+            setTimeout(() => dots.forEach(d => d.classList.remove('error', 'filled')), 500);
+            enteredPin = '';
+            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
         }
-    });
-</script>
+
+        function doLogin() {
+            if (enteredPin.length === 0) return;
+
+            const result = login(enteredPin);
+            const msg = document.getElementById('loginMsg');
+
+            if (result.success) {
+                msg.textContent = result.message;
+                msg.className = 'login-msg success';
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 500);
+            } else {
+                msg.textContent = result.message;
+                msg.className = 'login-msg error';
+                showError();
+            }
+        }
+
+        function quickLogin(pin) {
+            enteredPin = pin;
+            updateDots();
+            setTimeout(doLogin, 200);
+        }
+
+        // فحص جلسة سابقة
+        if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+            document.getElementById('loginMsg').textContent = '✅ مرحباً بعودتك!';
+            document.getElementById('loginMsg').className = 'login-msg success';
+            setTimeout(() => { window.location.href = 'index.html'; }, 500);
+        }
+
+        buildPinPad();
+    </script>
 </body>
 </html>
