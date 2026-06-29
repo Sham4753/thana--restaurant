@@ -230,6 +230,20 @@
         }
 
         async function connectBluetooth() {
+            if (!navigator.bluetooth) {
+                showToast("⚠️ متصفحك لا يدعم البلوتوث - استخدم Chrome أو Edge");
+                return;
+            }
+            try {
+                const available = await navigator.bluetooth.getAvailability();
+                if (!available) {
+                    showToast("⚠️ البلوتوث غير مفعل - افتحه من الإعدادات");
+                    return;
+                }
+            } catch(e) {
+                showToast("⚠️ تعذر التحقق من البلوتوث - جرب الطباعة العادية");
+                return;
+            }
             try {
                 if (!navigator.bluetooth) { showToast('⚠️ المتصفح لا يدعم البلوتوث'); return; }
                 updateBTStatus('on', '🔄 جاري البحث...');

@@ -1,0 +1,51 @@
+/* ============================================
+   Thana Restaurant - Accessibility
+   تحسين التباين والوضوح للشاشات الخارجية
+   ============================================ */
+
+/* تحسين تباين النص الذهبي */
+[data-contrast="high"] {
+    --gold: #f0c040;
+    --gold-light: #f5d060;
+    --gold-dark: #c89820;
+    --text: #ffffff;
+    --text-secondary: #d0ccc8;
+    --bg-card: #1a1c24;
+}
+
+/* وضع ضوء الشمس */
+[data-sunlight="true"] {
+    --bg: #000000;
+    --bg-card: #0a0a0a;
+    --text: #ffffff;
+    --text-secondary: #cccccc;
+    --gold: #ffd700;
+    --border: rgba(255,255,255,0.15);
+}
+
+/* تكبير النص */
+[data-fontsize="large"] {
+    font-size: 1.1em;
+}
+
+[data-fontsize="xlarge"] {
+    font-size: 1.25em;
+}
+
+/* دعم قارئ الشاشة */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+}
+
+/* تحسين focus visibility */
+:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+}
