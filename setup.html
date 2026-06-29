@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إعداد المطعم - Thana</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <script src="nav-component.js" defer></script>
+    <style>
+        body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
+        .container{max-width:550px;margin:0 auto}
+        .card{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:22px;margin-bottom:14px}
+        h2{color:#d4a853;text-align:center;margin-bottom:18px;font-size:20px}
+        h3{color:#d4a853;margin-bottom:12px;font-size:14px}
+        label{display:block;font-size:12px;color:#a8a49e;margin-bottom:4px;margin-top:12px}
+        input{width:100%;padding:12px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;font-family:'Cairo',sans-serif;font-size:14px}
+        .preview-box{background:rgba(0,0,0,0.3);border-radius:12px;padding:16px;text-align:center;margin-top:14px}
+        .preview-box .pname{font-size:20px;font-weight:800;color:#d4a853}
+        .preview-box .pinfo{font-size:11px;color:#a8a49e;margin-top:2px}
+        .btn{display:block;width:100%;padding:14px;border-radius:12px;border:none;font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;font-family:'Cairo',sans-serif}
+        .btn-gold{background:linear-gradient(135deg,#b8942e,#d4a853);color:#1a1814}
+        .btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.1);color:#fff}
+        .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 22px;border-radius:30px;font-weight:700;z-index:300}
+        .color-pick{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+        .color-dot{width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all 0.2s}
+        .color-dot:hover{transform:scale(1.1)}
+        .color-dot.sel{border-color:#fff}
+    </style>
+</head>
+<body>
+<div class="container">
+<div class="card">
+    <div style="font-size:48px;text-align:center;">🏪</div>
+    <h2>إعداد هوية المطعم</h2>
+    <p style="text-align:center;color:#a8a49e;font-size:12px;">اضبط الإعدادات مرة وحدة - النظام كله بيتحدث</p>
+</div>
+
+<div class="card">
+    <h3>📛 معلومات المطعم</h3>
+    <label>اسم المطعم</label>
+    <input type="text" id="shopName" placeholder="مثال: مطعم المجد">
+    
+    <label>رقم الجوال</label>
+    <input type="text" id="shopPhone" placeholder="مثال: 0999123456">
+    
+    <label>العنوان (اختياري)</label>
+    <input type="text" id="shopAddress" placeholder="مثال: حي المطاعم - شارع الرئيسي">
+</div>
+
+<div class="card">
+    <h3>💱 العملة</h3>
+    <label>رمز العملة</label>
+    <input type="text" id="shopCurrency" placeholder="مثال: ل.س أو $ أو €">
+    
+    <label>اسم العملة</label>
+    <input type="text" id="shopCurrencyName" placeholder="مثال: ليرة سورية">
+</div>
+
+<div class="card">
+    <h3>🎨 اللون الرئيسي (اختياري)</h3>
+    <div class="color-pick" id="colors">
+        <div class="color-dot sel" style="background:#d4a853" data-color="gold" onclick="pickColor(this)"></div>
+        <div class="color-dot" style="background:#38bdf8" data-color="blue" onclick="pickColor(this)"></div>
+        <div class="color-dot" style="background:#10b981" data-color="green" onclick="pickColor(this)"></div>
+        <div class="color-dot" style="background:#f59e0b" data-color="orange" onclick="pickColor(this)"></div>
+        <div class="color-dot" style="background:#ef4444" data-color="red" onclick="pickColor(this)"></div>
+        <div class="color-dot" style="background:#8b5cf6" data-color="purple" onclick="pickColor(this)"></div>
+        <div class="color-dot" style="background:#ec4899" data-color="pink" onclick="pickColor(this)"></div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>👁️ معاينة</h3>
+    <div class="preview-box">
+        <div class="pname" id="previewName">مطعم المجد</div>
+        <div class="pinfo" id="previewInfo">📞 0999123456 | 💰 ل.س</div>
+    </div>
+</div>
+
+<button class="btn btn-gold" onclick="saveAll()">💾 حفظ وتطبيق على كل النظام</button>
+<button class="btn btn-outline" onclick="loadSettings()">🔄 تحميل الإعدادات الحالية</button>
+</div>
+
+<script>
+function pickColor(dot){
+    document.querySelectorAll('.color-dot').forEach(function(d){d.classList.remove('sel')});
+    dot.classList.add('sel');
+    updatePreview();
+}
+
+function updatePreview(){
+    var name=document.getElementById('shopName').value||'اسم المطعم';
+    var phone=document.getElementById('shopPhone').value||'0999...';
+    var cur=document.getElementById('shopCurrency').value||'ل.س';
+    document.getElementById('previewName').textContent=name;
+    document.getElementById('previewInfo').textContent='📞 '+phone+' | 💰 '+cur;
+}
+
+function saveAll(){
+    var settings={
+        name:document.getElementById('shopName').value,
+        phone:document.getElementById('shopPhone').value,
+        address:document.getElementById('shopAddress').value,
+        currency:document.getElementById('shopCurrency').value||'ل.س',
+        currencyName:document.getElementById('shopCurrencyName').value||'ليرة سورية',
+        color:document.querySelector('.color-dot.sel').getAttribute('data-color'),
+        updatedAt:new Date().toISOString()
+    };
+    
+    if(!settings.name){alert('الرجاء إدخال اسم المطعم');return}
+    if(!settings.phone){alert('الرجاء إدخال رقم الجوال');return}
+    
+    localStorage.setItem('thana_shop_settings',JSON.stringify(settings));
+    localStorage.setItem('thana_currency_symbol',settings.currency);
+    localStorage.setItem('thana_currency_name',settings.currencyName);
+    localStorage.setItem('thana_restaurant_name',settings.name);
+    
+    alert('✅ تم الحفظ! النظام كله تحدث باسم: '+settings.name);
+    location.reload();
+}
+
+function loadSettings(){
+    var s=JSON.parse(localStorage.getItem('thana_shop_settings')||'{}');
+    if(s.name){
+        document.getElementById('shopName').value=s.name||'';
+        document.getElementById('shopPhone').value=s.phone||'';
+        document.getElementById('shopAddress').value=s.address||'';
+        document.getElementById('shopCurrency').value=s.currency||'';
+        document.getElementById('shopCurrencyName').value=s.currencyName||'';
+        if(s.color){
+            document.querySelectorAll('.color-dot').forEach(function(d){
+                d.classList.toggle('sel',d.getAttribute('data-color')===s.color);
+            });
+        }
+        updatePreview();
+        showToast('✅ تم تحميل الإعدادات');
+    }
+}
+
+function showToast(m){
+    var t=document.querySelector('.toast');if(t)t.remove();
+    t=document.createElement('div');t.className='toast';t.textContent=m;
+    document.body.appendChild(t);setTimeout(function(){t.remove()},2000);
+}
+
+document.getElementById('shopName').oninput=updatePreview;
+document.getElementById('shopPhone').oninput=updatePreview;
+document.getElementById('shopCurrency').oninput=updatePreview;
+loadSettings();
+</script>
+</body>
+</html>
