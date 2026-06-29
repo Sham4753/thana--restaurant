@@ -149,7 +149,7 @@
                 <div class="center">حي المطاعم</div>
                 <div class="center">0999-000-000</div>
                 <div class="line"></div>
-                <div class="center">اختر طلباً للمعاينة</div>
+                <div class="center">${shopName}</div><div class="center">${shopAddr}</div><div class="center">${shopTel}</div><div class="line"></div><div class="center">اختر طلباً للمعاينة</div>
                 <div class="line"></div>
                 <div class="center" style="font-size:10px;">شكراً لزيارتكم 💙</div>
             </div>
@@ -301,7 +301,7 @@
         function updatePreview() {
             const preview = document.getElementById('receiptPreview');
             if (!selectedOrderId) {
-                preview.innerHTML = '<div class="center title">🍽️ Thana Restaurant</div><div class="center">اختر طلباً للمعاينة</div>';
+                preview.innerHTML = '<div class="center title">🍽️ Thana Restaurant</div><div class="center">${shopName}</div><div class="center">${shopAddr}</div><div class="center">${shopTel}</div><div class="line"></div><div class="center">اختر طلباً للمعاينة</div>';
                 return;
             }
             const orders = JSON.parse(localStorage.getItem('thana_orders') || '[]');
