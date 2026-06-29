@@ -103,7 +103,7 @@ function renderList(orders,type){
 function markPaid(id){
     var orders=GO();var o=orders.find(function(x){return x.id===id});
     if(o){
-        o.paymentStatus='paid';o.paidAt=new Date().toISOString();
+        o.paymentStatus="paid";o.paidAt=new Date().toISOString();addToCash(o)().toISOString();addToCash(o)().toISOString();
         SO(orders);
         // تفريغ الطاولة
         if(o.table&&o.table!=='safari'){freeTable(o.table)}
@@ -142,6 +142,10 @@ function freeTable(tableId){
 }
 
 function addToCash(order){
+            // الدين ما يضاف للكاش
+            if(order.paymentStatus==="debt") return;
+            // الدين ما يضاف للكاش
+            if(order.paymentStatus==="debt") return;
     var cash=JSON.parse(localStorage.getItem('thana_cash')||'[]');
     cash.push({id:order.id,table:order.table,total:order.total,time:new Date().toISOString()});
     localStorage.setItem('thana_cash',JSON.stringify(cash));
