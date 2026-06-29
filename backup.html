@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نسخ احتياطي - Thana Restaurant</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <meta name="theme-color" content="#0a0b0f">
+    <script src="nav-component.js" defer></script>
+    <style>
+        body { padding: 16px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .backup-icon { font-size: 56px; margin-bottom: 8px; }
+        .backup-title { font-family: var(--font-display); font-size: 22px; color: var(--gold); }
+        .backup-subtitle { color: var(--text-secondary); font-size: 13px; margin: 6px 0 16px; }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius);
+            border: none;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            font-family: var(--font);
+            transition: all var(--transition);
+        }
+        .btn-gold { background: linear-gradient(135deg, var(--gold-dark), var(--gold)); color: #1a1814; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+        .btn-danger { background: var(--danger-light); color: var(--danger); border: 1px solid rgba(192,57,43,0.2); }
+        .btn:active { transform: scale(0.97); }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+        .info-label { color: var(--text-secondary); }
+        .info-value { font-weight: 600; }
+        
+        .toast {
+            position: fixed;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-weight: 700;
+            z-index: 300;
+            animation: slideDown 0.4s ease, slideUp 0.4s ease 2s forwards;
+        }
+        @keyframes slideDown { from{opacity:0;transform:translateX(-50%) translateY(-80px);} }
+        @keyframes slideUp { to{opacity:0;transform:translateX(-50%) translateY(-80px);} }
+        
+        input[type="file"] { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="backup-icon">💾</div>
+            <div class="backup-title">النسخ الاحتياطي</div>
+            <div class="backup-subtitle">حافظ على بيانات مطعمك بأمان</div>
+        </div>
+
+        <!-- معلومات -->
+        <div class="card">
+            <h3 style="color:var(--gold);margin-bottom:12px;">📊 حالة البيانات</h3>
+            <div id="dataStats"></div>
+        </div>
+
+        <!-- تصدير -->
+        <div class="card">
+            <h3 style="color:var(--gold);margin-bottom:12px;">📤 تصدير نسخة احتياطية</h3>
+            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">
+                حمل جميع بيانات المطعم في ملف واحد
+            </p>
+            <button class="btn btn-gold" onclick="exportAll()">💾 تحميل نسخة كاملة (JSON)</button>
+        </div>
+
+        <!-- استيراد -->
+        <div class="card">
+            <h3 style="color:var(--gold);margin-bottom:12px;">📥 استعادة نسخة احتياطية</h3>
+            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">
+                ارفع ملف النسخة الاحتياطية لاستعادة البيانات
+            </p>
+            <input type="file" id="importFile" accept=".json" onchange="importAll(event)">
+            <button class="btn btn-outline" onclick="document.getElementById('importFile').click()">📂 اختر ملف النسخة</button>
+        </div>
+
+        <!-- نسخ سريع -->
+        <div class="card">
+            <h3 style="color:var(--gold);margin-bottom:12px;">📋 نسخ سريع للنص</h3>
+            <button class="btn btn-outline" onclick="copyToClipboard()">📋 نسخ جميع البيانات كنص</button>
+        </div>
+
+        <!-- تصفير -->
+        <div class="card">
+            <h3 style="color:var(--danger);margin-bottom:12px;">⚠️ منطقة الخطر</h3>
+            <button class="btn btn-danger" onclick="resetAllData()">🗑️ مسح جميع البيانات</button>
+        </div>
+    </div>
+
+    <script>
+        function getAllData() {
+            const data = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('thana_')) {
+                    try {
+                        data[key] = JSON.parse(localStorage.getItem(key));
+                    } catch(e) {
+                        data[key] = localStorage.getItem(key);
+                    }
+                }
+            }
+            return {
+                version: '2.1',
+                exportedAt: new Date().toISOString(),
+                restaurant: localStorage.getItem('thana_restaurant_name') || 'Thana Restaurant',
+                data: data
+            };
+        }
+
+        function getDataStats() {
+            const orders = JSON.parse(localStorage.getItem('thana_orders') || '[]');
+            const inventory = JSON.parse(localStorage.getItem('thana_inventory') || '[]');
+            const menu = JSON.parse(localStorage.getItem('thana_menu') || '[]');
+            const customers = JSON.parse(localStorage.getItem('thana_customers') || '[]');
+            const waste = JSON.parse(localStorage.getItem('thana_waste') || '[]');
+            const tables = JSON.parse(localStorage.getItem('thana_tables') || '[]');
+            
+            return { orders, inventory, menu, customers, waste, tables };
+        }
+
+        function renderStats() {
+            const stats = getDataStats();
+            const totalKeys = Object.keys(localStorage).filter(k => k.startsWith('thana_')).length;
+            
+            document.getElementById('dataStats').innerHTML = `
+                <div class="info-row"><span class="info-label">📋 الطلبات</span><span class="info-value">${stats.orders.length}</span></div>
+                <div class="info-row"><span class="info-label">📦 المخزون</span><span class="info-value">${stats.inventory.length} صنف</span></div>
+                <div class="info-row"><span class="info-label">🍽️ القائمة</span><span class="info-value">${stats.menu.length} صنف</span></div>
+                <div class="info-row"><span class="info-label">👤 العملاء</span><span class="info-value">${stats.customers.length}</span></div>
+                <div class="info-row"><span class="info-label">🗑️ الهدر</span><span class="info-value">${stats.waste.length} سجل</span></div>
+                <div class="info-row"><span class="info-label">🪑 الطاولات</span><span class="info-value">${stats.tables.length}</span></div>
+                <div class="info-row"><span class="info-label">🔑 مفاتيح التخزين</span><span class="info-value">${totalKeys}</span></div>
+                <div class="info-row"><span class="info-label">💾 حجم البيانات</span><span class="info-value">${(new Blob([JSON.stringify(getAllData())]).size / 1024).toFixed(1)} KB</span></div>
+            `;
+        }
+
+        function exportAll() {
+            const data = getAllData();
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const date = new Date().toISOString().slice(0,10);
+            a.download = `thana-backup-${date}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('✅ تم تحميل النسخة الاحتياطية');
+        }
+
+        function importAll(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!confirm('⚠️ استعادة النسخة ستستبدل جميع البيانات الحالية. هل أنت متأكد؟')) {
+                event.target.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    const data = imported.data || imported;
+                    
+                    let count = 0;
+                    for (const [key, value] of Object.entries(data)) {
+                        localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+                        count++;
+                    }
+                    
+                    showToast(`✅ تمت استعادة ${count} مفتاح بيانات`);
+                    renderStats();
+                } catch(err) {
+                    showToast('❌ فشل - الملف غير صالح');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function copyToClipboard() {
+            const data = getAllData();
+            navigator.clipboard.writeText(JSON.stringify(data, null, 2))
+                .then(() => showToast('✅ تم النسخ - الصقه في مكان آمن'))
+                .catch(() => showToast('❌ فشل النسخ'));
+        }
+
+        function resetAllData() {
+            if (!confirm('⚠️⚠️ تحذير نهائي: سيتم مسح جميع بيانات المطعم نهائياً!\n\nهل أنت متأكد 100%؟')) return;
+            if (!confirm('للمرة الأخيرة: مسح كل شيء؟')) return;
+            
+            const keys = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('thana_')) keys.push(key);
+            }
+            keys.forEach(k => localStorage.removeItem(k));
+            
+            showToast('🗑️ تم مسح جميع البيانات');
+            renderStats();
+        }
+
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        renderStats();
+    </script>
+</body>
+</html>

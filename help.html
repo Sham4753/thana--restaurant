@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المساعدة - Thana Restaurant</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <meta name="theme-color" content="#0a0b0f">
+    <script src="nav-component.js" defer></script>
+    <style>
+        body { padding: 16px; }
+        .container { max-width: 700px; margin: 0 auto; }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 20px 24px;
+            margin-bottom: 14px;
+        }
+        .card h2 { color: var(--gold); font-family: var(--font-display); margin-bottom: 12px; font-size: 20px; }
+        .card h3 { color: var(--text); margin: 14px 0 8px; font-size: 15px; }
+        .card p { color: var(--text-secondary); font-size: 13px; line-height: 1.9; }
+        .card ul { color: var(--text-secondary); font-size: 13px; line-height: 2; padding-right: 16px; }
+        .card code {
+            background: var(--bg-input);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--gold);
+        }
+        .highlight {
+            background: rgba(212,168,83,0.08);
+            border-right: 3px solid var(--gold);
+            padding: 10px 14px;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin: 10px 0;
+            font-size: 13px;
+        }
+        .faq-item {
+            margin-bottom: 8px;
+        }
+        .faq-q {
+            font-weight: 600;
+            color: var(--gold);
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .faq-a {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-top: 4px;
+            display: none;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.02);
+            border-radius: var(--radius-sm);
+        }
+        .faq-a.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card" style="text-align:center;">
+            <div style="font-size:48px;">📖</div>
+            <h2>دليل المستخدم</h2>
+            <p>كل ما تحتاج معرفته عن نظام Thana Restaurant</p>
+        </div>
+
+        <!-- البدء السريع -->
+        <div class="card">
+            <h2>🚀 البدء السريع</h2>
+            <h3>١. تسجيل الدخول</h3>
+            <p>استخدم رموز PIN الافتراضية:</p>
+            <ul>
+                <li><code>2026</code> - المدير (كل الصلاحيات)</li>
+                <li><code>1111</code> - النادل</li>
+                <li><code>2222</code> - المطبخ</li>
+                <li><code>3333</code> - الكاشير</li>
+                <li><code>4444</code> - مدير مناوب</li>
+            </ul>
+            
+            <h3>٢. إضافة القائمة</h3>
+            <p>من صفحة <code>🍽️ القائمة</code> أضف أصنافك مع الأسعار</p>
+            
+            <h3>٣. إضافة المخزون</h3>
+            <p>من صفحة <code>📦 المخزون</code> أضف المواد بعد الجرد الفعلي</p>
+            
+            <h3>٤. استقبال الطلبات</h3>
+            <p>ثلاث طرق:</p>
+            <ul>
+                <li>📋 النادل يسجل الطلب</li>
+                <li>📱 الزبون يمسح QR ويطلب بنفسه</li>
+                <li>🎤 النادل يتكلم والنظام يفهم</li>
+            </ul>
+        </div>
+
+        <!-- أوفلاين -->
+        <div class="card">
+            <h2>📴 العمل بدون إنترنت</h2>
+            <div class="highlight">
+                ✅ النظام يعمل <b>بالكامل</b> بدون إنترنت<br>
+                ✅ الطلبات تحفظ تلقائياً في الجهاز<br>
+                ✅ عند عودة الإنترنت، تتم المزامنة تلقائياً
+            </div>
+            <p>في حالة انقطاع الإنترنت:</p>
+            <ul>
+                <li>استمر في تسجيل الطلبات بشكل طبيعي</li>
+                <li>البيانات تحفظ محلياً في المتصفح</li>
+                <li>لا حاجة لأي إجراء إضافي</li>
+                <li>فور عودة الاتصال، كل شيء يعود للعمل</li>
+            </ul>
+        </div>
+
+        <!-- نسخ احتياطي -->
+        <div class="card">
+            <h2>💾 النسخ الاحتياطي</h2>
+            <p>لحماية بياناتك:</p>
+            <ul>
+                <li>اذهب لصفحة <code>💾 النسخ الاحتياطي</code></li>
+                <li>اضغط "تحميل نسخة" واحفظ الملف في مكان آمن</li>
+                <li>في حالة تعطل الجهاز، استخدم "استعادة نسخة"</li>
+                <li>ينصح بعمل نسخة يومياً</li>
+            </ul>
+        </div>
+
+        <!-- الأسئلة الشائعة -->
+        <div class="card">
+            <h2>❓ أسئلة شائعة</h2>
+            
+            <div class="faq-item">
+                <div class="faq-q" onclick="this.nextElementSibling.classList.toggle('show')">🔹 كيف أغير رمز PIN؟</div>
+                <div class="faq-a">من صفحة <code>🔐 الأمان</code> > إعدادات PIN</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-q" onclick="this.nextElementSibling.classList.toggle('show')">🔹 كيف أضيف طابعة بلوتوث؟</div>
+                <div class="faq-a">من صفحة <code>🖨️ الطباعة</code> > بحث عن طابعة. تأكد من تفعيل البلوتوث في جهازك.</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-q" onclick="this.nextElementSibling.classList.toggle('show')">🔹 هل يمكن استخدام النظام على أكثر من جهاز؟</div>
+                <div class="faq-a">نعم! افتح الرابط على أي جهاز. كل جهاز له بياناته المحلية. للمزامنة بين الأجهزة تحتاج السيرفر (قيد التطوير).</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-q" onclick="this.nextElementSibling.classList.toggle('show')">🔹 ماذا لو أخطأ النادل في تسجيل طلب؟</div>
+                <div class="faq-a">يمكن للمدير أو النادل تعديل الطلب من صفحة النادل قبل إرساله للمطبخ.</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-q" onclick="this.nextElementSibling.classList.toggle('show')">🔹 كيف أضبط أسعار القائمة؟</div>
+                <div class="faq-a">من صفحة <code>🍽️ القائمة</code> > اضغط على السعر للتعديل مباشرة.</div>
+            </div>
+        </div>
+
+        <div class="card" style="text-align:center;">
+            <p style="color:var(--text-muted);">Thana Restaurant v2.1 · 2026</p>
+        </div>
+    </div>
+</body>
+</html>

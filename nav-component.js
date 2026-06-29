@@ -40,6 +40,8 @@ function getNavConfig() {
                 { href: 'theme-settings.html', icon: '🎨', label: 'مظهر' },
                 { href: 'settings.html', icon: '⚙️', label: 'الإعدادات' },
                 { href: 'activate.html', icon: '🔑', label: 'الترخيص' },
+                { href: 'backup.html', icon: '💾', label: 'نسخ احتياطي' },
+                { href: 'help.html', icon: '📖', label: 'مساعدة' },
             ]
         },
         waiter: {
