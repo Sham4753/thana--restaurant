@@ -19,6 +19,7 @@ function getNavConfig(){
                 {href:'menu.html',icon:'🍽️',label:'القائمة'},
                 {href:'inventory.html',icon:'📦',label:'المخزون'},
                 {href:'reports.html',icon:'📈',label:'التقارير'},
+                {href:'close.html',icon:'🔒',label:'الإغلاق'},
                 {href:'customers.html',icon:'👤',label:'العملاء'},
                 {href:'qr-menu.html?table=1',icon:'📱',label:'QR'},
                 {href:'voice.html',icon:'🎤',label:'صوتي'},
@@ -61,6 +62,7 @@ function getNavConfig(){
                 {href:'orders.html',icon:'📊',label:'الطلبات'},
                 {href:'reports.html',icon:'📈',label:'التقارير'},
                 {href:'print.html',icon:'🖨️',label:'طباعة'},
+                {href:'close.html',icon:'🔒',label:'الإغلاق'},
                 {href:'customers.html',icon:'👤',label:'العملاء'}
             ]
         },
