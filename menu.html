@@ -12,6 +12,7 @@
         .menu-price{font-size:1.2em;font-weight:700;color:var(--accent2);cursor:pointer}
         .menu-delete{color:var(--accent);cursor:pointer;font-size:1.2em;padding:8px}
     </style>
+<script src="nav-component.js" defer></script>
 </head>
 <body>
     <div class="app">
@@ -86,6 +87,5 @@
         function deleteItem(id){if(!confirm('حذف هذا الصنف؟'))return;menu=menu.filter(m=>m.id!==id);save();render();}
         render();
     </script>
-<script src="nav-component.js"></script>
 </body>
 </html>

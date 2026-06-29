@@ -1,192 +1,208 @@
 // ============================================
-// Thana Restaurant - Navigation Component v2
-// شريط تنقل ذكي - يظهر حسب صلاحية المستخدم
+// Thana Restaurant v2.1 - Navigation System
+// شريط التنقل الذكي حسب الخريطة
 // ============================================
 
 function getUserRole() {
     try {
         const session = JSON.parse(localStorage.getItem('thana_auth_session') || 'null');
-        if (session && session.role) {
-            return session.role;
-        }
+        if (session && session.role) return session.role;
     } catch(e) {}
-    
-    // إذا ما فيه جلسة = مدير (للتوافق مع النظام بدون تسجيل دخول)
     return 'admin';
 }
 
-function getNavItems() {
+function getNavConfig() {
     const role = getUserRole();
     
-    // كل الأدوار تشوف الرئيسية
-    const items = [
-        { href: 'index.html', icon: '🏠', label: 'الرئيسية', roles: ['admin','waiter','kitchen','cashier','manager'] },
-    ];
+    // كل الأدوار
+    const configs = {
+        admin: {
+            name: '🔑 المدير',
+            items: [
+                { href: 'index.html', icon: '🏠', label: 'الرئيسية' },
+                { href: 'dashboard.html', icon: '📊', label: 'لوحة التحكم' },
+                { href: 'waiter.html', icon: '📋', label: 'النادل' },
+                { href: 'kitchen.html', icon: '🍳', label: 'المطبخ' },
+                { href: 'tables.html', icon: '🪑', label: 'الطاولات' },
+                { href: 'staff.html', icon: '👥', label: 'الموظفين' },
+                { href: 'menu.html', icon: '🍽️', label: 'القائمة' },
+                { href: 'inventory.html', icon: '📦', label: 'المخزون' },
+                { href: 'reports.html', icon: '📈', label: 'التقارير' },
+                { href: 'settings.html', icon: '⚙️', label: 'الإعدادات' },
+                { href: 'close.html', icon: '🔒', label: 'الإغلاق' },
+                { href: 'waste_report.html', icon: '🗑️', label: 'الهدر' },
+                { href: 'customers.html', icon: '👤', label: 'العملاء' },
+                { href: 'velocity.html', icon: '⚡', label: 'السرعة' },
+                { href: 'procurement.html', icon: '🛒', label: 'المشتريات' },
+                { href: 'invoice.html', icon: '🧾', label: 'الفاتورة' },
+                { href: 'qr-menu.html?table=1', icon: '📱', label: 'QR' },
+                { href: 'voice.html', icon: '🎤', label: 'صوتي' },
+                { href: 'ai.html', icon: '🧠', label: 'ذكاء' },
+                { href: 'auth.html', icon: '🔐', label: 'أمان' },
+                { href: 'print.html', icon: '🖨️', label: 'طباعة' },
+                { href: 'theme-settings.html', icon: '🎨', label: 'مظهر' },
+                { href: 'activate.html', icon: '🔑', label: 'الترخيص' },
+            ]
+        },
+        waiter: {
+            name: '📋 النادل',
+            items: [
+                { href: 'index.html', icon: '🏠', label: 'الرئيسية' },
+                { href: 'waiter.html', icon: '📋', label: 'النادل' },
+                { href: 'tables.html', icon: '🪑', label: 'الطاولات' },
+                { href: 'menu.html', icon: '🍽️', label: 'القائمة' },
+                { href: 'qr-menu.html?table=1', icon: '📱', label: 'QR Menu' },
+                { href: 'voice.html', icon: '🎤', label: 'صوتي' },
+            ]
+        },
+        kitchen: {
+            name: '🍳 المطبخ',
+            items: [
+                { href: 'index.html', icon: '🏠', label: 'الرئيسية' },
+                { href: 'kitchen.html', icon: '🍳', label: 'شاشة الطبخ' },
+                { href: 'inventory.html', icon: '📦', label: 'المخزون' },
+                { href: 'velocity.html', icon: '⚡', label: 'السرعة' },
+                { href: 'waste_report.html', icon: '🗑️', label: 'الهدر' },
+            ]
+        },
+        cashier: {
+            name: '💰 الكاشير',
+            items: [
+                { href: 'index.html', icon: '🏠', label: 'الرئيسية' },
+                { href: 'waiter.html', icon: '📋', label: 'الطلبات' },
+                { href: 'reports.html', icon: '📈', label: 'التقارير' },
+                { href: 'invoice.html', icon: '🧾', label: 'الفاتورة' },
+                { href: 'print.html', icon: '🖨️', label: 'طباعة' },
+                { href: 'customers.html', icon: '👤', label: 'العملاء' },
+            ]
+        },
+        manager: {
+            name: '📊 مدير مناوب',
+            items: [
+                { href: 'index.html', icon: '🏠', label: 'الرئيسية' },
+                { href: 'dashboard.html', icon: '📊', label: 'لوحة التحكم' },
+                { href: 'staff.html', icon: '👥', label: 'الموظفين' },
+                { href: 'menu.html', icon: '🍽️', label: 'القائمة' },
+                { href: 'inventory.html', icon: '📦', label: 'المخزون' },
+                { href: 'reports.html', icon: '📈', label: 'التقارير' },
+                { href: 'ai.html', icon: '🧠', label: 'ذكاء' },
+            ]
+        }
+    };
     
-    // admin = كل شيء
-    if (role === 'admin') {
-        items.push(
-            { href: 'dashboard.html', icon: '📊', label: 'لوحة التحكم', roles: ['admin'] },
-            { href: 'waiter.html', icon: '📋', label: 'النادل', roles: ['admin'] },
-            { href: 'kitchen.html', icon: '🍳', label: 'المطبخ', roles: ['admin'] },
-            { href: 'tables.html', icon: '🪑', label: 'الطاولات', roles: ['admin'] },
-            { href: 'menu.html', icon: '🍽️', label: 'القائمة', roles: ['admin'] },
-            { href: 'inventory.html', icon: '📦', label: 'المخزون', roles: ['admin'] },
-            { href: 'staff.html', icon: '👥', label: 'الموظفين', roles: ['admin'] },
-            { href: 'reports.html', icon: '📈', label: 'التقارير', roles: ['admin'] },
-            { href: 'qr-menu.html?table=1', icon: '📱', label: 'QR', roles: ['admin'] },
-            { href: 'voice.html', icon: '🎤', label: 'صوتي', roles: ['admin'] },
-            { href: 'ai.html', icon: '🧠', label: 'ذكاء', roles: ['admin'] },
-            { href: 'auth.html', icon: '🔐', label: 'أمان', roles: ['admin'] },
-            { href: 'print.html', icon: '🖨️', label: 'طباعة', roles: ['admin'] },
-            { href: 'settings.html', icon: '⚙️', label: 'إعدادات', roles: ['admin'] },
-        );
-    }
-    
-    // نادل
-    if (role === 'waiter') {
-        items.push(
-            { href: 'waiter.html', icon: '📋', label: 'النادل', roles: ['waiter'] },
-            { href: 'tables.html', icon: '🪑', label: 'الطاولات', roles: ['waiter'] },
-            { href: 'menu.html', icon: '🍽️', label: 'القائمة', roles: ['waiter'] },
-            { href: 'qr-menu.html?table=1', icon: '📱', label: 'QR', roles: ['waiter'] },
-            { href: 'voice.html', icon: '🎤', label: 'صوتي', roles: ['waiter'] },
-        );
-    }
-    
-    // مطبخ
-    if (role === 'kitchen') {
-        items.push(
-            { href: 'kitchen.html', icon: '🍳', label: 'المطبخ', roles: ['kitchen'] },
-            { href: 'inventory.html', icon: '📦', label: 'المخزون', roles: ['kitchen'] },
-            { href: 'velocity.html', icon: '⚡', label: 'السرعة', roles: ['kitchen'] },
-        );
-    }
-    
-    // كاشير
-    if (role === 'cashier') {
-        items.push(
-            { href: 'waiter.html', icon: '📋', label: 'الطلبات', roles: ['cashier'] },
-            { href: 'invoice.html', icon: '🧾', label: 'فاتورة', roles: ['cashier'] },
-            { href: 'reports.html', icon: '📈', label: 'التقارير', roles: ['cashier'] },
-            { href: 'print.html', icon: '🖨️', label: 'طباعة', roles: ['cashier'] },
-            { href: 'customers.html', icon: '👤', label: 'عملاء', roles: ['cashier'] },
-        );
-    }
-    
-    // مدير مناوب
-    if (role === 'manager') {
-        items.push(
-            { href: 'dashboard.html', icon: '📊', label: 'لوحة التحكم', roles: ['manager'] },
-            { href: 'reports.html', icon: '📈', label: 'التقارير', roles: ['manager'] },
-            { href: 'staff.html', icon: '👥', label: 'الموظفين', roles: ['manager'] },
-            { href: 'menu.html', icon: '🍽️', label: 'القائمة', roles: ['manager'] },
-            { href: 'inventory.html', icon: '📦', label: 'المخزون', roles: ['manager'] },
-            { href: 'ai.html', icon: '🧠', label: 'ذكاء', roles: ['manager'] },
-        );
-    }
-    
-    return items;
+    return configs[role] || configs['admin'];
 }
 
 function createNavBar() {
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    const role = getUserRole();
-    const navItems = getNavItems();
-    
-    // اسم الدور للعرض
-    const roleNames = {
-        'admin': '🔑 المدير',
-        'waiter': '📋 نادل',
-        'kitchen': '🍳 مطبخ',
-        'cashier': '💰 كاشير',
-        'manager': '📊 مدير',
-    };
+    const config = getNavConfig();
     
     const navHTML = `
         <style>
-            .thana-topbar {
-                background: var(--glass-bg);
-                border-bottom: 1px solid var(--glass-border);
-                padding: 8px 12px;
+            .thana-nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 9999;
+                background: rgba(10,15,30,0.95);
+                border-bottom: 1px solid rgba(255,255,255,0.06);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                padding: 6px 10px;
                 display: flex;
                 align-items: center;
-                gap: 4px;
-                backdrop-filter: var(--glass-blur);
-                -webkit-backdrop-filter: var(--glass-blur);
-                position: sticky;
-                top: 0;
-                z-index: 1000;
-                flex-wrap: wrap;
-                justify-content: center;
-                box-shadow: var(--shadow-md);
+                gap: 3px;
+                overflow-x: auto;
+                white-space: nowrap;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                flex-wrap: nowrap;
             }
-            .thana-topbar a {
-                padding: 7px 12px;
-                border-radius: var(--radius-md);
-                color: var(--text-secondary);
+            .thana-nav::-webkit-scrollbar { display: none; }
+            
+            .thana-nav-item {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                padding: 7px 11px;
+                border-radius: 10px;
+                color: #94a3b8;
                 text-decoration: none;
                 font-size: 12px;
                 font-weight: 500;
-                white-space: nowrap;
-                transition: all var(--transition-fast);
-                background: transparent;
+                transition: all 0.2s;
+                flex-shrink: 0;
             }
-            .thana-topbar a:hover {
-                background: var(--bg-input);
-                color: var(--text-primary);
+            .thana-nav-item:hover {
+                background: rgba(255,255,255,0.06);
+                color: #e2e8f0;
             }
-            .thana-topbar a.active {
+            .thana-nav-item.active {
                 background: rgba(56,189,248,0.15);
-                color: var(--accent-primary);
+                color: #38bdf8;
                 font-weight: 600;
             }
-            .thana-topbar .brand {
+            
+            .thana-nav-brand {
                 font-weight: 700;
-                font-size: 14px;
-                color: var(--accent-primary);
+                font-size: 13px;
+                color: #38bdf8;
                 margin-left: 8px;
+                flex-shrink: 0;
                 text-decoration: none;
             }
-            .thana-topbar .role-badge {
+            .thana-nav-role {
                 font-size: 10px;
                 background: rgba(129,140,248,0.2);
-                color: var(--accent-secondary);
+                color: #818cf8;
                 padding: 3px 8px;
-                border-radius: var(--radius-full);
-                margin: 0 4px;
+                border-radius: 20px;
+                margin: 0 6px;
+                flex-shrink: 0;
             }
-            .thana-topbar .sep {
+            .thana-nav-sep {
                 width: 1px;
                 height: 18px;
-                background: var(--border-light);
-                margin: 0 3px;
+                background: rgba(255,255,255,0.08);
+                margin: 0 4px;
+                flex-shrink: 0;
             }
-            .thana-topbar .logout-btn {
-                background: rgba(248,113,113,0.12);
-                color: var(--danger);
-                cursor: pointer;
+            .thana-nav-logout {
+                padding: 7px 11px;
+                border-radius: 10px;
+                color: #f87171;
+                text-decoration: none;
+                font-size: 12px;
                 font-weight: 600;
+                cursor: pointer;
+                flex-shrink: 0;
+                margin-right: auto;
             }
-            .thana-topbar .logout-btn:hover {
-                background: rgba(248,113,113,0.25);
+            .thana-nav-logout:hover {
+                background: rgba(248,113,113,0.15);
             }
+            
+            body { padding-top: 55px; }
+            
             @media (max-width: 600px) {
-                .thana-topbar { gap: 2px; padding: 5px 6px; }
-                .thana-topbar a { padding: 5px 8px; font-size: 10px; }
-                .thana-topbar .brand { font-size: 12px; }
+                .thana-nav { padding: 4px 6px; }
+                .thana-nav-item { padding: 5px 8px; font-size: 10px; }
+                .thana-nav-brand { font-size: 11px; }
+                body { padding-top: 48px; }
             }
         </style>
-        <div class="thana-topbar" id="thanaNavBar">
-            <a href="index.html" class="brand">🍽️ Thana</a>
-            <span class="role-badge">${roleNames[role] || '👤 ' + role}</span>
-            <span class="sep"></span>
-            ${navItems.map(item => 
-                `<a href="${item.href}" class="${currentPage === item.href.split('?')[0] ? 'active' : ''}">${item.icon} ${item.label}</a>`
+        
+        <nav class="thana-nav" id="thanaNavBar">
+            <a href="index.html" class="thana-nav-brand">🍽️ Thana</a>
+            <span class="thana-nav-role">${config.name}</span>
+            <span class="thana-nav-sep"></span>
+            ${config.items.map(item => 
+                `<a href="${item.href}" class="thana-nav-item${currentPage === item.href.split('?')[0] ? ' active' : ''}">${item.icon} ${item.label}</a>`
             ).join('')}
-            <span class="sep"></span>
-            <a href="login.html" class="logout-btn" onclick="localStorage.removeItem('thana_auth_session');">🚪</a>
-        </div>
+            <span class="thana-nav-sep"></span>
+            <a href="login.html" class="thana-nav-logout" onclick="localStorage.removeItem('thana_auth_session');" title="تسجيل خروج">🚪</a>
+        </nav>
     `;
     
     document.body.insertAdjacentHTML('afterbegin', navHTML);

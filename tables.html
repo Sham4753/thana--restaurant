@@ -18,6 +18,7 @@
         .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:1000}
         .modal-content{background:var(--bg-main);border:1px solid var(--border);border-radius:20px;padding:24px;width:90%;max-width:350px;text-align:center}
     </style>
+<script src="nav-component.js" defer></script>
 </head>
 <body>
     <div class="app">
@@ -55,7 +56,6 @@
         function changeStatus(s){if(!selectedTable)return;const t=tables.find(t=>t.id===selectedTable);t.status=s;t.time=s!=='free'?Date.now():null;save();render();document.getElementById('tableModal').style.display='none'}
         render();setInterval(render,10000);
     </script>
-<script src="nav-component.js"></script>
 </body>
 </html>
 <nav class="bottom-nav"><a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a><a href="tables.html">🪑</a><a href="staff.html">👥</a><a href="inventory.html">📦</a><a href="menu.html">🍽️</a>

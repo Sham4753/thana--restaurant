@@ -218,6 +218,7 @@
         @keyframes slideDown { from { transform: translateX(-50%) translateY(-100px); opacity: 0; } }
         @keyframes slideUp { to { transform: translateX(-50%) translateY(-100px); opacity: 0; } }
     </style>
+<script src="nav-component.js" defer></script>
 </head>
 <body>
     <div class="container">
@@ -598,7 +599,8 @@
                             body { -webkit-print-color-adjust: exact; }
                         }
                     </style>
-                </head>
+                <script src="nav-component.js" defer></script>
+</head>
                 <body>
                     <div class="center title">${shopName}</div>
                     <div class="center">${shopAddr}</div>
@@ -613,7 +615,6 @@
                     ${order.note ? `<div class="center">ملاحظة: ${order.note}</div>` : ''}
                     <hr>
                     <div class="center">${footer}</div>
-                <script src="nav-component.js"></script>
 </body>
                 </html>
             `);
@@ -669,6 +670,5 @@
             });
         }
     </script>
-<script src="nav-component.js"></script>
 </body>
 </html>
