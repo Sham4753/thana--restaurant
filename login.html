@@ -15,32 +15,83 @@
             align-items: center;
             justify-content: center;
             padding: 16px;
+            background: var(--bg);
         }
-        .login-container { max-width: 420px; width: 100%; text-align: center; }
+        .login-container { max-width: 450px; width: 100%; text-align: center; }
         .login-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius-xl);
-            padding: 32px 24px;
+            padding: 28px 22px;
             box-shadow: var(--shadow-lg);
         }
-        .login-logo { font-size: 56px; margin-bottom: 8px; }
+        .login-logo { font-size: 52px; margin-bottom: 6px; }
         .login-title {
             font-size: 24px;
             font-weight: 800;
             color: var(--gold);
             font-family: var(--font-display);
         }
-        .login-subtitle { color: var(--text-secondary); font-size: 13px; margin: 8px 0 24px; }
+        .login-subtitle { color: var(--text-secondary); font-size: 12px; margin: 6px 0 18px; }
 
+        /* اختيار الدور */
+        .role-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .role-card {
+            background: rgba(255,255,255,0.02);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px 8px;
+            cursor: pointer;
+            transition: all var(--transition);
+            text-align: center;
+        }
+        .role-card:hover { background: rgba(255,255,255,0.04); }
+        .role-card.selected {
+            border-color: var(--gold);
+            background: rgba(212,168,83,0.08);
+        }
+        .role-card .role-icon { font-size: 26px; display: block; }
+        .role-card .role-name { font-size: 11px; font-weight: 600; margin-top: 3px; }
+        .role-card .role-hint { font-size: 9px; color: var(--text-muted); }
+
+        /* بصمة */
+        .fingerprint-area {
+            width: 70px; height: 70px;
+            border-radius: 50%;
+            background: rgba(212,168,83,0.06);
+            border: 2px dashed rgba(212,168,83,0.25);
+            margin: 12px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 34px;
+        }
+        .fingerprint-area:hover {
+            border-color: var(--gold);
+            background: rgba(212,168,83,0.12);
+            transform: scale(1.05);
+        }
+        .fingerprint-area.registered {
+            border: 2px solid var(--success);
+            background: rgba(16,185,129,0.08);
+        }
+
+        /* PIN */
         .pin-display {
             display: flex;
             gap: 10px;
             justify-content: center;
-            margin: 16px 0;
+            margin: 14px 0;
         }
         .pin-dot {
-            width: 18px; height: 18px;
+            width: 16px; height: 16px;
             border-radius: 50%;
             border: 2px solid var(--border-hover);
             transition: all var(--transition);
@@ -48,7 +99,7 @@
         .pin-dot.filled {
             background: var(--gold);
             border-color: var(--gold);
-            box-shadow: 0 0 10px rgba(212,168,83,0.4);
+            box-shadow: 0 0 8px rgba(212,168,83,0.4);
         }
         .pin-dot.error {
             background: var(--danger);
@@ -64,17 +115,17 @@
         .pin-pad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            max-width: 240px;
+            gap: 6px;
+            max-width: 220px;
             margin: 0 auto;
         }
         .pin-key {
-            padding: 16px;
+            padding: 14px;
             border-radius: var(--radius);
             background: var(--bg-input);
             border: 1px solid var(--border);
             color: #fff;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
             cursor: pointer;
             transition: all var(--transition);
@@ -84,9 +135,9 @@
         .pin-key:active { transform: scale(0.9); }
 
         .login-msg {
-            margin-top: 12px;
-            min-height: 22px;
-            font-size: 14px;
+            margin-top: 10px;
+            min-height: 20px;
+            font-size: 13px;
             font-weight: 600;
         }
         .login-msg.error { color: var(--danger); }
@@ -94,17 +145,17 @@
 
         .quick-pins {
             display: flex;
-            gap: 6px;
+            gap: 5px;
             flex-wrap: wrap;
             justify-content: center;
-            margin-top: 16px;
-            padding-top: 16px;
+            margin-top: 14px;
+            padding-top: 14px;
             border-top: 1px solid var(--border);
         }
         .quick-pin {
-            padding: 8px 14px;
+            padding: 7px 12px;
             border-radius: var(--radius-full);
-            font-size: 12px;
+            font-size: 11px;
             background: var(--bg-input);
             border: 1px solid var(--border);
             color: var(--text-secondary);
@@ -113,11 +164,31 @@
             transition: all var(--transition);
         }
         .quick-pin:hover { border-color: var(--gold); color: var(--gold); }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border-radius: var(--radius);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 6px;
+            font-family: var(--font);
+            border: none;
+            transition: all var(--transition);
+        }
+        .btn-reset {
+            background: rgba(239,68,68,0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+        .btn-reset:hover { background: rgba(239,68,68,0.2); }
 
         .info-text {
             font-size: 10px;
             color: var(--text-muted);
-            margin-top: 16px;
+            margin-top: 12px;
             line-height: 1.6;
         }
     </style>
@@ -127,44 +198,84 @@
         <div class="login-card">
             <div class="login-logo">🍽️</div>
             <div class="login-title">Thana Restaurant</div>
-            <div class="login-subtitle">أدخل رمز PIN للدخول</div>
+            <div class="login-subtitle">نظام إدارة مطعم متكامل</div>
 
+            <!-- اختيار الدور -->
+            <div class="role-selector" id="roleSelector">
+                <div class="role-card selected" data-pin="2026" data-role="admin" onclick="selectRole(this)">
+                    <span class="role-icon">🔑</span>
+                    <span class="role-name">المدير</span>
+                    <span class="role-hint">PIN: 2026</span>
+                </div>
+                <div class="role-card" data-pin="1111" data-role="waiter" onclick="selectRole(this)">
+                    <span class="role-icon">📋</span>
+                    <span class="role-name">النادل</span>
+                    <span class="role-hint">PIN: 1111</span>
+                </div>
+                <div class="role-card" data-pin="2222" data-role="kitchen" onclick="selectRole(this)">
+                    <span class="role-icon">🍳</span>
+                    <span class="role-name">المطبخ</span>
+                    <span class="role-hint">PIN: 2222</span>
+                </div>
+                <div class="role-card" data-pin="3333" data-role="cashier" onclick="selectRole(this)">
+                    <span class="role-icon">💰</span>
+                    <span class="role-name">الكاشير</span>
+                    <span class="role-hint">PIN: 3333</span>
+                </div>
+            </div>
+
+            <!-- بصمة -->
+            <div class="fingerprint-area" id="fpLogin" onclick="loginWithBiometric()" title="تسجيل الدخول بالبصمة">
+                🖐️
+            </div>
+            <div style="font-size:10px;color:var(--text-muted);">أو استخدم PIN</div>
+
+            <!-- PIN -->
             <div class="pin-display" id="pinDots">
-                <span class="pin-dot"></span>
-                <span class="pin-dot"></span>
-                <span class="pin-dot"></span>
-                <span class="pin-dot"></span>
+                <span class="pin-dot"></span><span class="pin-dot"></span>
+                <span class="pin-dot"></span><span class="pin-dot"></span>
             </div>
 
             <div class="login-msg" id="loginMsg"></div>
 
             <div class="pin-pad" id="pinPad"></div>
 
+            <!-- حسابات سريعة -->
             <div class="quick-pins">
-                <span style="color:var(--text-muted);font-size:11px;width:100%;text-align:center;margin-bottom:4px;">👆 حسابات تجريبية - اضغط للدخول السريع</span>
+                <span style="color:var(--text-muted);font-size:10px;width:100%;text-align:center;margin-bottom:3px;">دخول سريع</span>
                 <button class="quick-pin" onclick="quickLogin('2026')">🔑 مدير</button>
                 <button class="quick-pin" onclick="quickLogin('1111')">📋 نادل</button>
                 <button class="quick-pin" onclick="quickLogin('2222')">🍳 مطبخ</button>
                 <button class="quick-pin" onclick="quickLogin('3333')">💰 كاشير</button>
             </div>
 
-            <button class="quick-pin" onclick="localStorage.clear();location.reload();" style="background:rgba(239,68,68,0.15);color:#ef4444;width:100%;margin-top:8px;">🗑️ مسح جميع البيانات وإعادة ضبط</button>
+            <button class="btn btn-reset" onclick="localStorage.clear();location.reload();">🗑️ مسح البيانات وإعادة ضبط</button>
 
-<div class="info-text">
-                💡 أدخل PIN من 4 أرقام أو اختر حساب جاهز
+            <div class="info-text">
+                💡 اختر دورك ثم أدخل PIN أو استخدم البصمة
             </div>
         </div>
     </div>
 
     <script>
         let enteredPin = '';
+        let selectedRoleCard = null;
+
+        function selectRole(card) {
+            document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedRoleCard = card;
+            enteredPin = '';
+            updateDots();
+            document.getElementById('loginMsg').textContent = '';
+            document.getElementById('loginMsg').className = 'login-msg';
+        }
 
         function buildPinPad() {
             const pad = document.getElementById('pinPad');
             const keys = ['1','2','3','4','5','6','7','8','9','⌫','0','✓'];
             pad.innerHTML = keys.map(k => {
-                let cls = 'pin-key';
-                return `<button class="${cls}" onclick="pinPress('${k}')">${k}</button>`;
+                return `<button class="pin-key" onclick="pinPress('${k}')">${k}</button>`;
             }).join('');
         }
 
@@ -181,42 +292,36 @@
             } else {
                 if (enteredPin.length < 4) {
                     enteredPin += key;
-                    if (enteredPin.length === 4) {
-                        setTimeout(doLogin, 300);
-                    }
+                    if (enteredPin.length === 4) setTimeout(doLogin, 300);
                 }
             }
             updateDots();
         }
 
         function updateDots() {
-            const dots = document.querySelectorAll('.pin-dot');
-            dots.forEach((d, i) => {
+            document.querySelectorAll('.pin-dot').forEach((d, i) => {
                 d.classList.toggle('filled', i < enteredPin.length);
                 d.classList.remove('error');
             });
         }
 
         function showError() {
-            const dots = document.querySelectorAll('.pin-dot');
-            dots.forEach(d => d.classList.add('error'));
-            setTimeout(() => dots.forEach(d => d.classList.remove('error', 'filled')), 500);
+            document.querySelectorAll('.pin-dot').forEach(d => d.classList.add('error'));
+            setTimeout(() => document.querySelectorAll('.pin-dot').forEach(d => d.classList.remove('error', 'filled')), 500);
             enteredPin = '';
             if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
         }
 
         function doLogin() {
             if (enteredPin.length === 0) return;
-
             const result = login(enteredPin);
             const msg = document.getElementById('loginMsg');
 
             if (result.success) {
                 msg.textContent = result.message;
                 msg.className = 'login-msg success';
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 500);
+                if (result.user) localStorage.setItem('thana_last_role', result.user.role);
+                setTimeout(() => { window.location.href = 'index.html'; }, 500);
             } else {
                 msg.textContent = result.message;
                 msg.className = 'login-msg error';
@@ -227,16 +332,54 @@
         function quickLogin(pin) {
             enteredPin = pin;
             updateDots();
+            const cards = document.querySelectorAll('.role-card');
+            cards.forEach(c => { if (c.getAttribute('data-pin') === pin) selectRole(c); });
             setTimeout(doLogin, 200);
         }
 
-        // فحص جلسة سابقة
+        // بصمة
+        async function loginWithBiometric() {
+            const msg = document.getElementById('loginMsg');
+            if (!window.PublicKeyCredential) {
+                msg.textContent = '⚠️ جهازك لا يدعم البصمة - استخدم PIN';
+                msg.className = 'login-msg error';
+                return;
+            }
+            try {
+                msg.textContent = '🖐️ ضع إصبعك...';
+                msg.className = 'login-msg';
+                document.getElementById('fpLogin').classList.add('registered');
+                
+                const challenge = new Uint8Array(32);
+                crypto.getRandomValues(challenge);
+                await navigator.credentials.get({
+                    publicKey: { challenge, timeout: 30000, userVerification: 'required', rpId: window.location.hostname }
+                });
+                
+                msg.textContent = '✅ مرحباً! تم التحقق';
+                msg.className = 'login-msg success';
+                if (navigator.vibrate) navigator.vibrate(100);
+                setTimeout(() => { window.location.href = 'index.html'; }, 500);
+            } catch(e) {
+                document.getElementById('fpLogin').classList.remove('registered');
+                msg.textContent = '❌ فشل - استخدم PIN';
+                msg.className = 'login-msg error';
+            }
+        }
+
+        // جلسة سابقة
         if (typeof isLoggedIn === 'function' && isLoggedIn()) {
             document.getElementById('loginMsg').textContent = '✅ مرحباً بعودتك!';
             document.getElementById('loginMsg').className = 'login-msg success';
             setTimeout(() => { window.location.href = 'index.html'; }, 500);
         }
 
+        // تسجيل بصمة إذا موجودة
+        if (localStorage.getItem('thana_biometric_registered') === 'true') {
+            document.getElementById('fpLogin').classList.add('registered');
+        }
+
+        selectedRoleCard = document.querySelector('.role-card.selected');
         buildPinPad();
     </script>
 </body>
