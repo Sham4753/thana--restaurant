@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - Thana Restaurant</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0f1e">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background-image: 
+                radial-gradient(ellipse at 50% 0%, rgba(56,189,248,0.1) 0%, transparent 60%),
+                radial-gradient(ellipse at 50% 100%, rgba(129,140,248,0.06) 0%, transparent 60%);
+        }
+        .login-container {
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+        }
+        .login-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 32px 24px;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: var(--shadow-lg);
+        }
+        .login-logo { font-size: 56px; margin-bottom: 8px; }
+        .login-title {
+            font-size: 24px;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .login-subtitle {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin: 8px 0 24px;
+        }
+
+        .role-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .role-card {
+            background: rgba(255,255,255,0.03);
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 14px 10px;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-align: center;
+        }
+        .role-card:hover { background: rgba(255,255,255,0.06); }
+        .role-card.selected {
+            border-color: var(--accent-primary);
+            background: rgba(56,189,248,0.1);
+        }
+        .role-card .role-icon { font-size: 28px; display: block; }
+        .role-card .role-name { font-size: 12px; font-weight: 600; margin-top: 4px; }
+        .role-card .role-hint { font-size: 10px; color: var(--text-muted); }
+
+        .pin-display {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 16px 0;
+        }
+        .pin-dot {
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            border: 2px solid var(--border-medium);
+            transition: all var(--transition-fast);
+        }
+        .pin-dot.filled {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 10px rgba(56,189,248,0.4);
+        }
+        .pin-dot.error {
+            background: var(--danger);
+            border-color: var(--danger);
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .pin-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-width: 240px;
+            margin: 0 auto;
+        }
+        .pin-key {
+            padding: 16px;
+            border-radius: var(--radius-md);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-light);
+            color: #fff;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: inherit;
+        }
+        .pin-key:hover { background: rgba(255,255,255,0.1); }
+        .pin-key:active { transform: scale(0.9); }
+        .pin-key.action { font-size: 14px; }
+        .pin-key.enter { background: rgba(52,211,153,0.2); color: var(--success); }
+
+        .login-msg {
+            margin-top: 12px;
+            min-height: 22px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .login-msg.error { color: var(--danger); }
+        .login-msg.success { color: var(--success); }
+
+        .quick-pins {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-light);
+        }
+        .quick-pin {
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-light);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-family: inherit;
+            transition: all var(--transition-fast);
+        }
+        .quick-pin:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+        .info-text {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 16px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-logo">🍽️</div>
+            <div class="login-title">Thana Restaurant</div>
+            <div class="login-subtitle">نظام إدارة المطعم · v2.1</div>
+
+            <!-- اختيار الدور -->
+            <div class="role-selector" id="roleSelector">
+                <div class="role-card selected" data-pin="2026" data-role="admin" onclick="selectRole(this)">
+                    <span class="role-icon">🔑</span>
+                    <span class="role-name">المدير</span>
+                    <span class="role-hint">PIN: 2026</span>
+                </div>
+                <div class="role-card" data-pin="1111" data-role="waiter" onclick="selectRole(this)">
+                    <span class="role-icon">📋</span>
+                    <span class="role-name">النادل</span>
+                    <span class="role-hint">PIN: 1111</span>
+                </div>
+                <div class="role-card" data-pin="2222" data-role="kitchen" onclick="selectRole(this)">
+                    <span class="role-icon">🍳</span>
+                    <span class="role-name">المطبخ</span>
+                    <span class="role-hint">PIN: 2222</span>
+                </div>
+                <div class="role-card" data-pin="3333" data-role="cashier" onclick="selectRole(this)">
+                    <span class="role-icon">💰</span>
+                    <span class="role-name">الكاشير</span>
+                    <span class="role-hint">PIN: 3333</span>
+                </div>
+            </div>
+
+            <!-- PIN Dots -->
+            <div class="pin-display" id="pinDots">
+                <span class="pin-dot"></span>
+                <span class="pin-dot"></span>
+                <span class="pin-dot"></span>
+                <span class="pin-dot"></span>
+            </div>
+
+            <div class="login-msg" id="loginMsg"></div>
+
+            <!-- PIN Pad -->
+            <div class="pin-pad" id="pinPad"></div>
+
+            <!-- أزرار سريعة -->
+            <div class="quick-pins">
+                <button class="quick-pin" onclick="quickLogin('2026')">🔑 مدير</button>
+                <button class="quick-pin" onclick="quickLogin('1111')">📋 نادل</button>
+                <button class="quick-pin" onclick="quickLogin('2222')">🍳 مطبخ</button>
+                <button class="quick-pin" onclick="quickLogin('3333')">💰 كاشير</button>
+            </div>
+
+            <div class="info-text">
+                💡 اختر دورك ثم أدخل رمز PIN<br>
+                أو استخدم الأزرار السريعة للدخول المباشر
+            </div>
+        </div>
+    </div>
+
+    <script src="auth-v2.js"></script>
+    <script>
+        let enteredPin = '';
+        let selectedRoleCard = null;
+
+        function selectRole(card) {
+            document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedRoleCard = card;
+            enteredPin = '';
+            updateDots();
+            document.getElementById('loginMsg').textContent = '';
+            document.getElementById('loginMsg').className = 'login-msg';
+        }
+
+        function buildPinPad() {
+            const pad = document.getElementById('pinPad');
+            const keys = ['1','2','3','4','5','6','7','8','9','⌫','0','✓'];
+            pad.innerHTML = keys.map(k => {
+                let cls = 'pin-key';
+                if (k === '⌫') cls += ' action';
+                if (k === '✓') cls += ' enter';
+                return `<button class="${cls}" onclick="pinPress('${k}')">${k}</button>`;
+            }).join('');
+        }
+
+        function pinPress(key) {
+            const msg = document.getElementById('loginMsg');
+            msg.textContent = '';
+            msg.className = 'login-msg';
+
+            if (key === '⌫') {
+                enteredPin = enteredPin.slice(0, -1);
+            } else if (key === '✓') {
+                doLogin();
+                return;
+            } else {
+                if (enteredPin.length < 4) {
+                    enteredPin += key;
+                    if (enteredPin.length === 4) {
+                        setTimeout(doLogin, 200);
+                    }
+                }
+            }
+            updateDots();
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.pin-dot');
+            dots.forEach((d, i) => {
+                d.classList.toggle('filled', i < enteredPin.length);
+                d.classList.remove('error');
+            });
+        }
+
+        function showError() {
+            const dots = document.querySelectorAll('.pin-dot');
+            dots.forEach(d => d.classList.add('error'));
+            setTimeout(() => dots.forEach(d => d.classList.remove('error', 'filled')), 500);
+            enteredPin = '';
+        }
+
+        function doLogin() {
+            if (enteredPin.length === 0) return;
+
+            const result = login(enteredPin);
+            const msg = document.getElementById('loginMsg');
+
+            if (result.success) {
+                msg.textContent = result.message;
+                msg.className = 'login-msg success';
+                
+                // تخزين آخر دور
+                if (result.user) {
+                    localStorage.setItem('thana_last_role', result.user.role);
+                }
+
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 600);
+            } else {
+                msg.textContent = result.message;
+                msg.className = 'login-msg error';
+                showError();
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+            }
+        }
+
+        function quickLogin(pin) {
+            enteredPin = pin;
+            updateDots();
+            // اختيار الكارد المناسب
+            const cards = document.querySelectorAll('.role-card');
+            cards.forEach(c => {
+                if (c.getAttribute('data-pin') === pin) {
+                    selectRole(c);
+                }
+            });
+            setTimeout(doLogin, 300);
+        }
+
+        // فحص إذا فيه جلسة سابقة
+        if (isLoggedIn()) {
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('loginMsg').textContent = `✅ مرحباً بعودتك ${user.name}!`;
+                document.getElementById('loginMsg').className = 'login-msg success';
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 500);
+            }
+        }
+
+        // اختيار الدور الأول افتراضياً
+        selectedRoleCard = document.querySelector('.role-card.selected');
+
+        buildPinPad();
+    </script>
+</body>
+</html>
