@@ -3,31 +3,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="theme.css">
-<title>Thana Inventory</title>
-    <link rel="stylesheet" href="inventory.css">
-<script src="nav-component.js" defer></script>
+    <title>إدارة المخزون - Thana Restaurant</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0f1e">
+    <script src="nav-component.js" defer></script>
+    <script src="pwa-register.js" defer></script>
+    <style>
+        body { padding: 16px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            margin-bottom: 14px;
+            backdrop-filter: var(--glass-blur);
+        }
+        .card h3 { color: var(--accent-primary); margin-bottom: 12px; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: right; padding: 10px 8px; font-size: 11px; color: var(--text-muted); border-bottom: 1px solid var(--border-light); }
+        td { padding: 10px 8px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        
+        .qty-low { color: #f87171; font-weight: 700; }
+        .qty-ok { color: #34d399; }
+        .qty-mid { color: #fbbf24; }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .btn:active { transform: scale(0.95); }
+        .btn-primary { background: var(--accent-gradient); color: #fff; }
+        .btn-success { background: var(--success); color: #000; }
+        .btn-danger { background: rgba(248,113,113,0.2); color: #f87171; }
+        .btn-sm { padding: 5px 10px; font-size: 11px; }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: end;
+            margin-bottom: 12px;
+        }
+        .input-row input {
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-medium);
+            color: #fff;
+            font-family: inherit;
+            font-size: 13px;
+        }
+        .input-row select {
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-medium);
+            color: #fff;
+            font-family: inherit;
+            font-size: 13px;
+        }
+        .input-row label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+        }
+
+        .stats {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+        .stat-box {
+            flex: 1;
+            min-width: 100px;
+            background: rgba(255,255,255,0.03);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-box .num { font-size: 22px; font-weight: 700; }
+        .stat-box .lbl { font-size: 10px; color: var(--text-muted); }
+
+        .toast {
+            position: fixed;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #34d399;
+            color: #000;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-weight: 700;
+            z-index: 300;
+            animation: slideDown 0.4s ease, slideUp 0.4s ease 2s forwards;
+        }
+        @keyframes slideDown { from{opacity:0;transform:translateX(-50%) translateY(-80px);} }
+        @keyframes slideUp { to{opacity:0;transform:translateX(-50%) translateY(-80px);} }
+    </style>
 </head>
 <body>
-    <div class="app">
-        <div class="header">
-            <div class="header-left">
-                <div class="header-icon">📦</div>
-                <div class="header-title">إدارة المخزون</div>
+    <div class="container">
+        <div class="card">
+            <h3>📦 إدارة المخزون</h3>
+            <p style="color:var(--text-muted);font-size:12px;margin-bottom:12px;">
+                ⚠️ المخزون يبدأ فاضي. أضف الأصناف بعد الجرد الفعلي للمطعم.
+            </p>
+
+            <!-- إحصائيات -->
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="num" id="totalItems">0</div>
+                    <div class="lbl">عدد الأصناف</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="totalValue" style="color:#38bdf8;">0</div>
+                    <div class="lbl">قيمة المخزون (ل.س)</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="lowStock" style="color:#f87171;">0</div>
+                    <div class="lbl">أصناف منخفضة</div>
+                </div>
             </div>
-            <div class="header-badge" id="alertCount">0</div>
+
+            <!-- إضافة صنف -->
+            <div class="input-row">
+                <div>
+                    <label>اسم الصنف</label>
+                    <input type="text" id="itemName" placeholder="مثال: زيت زيتون" style="width:140px;">
+                </div>
+                <div>
+                    <label>الكمية</label>
+                    <input type="number" id="itemQty" value="1" min="0" style="width:70px;">
+                </div>
+                <div>
+                    <label>الوحدة</label>
+                    <select id="itemUnit" style="width:90px;">
+                        <option value="كغ">كغ</option>
+                        <option value="لتر">لتر</option>
+                        <option value="قطعة">قطعة</option>
+                        <option value="علبة">علبة</option>
+                        <option value="كيس">كيس</option>
+                        <option value="صندوق">صندوق</option>
+                    </select>
+                </div>
+                <div>
+                    <label>الحد الأدنى</label>
+                    <input type="number" id="itemMin" value="5" min="0" style="width:70px;">
+                </div>
+                <div>
+                    <label>سعر الوحدة</label>
+                    <input type="number" id="itemPrice" value="0" min="0" style="width:90px;">
+                </div>
+                <div style="display:flex;align-items:end;">
+                    <button class="btn btn-primary" onclick="addItem()">➕ إضافة</button>
+                </div>
+            </div>
         </div>
 
-        <button class="btn-add" onclick="toggleForm()">➕ إضافة توريد</button>
-
-        <div class="add-form" id="addForm" style="display:none">
-            <select id="itemSelect"></select>
-            <input type="number" id="addQty" placeholder="الكمية" min="1" value="1">
-            <button class="btn-save" onclick="addStock()">💾 حفظ</button>
+        <!-- جدول المخزون -->
+        <div class="card">
+            <h3>📋 جرد المخزون الحالي</h3>
+            <div id="inventoryTable"></div>
         </div>
 
-        <div class="inventory-grid" id="inventoryGrid"></div>
+        <!-- أزرار سريعة -->
+        <div class="card" style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="exportInventory()">📤 تصدير CSV</button>
+            <button class="btn btn-success" onclick="addSampleItems()">📋 إضافة أصناف شائعة</button>
+            <button class="btn btn-danger" onclick="clearInventory()">🗑️ تفريغ المخزون</button>
+        </div>
     </div>
-    <script src="inventory.js"></script>
-<nav class="bottom-nav"><a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a><a href="tables.html">🪑</a><a href="staff.html">👥</a><a href="inventory.html">📦</a><a href="menu.html">🍽️</a>
-<a href="reports.html">📊</a><a href="settings.html">⚙️</a></nav>
+
+    <script>
+        function getInventory() {
+            return JSON.parse(localStorage.getItem('thana_inventory') || '[]');
+        }
+
+        function saveInventory(data) {
+            localStorage.setItem('thana_inventory', JSON.stringify(data));
+        }
+
+        function addItem() {
+            const name = document.getElementById('itemName').value.trim();
+            const qty = parseInt(document.getElementById('itemQty').value) || 0;
+            const unit = document.getElementById('itemUnit').value;
+            const minQty = parseInt(document.getElementById('itemMin').value) || 0;
+            const price = parseInt(document.getElementById('itemPrice').value) || 0;
+
+            if (!name) { showToast('⚠️ أدخل اسم الصنف'); return; }
+
+            const inventory = getInventory();
+            
+            // فحص إذا الصنف موجود
+            const existing = inventory.find(i => i.name === name);
+            if (existing) {
+                existing.qty += qty;
+                existing.price = price || existing.price;
+                existing.minQty = minQty || existing.minQty;
+                existing.unit = unit;
+            } else {
+                inventory.push({ name, qty, unit, minQty, price });
+            }
+
+            saveInventory(inventory);
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemQty').value = '1';
+            renderInventory();
+            showToast('✅ تمت الإضافة');
+        }
+
+        function updateQty(name, delta) {
+            const inventory = getInventory();
+            const item = inventory.find(i => i.name === name);
+            if (item) {
+                item.qty = Math.max(0, item.qty + delta);
+                saveInventory(inventory);
+                renderInventory();
+            }
+        }
+
+        function removeItem(name) {
+            if (!confirm(`حذف "${name}" من المخزون؟`)) return;
+            const inventory = getInventory().filter(i => i.name !== name);
+            saveInventory(inventory);
+            renderInventory();
+            showToast('🗑️ تم الحذف');
+        }
+
+        function editItem(name) {
+            const inventory = getInventory();
+            const item = inventory.find(i => i.name === name);
+            if (!item) return;
+            
+            const newQty = prompt(`الكمية الجديدة لـ "${name}":`, item.qty);
+            if (newQty !== null) {
+                item.qty = Math.max(0, parseInt(newQty) || 0);
+                saveInventory(inventory);
+                renderInventory();
+                showToast('✅ تم التحديث');
+            }
+        }
+
+        function renderInventory() {
+            const inventory = getInventory();
+            const container = document.getElementById('inventoryTable');
+
+            // إحصائيات
+            document.getElementById('totalItems').textContent = inventory.length;
+            document.getElementById('totalValue').textContent = 
+                inventory.reduce((s, i) => s + (i.price * i.qty), 0).toLocaleString();
+            document.getElementById('lowStock').textContent = 
+                inventory.filter(i => i.qty <= i.minQty).length;
+
+            if (inventory.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size:48px;">📦</div>
+                        <div>المخزون فارغ</div>
+                        <div style="font-size:12px;margin-top:4px;">أضف الأصناف بعد الجرد الفعلي</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>الصنف</th>
+                            <th>الكمية</th>
+                            <th>الوحدة</th>
+                            <th>الحد الأدنى</th>
+                            <th>سعر الوحدة</th>
+                            <th>القيمة</th>
+                            <th>تعديل</th>
+                            <th>حذف</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${inventory.map(i => {
+                            const qtyClass = i.qty <= 0 ? 'qty-low' : i.qty <= i.minQty ? 'qty-mid' : 'qty-ok';
+                            return `
+                                <tr>
+                                    <td><b>${i.name}</b></td>
+                                    <td class="${qtyClass}">${i.qty}</td>
+                                    <td>${i.unit}</td>
+                                    <td>${i.minQty}</td>
+                                    <td>${i.price.toLocaleString()} ل.س</td>
+                                    <td>${(i.price * i.qty).toLocaleString()} ل.س</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" onclick="editItem('${i.name}')">✏️</button>
+                                        <button class="btn btn-sm btn-success" onclick="updateQty('${i.name}', 1)">+</button>
+                                        <button class="btn btn-sm btn-danger" onclick="updateQty('${i.name}', -1)">-</button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger" onclick="removeItem('${i.name}')">🗑️</button>
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function addSampleItems() {
+            const samples = [
+                { name: 'زيت زيتون', qty: 20, unit: 'لتر', minQty: 5, price: 25000 },
+                { name: 'دقيق', qty: 50, unit: 'كغ', minQty: 10, price: 8000 },
+                { name: 'لحم شاورما', qty: 15, unit: 'كغ', minQty: 5, price: 45000 },
+                { name: 'دجاج', qty: 20, unit: 'كغ', minQty: 5, price: 35000 },
+                { name: 'خبز', qty: 200, unit: 'قطعة', minQty: 50, price: 500 },
+                { name: 'بطاطا', qty: 30, unit: 'كغ', minQty: 10, price: 6000 },
+                { name: 'مشروب غازي', qty: 100, unit: 'علبة', minQty: 20, price: 2500 },
+                { name: 'طحينة', qty: 10, unit: 'كغ', minQty: 3, price: 15000 },
+            ];
+
+            const inventory = getInventory();
+            for (const s of samples) {
+                const existing = inventory.find(i => i.name === s.name);
+                if (existing) {
+                    existing.qty += s.qty;
+                } else {
+                    inventory.push(s);
+                }
+            }
+            saveInventory(inventory);
+            renderInventory();
+            showToast('✅ تمت إضافة 8 أصناف شائعة');
+        }
+
+        function clearInventory() {
+            if (!confirm('⚠️ هل أنت متأكد من تفريغ المخزون بالكامل؟')) return;
+            saveInventory([]);
+            renderInventory();
+            showToast('🗑️ تم تفريغ المخزون');
+        }
+
+        function exportInventory() {
+            const inventory = getInventory();
+            if (inventory.length === 0) { showToast('⚠️ المخزون فارغ'); return; }
+            
+            let csv = 'الصنف,الكمية,الوحدة,الحد الأدنى,سعر الوحدة,القيمة\n';
+            inventory.forEach(i => {
+                csv += `${i.name},${i.qty},${i.unit},${i.minQty},${i.price},${i.price * i.qty}\n`;
+            });
+            
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `مخزون_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📤 تم التصدير');
+        }
+
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        renderInventory();
+    </script>
+</body>
+</html>
