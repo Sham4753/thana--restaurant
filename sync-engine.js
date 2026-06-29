@@ -288,3 +288,38 @@ function getSystemStatus() {
 startSyncEngine();
 
 console.log('🔄 Thana Sync Engine v' + SYNC_VERSION + ' - جاهز');
+
+// ========== Time-stamp Conflict Resolution ==========
+function resolveByTimestamp(localItem, remoteItem) {
+    if (!localItem || !localItem.updatedAt) return remoteItem;
+    if (!remoteItem || !remoteItem.updatedAt) return localItem;
+    
+    const localTime = new Date(localItem.updatedAt).getTime();
+    const remoteTime = new Date(remoteItem.updatedAt).getTime();
+    
+    // الأحدث يفوز
+    if (localTime >= remoteTime) {
+        console.log('⚡ تعارض: النسخة المحلية أحدث - تم الاحتفاظ بها');
+        return localItem;
+    } else {
+        console.log('⚡ تعارض: النسخة البعيدة أحدث - تم اعتمادها');
+        return remoteItem;
+    }
+}
+
+// إضافة طابع زمني لكل عملية
+function addTimestamp(data) {
+    return {
+        ...data,
+        updatedAt: new Date().toISOString(),
+        syncVersion: SYNC_VERSION
+    };
+}
+
+// تصدير
+window.ThanaSync = {
+    processSyncQueue,
+    resolveByTimestamp,
+    addTimestamp,
+    getSystemStatus
+};
