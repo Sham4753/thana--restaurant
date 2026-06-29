@@ -128,7 +128,7 @@ function backToNew(id){updateOrder(id,'new',{cookStart:null,cookEnd:null})}
 loadOrders();
 
 // تحديث تلقائي كل 5 ثواني
-setInterval(loadOrders, 5000);
+setInterval(loadOrders, 1000);
 
 // استماع للتغييرات
 window.addEventListener('storage',function(e){
