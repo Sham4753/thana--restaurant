@@ -3,42 +3,341 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="theme.css">
-<title>Thana Kitchen</title>
-    <link rel="stylesheet" href="kitchen.css">
+    <title>المطبخ - Thana Restaurant</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0f1e">
+    <meta http-equiv="refresh" content="15">
+    <script src="nav-component.js" defer></script>
+    <script src="pwa-register.js" defer></script>
+    <style>
+        body { padding: 16px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            padding: 16px 0;
+        }
+        .header h1 {
+            font-size: 26px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stats {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+        .stat {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 12px 18px;
+            text-align: center;
+        }
+        .stat .num { font-size: 28px; font-weight: 700; }
+        .stat .lbl { font-size: 11px; color: var(--text-muted); }
+        .stat.pending .num { color: var(--warning); }
+        .stat.cooking .num { color: var(--accent-primary); }
+        .stat.done .num { color: var(--success); }
+
+        .order-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-bottom: 12px;
+            backdrop-filter: var(--glass-blur);
+            border-right: 4px solid var(--warning);
+        }
+        .order-card.cooking { border-right-color: var(--accent-primary); }
+        .order-card.done { border-right-color: var(--success); opacity: 0.7; }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .order-table {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .order-time {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .order-source {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+        }
+        .source-qr { background: rgba(129,140,248,0.2); color: #a78bfa; }
+        .source-waiter { background: rgba(56,189,248,0.2); color: var(--accent-primary); }
+        .source-voice { background: rgba(251,191,36,0.2); color: var(--warning); }
+
+        .order-items {
+            list-style: none;
+        }
+        .order-items li {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            font-size: 15px;
+        }
+        .item-qty {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 10px;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        .order-note {
+            background: rgba(251,191,36,0.1);
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            margin-top: 8px;
+            font-size: 13px;
+        }
+        .order-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all var(--transition-fast);
+        }
+        .btn-cook { background: var(--warning); color: #000; }
+        .btn-done { background: var(--success); color: #000; }
+        .btn-back { background: rgba(255,255,255,0.1); color: #fff; }
+        .btn:hover { transform: scale(1.03); }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+        .empty-state .icon { font-size: 64px; margin-bottom: 12px; }
+
+        .auto-refresh {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 16px;
+        }
+        .timer-display {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+        .urgent {
+            animation: pulse-border 1s infinite;
+        }
+        @keyframes pulse-border {
+            0%,100% { border-right-color: var(--danger); }
+            50% { border-right-color: var(--warning); }
+        }
+    </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-left">
-            <div class="header-icon">🍳</div>
-            <div class="header-title">Thana Kitchen</div>
+    <div class="container">
+        <div class="header">
+            <div style="font-size:48px;">🍳</div>
+            <h1>شاشة المطبخ KDS</h1>
         </div>
-        <div class="header-badge" id="orderCount">0</div>
-    </div>
 
-    <div class="stats-row">
-        <div class="stat-chip active"><div class="stat-num" id="pendingCount">0</div><div class="stat-label">⏳ انتظار</div></div>
-        <div class="stat-chip active"><div class="stat-num" id="cookingCount">0</div><div class="stat-label">🔥 تحضير</div></div>
-        <div class="stat-chip ready"><div class="stat-num" id="readyCount">0</div><div class="stat-label">✅ جاهز</div></div>
-    </div>
+        <div class="stats">
+            <div class="stat pending">
+                <div class="num" id="pendingCount">0</div>
+                <div class="lbl">قيد الانتظار</div>
+            </div>
+            <div class="stat cooking">
+                <div class="num" id="cookingCount">0</div>
+                <div class="lbl">جاري الطبخ</div>
+            </div>
+            <div class="stat done">
+                <div class="num" id="doneCount">0</div>
+                <div class="lbl">مكتمل</div>
+            </div>
+        </div>
 
-    <div class="order-list" id="orderList">
-        <div class="empty-state">
-            <div class="empty-icon">🍽️</div>
-            <h3>لا توجد طلبات</h3>
-            <p>في انتظار طلبات جديدة...</p>
+        <div id="ordersContainer"></div>
+
+        <div class="auto-refresh">
+            ⏳ تحديث تلقائي كل 10 ثوان | آخر تحديث: <span id="lastUpdate">--</span>
         </div>
     </div>
 
-    <div class="alert-overlay" id="alertOverlay">
-        <div>🔔</div>
-        <div class="alert-text">طلب جديد!</div>
-        <div id="alertTable"></div>
-        <button class="alert-dismiss" onclick="dismissAlert()">👨‍🍳 شفته</button>
-    </div>
+    <script>
+        // ========== KDS Engine ==========
+        
+        function getOrders() {
+            return JSON.parse(localStorage.getItem('thana_orders') || '[]');
+        }
 
-    <button class="add-test-btn" style="bottom:80px" onclick="addTestOrder()">➕ إضافة طلب تجريبي</button>
+        function saveOrders(orders) {
+            localStorage.setItem('thana_orders', JSON.stringify(orders));
+        }
 
-    <script src="kitchen.js"></script>
-<nav class="bottom-nav"><a href="index.html">🏠</a><a href="waiter.html">📋</a><a href="kitchen.html">🍳</a><a href="tables.html">🪑</a><a href="staff.html">👥</a><a href="inventory.html">📦</a><a href="menu.html">🍽️</a>
-<a href="reports.html">📊</a><a href="settings.html">⚙️</a></nav>
+        function getTodayOrders() {
+            const orders = getOrders();
+            const today = new Date().toLocaleDateString('ar-SA');
+            return orders.filter(o => {
+                const d = new Date(o.timestamp || Date.now()).toLocaleDateString('ar-SA');
+                return d === today;
+            });
+        }
+
+        function updateStats() {
+            const orders = getTodayOrders();
+            document.getElementById('pendingCount').textContent = orders.filter(o => o.status === 'new').length;
+            document.getElementById('cookingCount').textContent = orders.filter(o => o.status === 'cooking').length;
+            document.getElementById('doneCount').textContent = orders.filter(o => o.status === 'done').length;
+        }
+
+        function getSourceLabel(source) {
+            if (source === 'qr') return '<span class="order-source source-qr">📱 QR</span>';
+            if (source === 'voice') return '<span class="order-source source-voice">🎤 صوتي</span>';
+            return '<span class="order-source source-waiter">📋 نادل</span>';
+        }
+
+        function getTimer(startTime) {
+            if (!startTime) return '';
+            const elapsed = Math.floor((Date.now() - new Date(startTime).getTime()) / 60000);
+            if (elapsed < 1) return '⏱️ الآن';
+            if (elapsed > 20) return `<span class="timer-display" style="color:var(--danger);">⏰ ${elapsed}د</span>`;
+            if (elapsed > 10) return `<span class="timer-display" style="color:var(--warning);">⏱️ ${elapsed}د</span>`;
+            return `<span class="timer-display">⏱️ ${elapsed}د</span>`;
+        }
+
+        function renderOrders() {
+            const orders = getTodayOrders();
+            // ترتيب: الجديد أولاً، ثم cooking، ثم done
+            const sorted = [
+                ...orders.filter(o => o.status === 'new'),
+                ...orders.filter(o => o.status === 'cooking'),
+                ...orders.filter(o => o.status === 'done').slice(-5)
+            ];
+
+            const container = document.getElementById('ordersContainer');
+
+            if (sorted.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">🍽️</div>
+                        <div>لا توجد طلبات حالياً</div>
+                        <div style="font-size:12px;margin-top:4px;">بانتظار طلبات جديدة...</div>
+                    </div>
+                `;
+                updateStats();
+                return;
+            }
+
+            container.innerHTML = sorted.map(o => {
+                const isUrgent = o.status === 'new' && 
+                    (Date.now() - new Date(o.timestamp || Date.now()).getTime()) > 600000; // 10 دقائق
+
+                return `
+                    <div class="order-card ${o.status} ${isUrgent ? 'urgent' : ''}">
+                        <div class="order-header">
+                            <span class="order-table">🪑 طاولة ${o.table}</span>
+                            ${getSourceLabel(o.source || 'waiter')}
+                            <span class="order-time">
+                                ${new Date(o.timestamp || Date.now()).toLocaleTimeString('ar-SA')}
+                                ${o.status === 'cooking' ? getTimer(o.cookStart) : ''}
+                            </span>
+                        </div>
+                        <ul class="order-items">
+                            ${(o.items || []).map(i => `
+                                <li>
+                                    <span><span class="item-qty">${i.qty || 1}</span> ${i.name}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                        ${o.note ? `<div class="order-note">📝 ${o.note}</div>` : ''}
+                        ${o.status !== 'done' ? `
+                            <div class="order-actions">
+                                ${o.status === 'new' ? 
+                                    `<button class="btn btn-cook" onclick="startCooking(${o.id})">🔥 بدء الطبخ</button>` :
+                                    `<button class="btn btn-done" onclick="markDone(${o.id})">✅ جاهز للتقديم</button>`
+                                }
+                                <button class="btn btn-back" onclick="backToNew(${o.id})">↩️ إعادة</button>
+                            </div>
+                        ` : `
+                            <div style="text-align:center;color:var(--success);font-size:13px;margin-top:6px;">
+                                ✅ تم التقديم - ${new Date(o.cookEnd || Date.now()).toLocaleTimeString('ar-SA')}
+                            </div>
+                        `}
+                    </div>
+                `;
+            }).join('');
+
+            updateStats();
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('ar-SA');
+        }
+
+        function startCooking(id) {
+            const orders = getOrders();
+            const order = orders.find(o => o.id === id);
+            if (order) {
+                order.status = 'cooking';
+                order.cookStart = new Date().toISOString();
+                saveOrders(orders);
+                if (navigator.vibrate) navigator.vibrate(50);
+                renderOrders();
+            }
+        }
+
+        function markDone(id) {
+            const orders = getOrders();
+            const order = orders.find(o => o.id === id);
+            if (order) {
+                order.status = 'done';
+                order.cookEnd = new Date().toISOString();
+                saveOrders(orders);
+                if (navigator.vibrate) navigator.vibrate([50, 30, 100]);
+                renderOrders();
+            }
+        }
+
+        function backToNew(id) {
+            const orders = getOrders();
+            const order = orders.find(o => o.id === id);
+            if (order) {
+                order.status = 'new';
+                order.cookStart = null;
+                order.cookEnd = null;
+                saveOrders(orders);
+                renderOrders();
+            }
+        }
+
+        // استماع للتغييرات من الصفحات الأخرى
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'thana_orders' || e.key === 'thana_new_order_notify') {
+                renderOrders();
+                // إشعار صوتي
+                if (e.key === 'thana_new_order_notify') {
+                    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                }
+            }
+        });
+
+        // فحص دوري
+        setInterval(renderOrders, 10000);
+
+        // بدء التشغيل
+        renderOrders();
+    </script>
+</body>
+</html>
