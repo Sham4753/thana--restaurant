@@ -1,33 +1,289 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><link rel="stylesheet" href="theme.css">
-<title>تقرير الهدر</title>
-<style>
-:root{--bg:#0a0a0a;--accent:#e94560;--text:#fff;--glass:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.1)}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,sans-serif;background:linear-gradient(135deg,#0a0a0a,#1a1a2e);color:var(--text);min-height:100vh;padding:16px}
-.app{max-width:500px;margin:0 auto}
-.header{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:16px;margin-bottom:16px;text-align:center}
-h1{background:linear-gradient(135deg,var(--accent),#f5a623);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.waste-card{background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
-.waste-reason{font-size:0.7em;opacity:0.7}
-.waste-qty{font-size:1.2em;font-weight:700;color:var(--accent)}
-.summary{background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--accent);border-radius:16px;padding:16px;margin-bottom:16px;text-align:center}
-.summary-num{font-size:2.5em;font-weight:700;color:var(--accent)}
-<script src="nav-component.js" defer></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقرير الهدر - Thana Restaurant</title>
+    <link rel="stylesheet" href="theme-v2.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0f1e">
+    <script src="nav-component.js" defer></script>
+    <script src="pwa-register.js" defer></script>
+    <style>
+        body { padding: 16px; }
+        .container { max-width: 700px; margin: 0 auto; }
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            margin-bottom: 14px;
+            backdrop-filter: var(--glass-blur);
+        }
+        .card h3 { color: var(--accent-primary); margin-bottom: 12px; }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: end;
+            margin-bottom: 12px;
+        }
+        .input-row input, .input-row select {
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-medium);
+            color: #fff;
+            font-family: inherit;
+            font-size: 13px;
+        }
+        .btn {
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .btn:active { transform: scale(0.95); }
+        .btn-primary { background: var(--accent-gradient); color: #fff; }
+        .btn-danger { background: rgba(248,113,113,0.2); color: #f87171; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: right; padding: 10px 8px; font-size: 11px; color: var(--text-muted); border-bottom: 1px solid var(--border-light); }
+        td { padding: 10px 8px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+
+        .empty-state { text-align: center; padding: 30px; color: var(--text-muted); }
+
+        .stats {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+        .stat-box {
+            flex: 1;
+            min-width: 100px;
+            background: rgba(255,255,255,0.03);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-box .num { font-size: 22px; font-weight: 700; }
+        .stat-box .lbl { font-size: 10px; color: var(--text-muted); }
+
+        .toast {
+            position: fixed;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #34d399;
+            color: #000;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-weight: 700;
+            z-index: 300;
+            animation: slideDown 0.4s ease, slideUp 0.4s ease 2s forwards;
+        }
+        @keyframes slideDown { from{opacity:0;transform:translateX(-50%) translateY(-80px);} }
+        @keyframes slideUp { to{opacity:0;transform:translateX(-50%) translateY(-80px);} }
+    </style>
 </head>
-<body><div class="app">
-<div class="header"><h1>🗑️ تقرير الهدر</h1></div>
-<div class="summary"><div class="summary-num" id="totalWaste">0</div>إجمالي المواد المهدرة</div>
-<div id="wasteList"></div>
-<a href="index.html" style="display:block;text-align:center;margin-top:16px;color:var(--text);opacity:0.7">🏠 العودة</a>
-</div>
-<script>
-const waste=JSON.parse(localStorage.getItem('thana_waste')||'[]');
-document.getElementById('totalWaste').textContent=waste.reduce((s,w)=>s+w.qty,0);
-document.getElementById('wasteList').innerHTML=waste.slice(-20).reverse().map(w=>`
-<div class="waste-card">
-<div><b>${w.itemName}</b><br><span class="waste-reason">${w.reason} | ${w.time}</span></div>
-<div class="waste-qty">-${w.qty}</div>
-</div>`).join('')||'<p style="text-align:center;opacity:0.5">لا يوجد هدر مسجل</p>';
-<a href="reports.html">📊</a><a href="settings.html">⚙️</a></nav>
+<body>
+    <div class="container">
+        <div class="card">
+            <h3>🗑️ تقرير الهدر</h3>
+            <p style="color:var(--text-muted);font-size:12px;margin-bottom:12px;">
+                سجل الأصناف اللي انهدرت عشان تراقب التكاليف
+            </p>
+
+            <!-- إحصائيات -->
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="num" id="totalWaste">0</div>
+                    <div class="lbl">عدد عناصر الهدر</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" style="color:#f87171;" id="totalCost">0</div>
+                    <div class="lbl">إجمالي الخسارة (ل.س)</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="todayWaste">0</div>
+                    <div class="lbl">هدر اليوم</div>
+                </div>
+            </div>
+
+            <!-- إضافة هدر -->
+            <div class="input-row">
+                <div>
+                    <label>الصنف</label>
+                    <input type="text" id="wasteItem" placeholder="اسم الصنف" style="width:130px;">
+                </div>
+                <div>
+                    <label>الكمية</label>
+                    <input type="number" id="wasteQty" value="1" min="1" style="width:65px;">
+                </div>
+                <div>
+                    <label>السبب</label>
+                    <select id="wasteReason" style="width:110px;">
+                        <option value="انتهاء صلاحية">انتهاء صلاحية</option>
+                        <option value="تلف">تلف</option>
+                        <option value="حرق">حرق</option>
+                        <option value="سقوط">سقوط</option>
+                        <option value="أخرى">أخرى</option>
+                    </select>
+                </div>
+                <div>
+                    <label>التكلفة (ل.س)</label>
+                    <input type="number" id="wasteCost" value="0" min="0" style="width:90px;">
+                </div>
+                <div style="display:flex;align-items:end;">
+                    <button class="btn btn-primary" onclick="addWaste()">➕ سجل الهدر</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- جدول الهدر -->
+        <div class="card">
+            <h3>📋 سجل الهدر</h3>
+            <div id="wasteTable"></div>
+        </div>
+
+        <!-- أزرار -->
+        <div class="card" style="display:flex;gap:8px;">
+            <button class="btn btn-primary" onclick="exportWaste()">📤 تصدير CSV</button>
+            <button class="btn btn-danger" onclick="clearWaste()">🗑️ مسح السجل</button>
+        </div>
+    </div>
+
+    <script>
+        function getWaste() {
+            return JSON.parse(localStorage.getItem('thana_waste') || '[]');
+        }
+
+        function saveWaste(data) {
+            localStorage.setItem('thana_waste', JSON.stringify(data));
+        }
+
+        function addWaste() {
+            const item = document.getElementById('wasteItem').value.trim();
+            const qty = parseInt(document.getElementById('wasteQty').value) || 1;
+            const reason = document.getElementById('wasteReason').value;
+            const cost = parseInt(document.getElementById('wasteCost').value) || 0;
+
+            if (!item) { showToast('⚠️ أدخل اسم الصنف'); return; }
+
+            const waste = getWaste();
+            waste.push({
+                item,
+                qty,
+                reason,
+                cost,
+                date: new Date().toISOString(),
+                dateFormatted: new Date().toLocaleDateString('ar-SA')
+            });
+
+            saveWaste(waste);
+            document.getElementById('wasteItem').value = '';
+            document.getElementById('wasteQty').value = '1';
+            document.getElementById('wasteCost').value = '0';
+            renderWaste();
+            showToast('✅ تم تسجيل الهدر');
+        }
+
+        function removeWaste(index) {
+            if (!confirm('حذف هذا السجل؟')) return;
+            const waste = getWaste();
+            waste.splice(index, 1);
+            saveWaste(waste);
+            renderWaste();
+            showToast('🗑️ تم الحذف');
+        }
+
+        function renderWaste() {
+            const waste = getWaste();
+            const container = document.getElementById('wasteTable');
+            const today = new Date().toLocaleDateString('ar-SA');
+
+            document.getElementById('totalWaste').textContent = waste.length;
+            document.getElementById('totalCost').textContent = 
+                waste.reduce((s, w) => s + (w.cost || 0), 0).toLocaleString();
+            document.getElementById('todayWaste').textContent = 
+                waste.filter(w => w.dateFormatted === today).length;
+
+            if (waste.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div style="font-size:48px;">✅</div><div>لا يوجد هدر مسجل</div></div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>التاريخ</th>
+                            <th>الصنف</th>
+                            <th>الكمية</th>
+                            <th>السبب</th>
+                            <th>التكلفة</th>
+                            <th>حذف</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${waste.map((w, i) => `
+                            <tr>
+                                <td>${w.dateFormatted}</td>
+                                <td>${w.item}</td>
+                                <td>${w.qty}</td>
+                                <td>${w.reason}</td>
+                                <td style="color:#f87171;">${(w.cost || 0).toLocaleString()} ل.س</td>
+                                <td><button class="btn btn-danger" style="padding:4px 8px;font-size:11px;" onclick="removeWaste(${i})">🗑️</button></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function clearWaste() {
+            if (!confirm('⚠️ مسح كل سجل الهدر؟')) return;
+            saveWaste([]);
+            renderWaste();
+            showToast('🗑️ تم مسح السجل');
+        }
+
+        function exportWaste() {
+            const waste = getWaste();
+            if (waste.length === 0) { showToast('⚠️ لا يوجد هدر'); return; }
+            
+            let csv = 'التاريخ,الصنف,الكمية,السبب,التكلفة\n';
+            waste.forEach(w => {
+                csv += `${w.dateFormatted},${w.item},${w.qty},${w.reason},${w.cost}\n`;
+            });
+            
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `هدر_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📤 تم التصدير');
+        }
+
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        renderWaste();
+    </script>
+</body>
+</html>
