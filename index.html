@@ -3,380 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thana Restaurant v2.0</title>
+    <title>Thana Restaurant</title>
     <link rel="stylesheet" href="theme-v2.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0a0b0f">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <script src="nav-component.js" defer></script>
     <script src="pwa-register.js" defer></script>
     <style>
-        body {
-            padding: 16px;
-            background-image: 
-                radial-gradient(ellipse at 20% 0%, rgba(56,189,248,0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 100%, rgba(129,140,248,0.06) 0%, transparent 50%);
-        }
-        .container { max-width: 900px; margin: 0 auto; }
+        body{padding:16px}
+        .container{max-width:900px;margin:0 auto}
+        .hero{text-align:center;padding:20px 0}
+        .hero .logo{font-size:56px}
+        .hero h1{font-size:28px;color:#d4a853;margin:8px 0}
+        .hero .sub{color:#a8a49e;font-size:13px}
         
-        .hero {
-            text-align: center;
-            padding: 30px 0 20px;
+        .nav-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:16px 0}
+        .nav-card{
+            background:#161820;border:1px solid rgba(255,255,255,0.06);
+            border-radius:12px;padding:14px 10px;text-align:center;
+            text-decoration:none;color:#e8e4dd;transition:all 0.2s;display:block;
         }
-        .hero .logo { font-size: 64px; }
-        .hero h1 {
-            font-size: 30px;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin: 10px 0;
-        }
-        .hero .version {
-            display: inline-block;
-            background: var(--accent-gradient);
-            color: #fff;
-            padding: 4px 14px;
-            border-radius: var(--radius-full);
-            font-size: 12px;
-            font-weight: 700;
-        }
-        .hero .subtitle {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-top: 8px;
-        }
-
-        .install-banner {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-lg);
-            padding: 14px 18px;
-            margin: 16px 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            backdrop-filter: var(--glass-blur);
-            cursor: pointer;
-            transition: all var(--transition-normal);
-        }
-        .install-banner:hover { border-color: var(--accent-primary); }
-
-        .section-title {
-            font-size: 13px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 24px 0 12px;
-            padding-right: 8px;
-            border-right: 3px solid var(--accent-primary);
-        }
-
-        .nav-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 10px;
-        }
-        .nav-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-md);
-            padding: 16px 12px;
-            text-align: center;
-            text-decoration: none;
-            color: var(--text-primary);
-            backdrop-filter: var(--glass-blur);
-            transition: all var(--transition-normal);
-            position: relative;
-            overflow: hidden;
-        }
-        .nav-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--accent-primary);
-            box-shadow: var(--shadow-glow);
-        }
-        .nav-card .icon { font-size: 32px; display: block; margin-bottom: 6px; }
-        .nav-card .label { font-size: 12px; font-weight: 600; }
-        .nav-card .badge-new {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            background: var(--accent-gradient);
-            color: #fff;
-            font-size: 9px;
-            padding: 2px 8px;
-            border-radius: var(--radius-full);
-            font-weight: 700;
-        }
-
-        .live-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            margin: 16px 0;
-        }
-        .stat-mini {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-md);
-            padding: 14px;
-            text-align: center;
-            backdrop-filter: var(--glass-blur);
-        }
-        .stat-mini .val { font-size: 22px; font-weight: 700; }
-        .stat-mini .lbl { font-size: 11px; color: var(--text-muted); }
-
-        .quick-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin: 16px 0;
-        }
-        .quick-btn {
-            flex: 1;
-            min-width: 100px;
-            padding: 12px;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--glass-border);
-            background: var(--glass-bg);
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            backdrop-filter: var(--glass-blur);
-            transition: all var(--transition-fast);
-        }
-        .quick-btn:hover { border-color: var(--accent-primary); }
-
-        .footer {
-            text-align: center;
-            padding: 24px 0;
-            color: var(--text-muted);
-            font-size: 11px;
-        }
+        .nav-card:hover{border-color:#d4a853;transform:translateY(-2px)}
+        .nav-card .icon{font-size:28px;display:block;margin-bottom:4px}
+        .nav-card .label{font-size:11px;font-weight:600}
+        
+        .section-title{color:#d4a853;font-size:13px;margin:20px 0 10px;padding-right:8px;border-right:3px solid #d4a853}
+        .footer{text-align:center;padding:20px;color:#6b6760;font-size:11px}
     </style>
-<script src="nav-component.js" defer></script>
 </head>
 <body>
-    <div class="container">
-        <!-- Hero -->
-        <div class="hero">
-            <div class="logo">🍽️</div>
-            <h1>Thana Restaurant</h1>
-            <span class="version">v2.0</span>
-            <div class="subtitle">نظام إدارة مطعم متكامل · 2026</div>
-        </div>
-
-        <!-- تثبيت التطبيق -->
-        <div class="install-banner" id="installBanner" style="display:none;" onclick="installApp()">
-            <span style="font-size:28px;">📲</span>
-            <div>
-                <div style="font-weight:600;">تثبيت التطبيق</div>
-                <div style="font-size:11px;color:var(--text-muted);">أيقونة على الشاشة الرئيسية</div>
-            </div>
-            <span style="margin-right:auto;color:var(--accent-primary);">تثبيت ←</span>
-        </div>
-
-        <!-- إحصائيات سريعة -->
-        <div class="section-title">📊 نظرة سريعة</div>
-        <div class="live-stats" id="liveStats">
-            <div class="stat-mini"><div class="val">--</div><div class="lbl">طلبات اليوم</div></div>
-            <div class="stat-mini"><div class="val">--</div><div class="lbl">طاولات مشغولة</div></div>
-            <div class="stat-mini"><div class="val">--</div><div class="lbl">متوسط الوقت</div></div>
-        </div>
-
-        <!-- أزرار سريعة -->
-        <div class="quick-actions">
-            <a href="waiter.html" class="quick-btn">📋 طلب جديد</a>
-            <a href="qr-menu.html?table=1" class="quick-btn">📱 قائمة QR</a>
-            <a href="voice.html" class="quick-btn">🎤 أمر صوتي</a>
-            <a href="dashboard.html" class="quick-btn">📊 لوحة التحكم</a>
-        </div>
-
-        <!-- صفحات v2.0 الجديدة -->
-        <div class="section-title">🚀 مميزات v2.0</div>
-        <div class="nav-grid">
-            <a href="dashboard.html" class="nav-card">
-                <span class="badge-new">جديد</span>
-                <span class="icon">📊</span>
-                <span class="label">لوحة التحكم</span>
-            </a>
-            <a href="qr-menu.html?table=1" class="nav-card">
-                <span class="badge-new">جديد</span>
-                <span class="icon">📱</span>
-                <span class="label">قائمة QR</span>
-            </a>
-            <a href="voice.html" class="nav-card">
-                <span class="badge-new">جديد</span>
-                <span class="icon">🎤</span>
-                <span class="label">أوامر صوتية</span>
-            </a>
-            <a href="ai.html" class="nav-card">
-                <span class="badge-new">جديد</span>
-                <span class="icon">🧠</span>
-                <span class="label">الذكاء الاصطناعي</span>
-            </a>
-            <a href="auth.html" class="nav-card">
-                <span class="badge-new">جديد</span>
-                <span class="icon">🔐</span>
-                <span class="label">الأمان والبصمة</span>
-            </a>
-            <a href="print.html" class="nav-card">
-                <span class="badge-new">جديد</span>
-                <span class="icon">🖨️</span>
-                <span class="label">الطباعة</span>
-            </a>
-            <a href="theme-settings.html" class="nav-card">
-                <span class="badge-new">جديد</span>
-                <span class="icon">🎨</span>
-                <span class="label">تخصيص المظهر</span>
-            </a>
-        </div>
-
-        <!-- صفحات v1.0 -->
-        <div class="section-title">📋 الإدارة</div>
-        <div class="nav-grid">
-            <a href="waiter.html" class="nav-card">
-                <span class="icon">📋</span>
-                <span class="label">النادل</span>
-            </a>
-            <a href="kitchen.html" class="nav-card">
-                <span class="icon">🍳</span>
-                <span class="label">المطبخ</span>
-            </a>
-            <a href="tables.html" class="nav-card">
-                <span class="icon">🪑</span>
-                <span class="label">الطاولات</span>
-            </a>
-            <a href="staff.html" class="nav-card">
-                <span class="icon">👥</span>
-                <span class="label">الموظفين</span>
-            </a>
-            <a href="menu.html" class="nav-card">
-                <span class="icon">🍽️</span>
-                <span class="label">القائمة</span>
-            </a>
-            <a href="inventory.html" class="nav-card">
-                <span class="icon">📦</span>
-                <span class="label">المخزون</span>
-            </a>
-            <a href="reports.html" class="nav-card">
-                <span class="icon">📊</span>
-                <span class="label">التقارير</span>
-            </a>
-            <a href="customers.html" class="nav-card">
-                <span class="icon">👤</span>
-                <span class="label">العملاء CRM</span>
-            </a>
-        </div>
-
-        <div class="section-title">⚙️ النظام</div>
-        <div class="nav-grid">
-            <a href="settings.html" class="nav-card">
-                <span class="icon">⚙️</span>
-                <span class="label">الإعدادات</span>
-            </a>
-            <a href="admin.html" class="nav-card">
-                <span class="icon">🔑</span>
-                <span class="label">المدير</span>
-            </a>
-            <a href="close.html" class="nav-card">
-                <span class="icon">🔒</span>
-                <span class="label">الإغلاق اليومي</span>
-            </a>
-            <a href="waste_report.html" class="nav-card">
-                <span class="icon">🗑️</span>
-                <span class="label">تقرير الهدر</span>
-            </a>
-            <a href="velocity.html" class="nav-card">
-                <span class="icon">⚡</span>
-                <span class="label">سرعة المطبخ</span>
-            </a>
-            <a href="procurement.html" class="nav-card">
-                <span class="icon">🛒</span>
-                <span class="label">المشتريات</span>
-            </a>
-            <a href="invoice.html" class="nav-card">
-            <a href="docs.html" class="nav-card">
-                <span class="icon">📋</span>
-                <span class="label">التوثيق PDF</span>
-            </a>
-            <a href="help.html" class="nav-card">
-                <span class="icon">📖</span>
-                <span class="label">المساعدة</span>
-            </a>
-            <a href="backup.html" class="nav-card">
-                <span class="icon">💾</span>
-                <span class="label">نسخ احتياطي</span>
-            </a>
-            <a href="activate.html" class="nav-card">
-                <span class="icon">🔑</span>
-                <span class="label">الترخيص</span>
-            </a>
-                <span class="icon">🧾</span>
-                <span class="label">الفاتورة</span>
-            </a>
-        </div>
-
-        <div class="footer">
-            Thana Restaurant v2.0 · 2026 · <span style="color:var(--success);">تكلفة $0</span> · بدون سيرفر
-        </div>
+<div class="container">
+    <div class="hero">
+        <div class="logo">🍽️</div>
+        <h1>Thana Restaurant</h1>
+        <div class="sub">نظام إدارة مطعم متكامل · v2.1</div>
     </div>
 
-    <script src="auth-v2.js"></script>
-<script>
-        // إحصائيات سريعة
-        function updateStats() {
-            const orders = JSON.parse(localStorage.getItem('thana_orders') || '[]');
-            const tables = JSON.parse(localStorage.getItem('thana_tables') || '[]');
-            const today = new Date().toLocaleDateString('ar-SA');
-            
-            const todayOrders = orders.filter(o => {
-                const d = new Date(o.timestamp || Date.now()).toLocaleDateString('ar-SA');
-                return d === today;
-            });
-            
-            const busyTables = tables.filter(t => t.status === 'busy' || t.status === 'waiting').length;
-            
-            const times = orders.filter(o => o.cookStart && o.cookEnd)
-                .map(o => (new Date(o.cookEnd) - new Date(o.cookStart)) / 60000);
-            const avgTime = times.length > 0 ? Math.round(times.reduce((a,b)=>a+b,0)/times.length) : 0;
-            
-            const stats = document.querySelectorAll('#liveStats .val');
-            if (stats[0]) stats[0].textContent = todayOrders.length;
-            if (stats[1]) stats[1].textContent = busyTables + '/15';
-            if (stats[2]) stats[2].textContent = avgTime + ' د';
-        }
+    <div class="section-title">🚀 الوصول السريع</div>
+    <div class="nav-grid">
+        <a href="dashboard.html" class="nav-card"><span class="icon">📊</span><span class="label">لوحة التحكم</span></a>
+        <a href="waiter.html" class="nav-card"><span class="icon">📋</span><span class="label">النادل</span></a>
+        <a href="kitchen.html" class="nav-card"><span class="icon">🍳</span><span class="label">المطبخ</span></a>
+        <a href="qr-menu.html?table=1" class="nav-card"><span class="icon">📱</span><span class="label">QR Menu</span></a>
+        <a href="voice.html" class="nav-card"><span class="icon">🎤</span><span class="label">صوتي</span></a>
+        <a href="ai.html" class="nav-card"><span class="icon">🧠</span><span class="label">ذكاء</span></a>
+    </div>
 
-        updateStats();
-        setInterval(updateStats, 30000);
+    <div class="section-title">📋 الإدارة</div>
+    <div class="nav-grid">
+        <a href="tables.html" class="nav-card"><span class="icon">🪑</span><span class="label">الطاولات</span></a>
+        <a href="staff.html" class="nav-card"><span class="icon">👥</span><span class="label">الموظفين</span></a>
+        <a href="menu.html" class="nav-card"><span class="icon">🍽️</span><span class="label">القائمة</span></a>
+        <a href="inventory.html" class="nav-card"><span class="icon">📦</span><span class="label">المخزون</span></a>
+        <a href="reports.html" class="nav-card"><span class="icon">📈</span><span class="label">التقارير</span></a>
+        <a href="customers.html" class="nav-card"><span class="icon">👤</span><span class="label">العملاء</span></a>
+    </div>
 
-        // PWA install
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('installBanner').style.display = 'flex';
-        });
+    <div class="section-title">⚙️ النظام</div>
+    <div class="nav-grid">
+        <a href="settings.html" class="nav-card"><span class="icon">⚙️</span><span class="label">الإعدادات</span></a>
+        <a href="auth.html" class="nav-card"><span class="icon">🔐</span><span class="label">الأمان</span></a>
+        <a href="print.html" class="nav-card"><span class="icon">🖨️</span><span class="label">الطباعة</span></a>
+        <a href="backup.html" class="nav-card"><span class="icon">💾</span><span class="label">نسخ احتياطي</span></a>
+        <a href="help.html" class="nav-card"><span class="icon">📖</span><span class="label">مساعدة</span></a>
+    </div>
 
-        function installApp() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then(() => {
-                    document.getElementById('installBanner').style.display = 'none';
-                });
-            }
-        }
-
-        window.addEventListener('appinstalled', () => {
-            document.getElementById('installBanner').style.display = 'none';
-        });
-    </script>
+    <div class="footer">Thana Restaurant v2.1 · تكلفة $0 · بدون سيرفر</div>
+</div>
 </body>
 </html>
