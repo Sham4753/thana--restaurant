@@ -1,143 +1,74 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>القائمة - Thana</title>
-    <link rel="stylesheet" href="theme-v2.css">
-    <meta name="theme-color" content="#0a0b0f">
-    <style>
-        body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
-        .container{max-width:700px;margin:0 auto}
-        .header{text-align:center;padding:12px 0}
-        .header h1{font-size:22px;color:#d4a853}
-        .badge{display:inline-block;background:rgba(129,140,248,0.2);color:#818cf8;padding:6px 14px;border-radius:20px;font-size:13px;margin:4px}
-        .cats{display:flex;gap:6px;overflow-x:auto;padding:8px 0;scrollbar-width:none}
-        .cats::-webkit-scrollbar{display:none}
-        .cat{padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:#a8a49e;font-size:12px;white-space:nowrap;cursor:pointer}
-        .cat.active{background:rgba(212,168,83,0.15);color:#d4a853;border-color:#d4a853}
-        .item{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-        .item h3{font-size:15px;margin-bottom:2px}
-        .item .desc{font-size:11px;color:#6b6760}
-        .item .price{font-size:17px;font-weight:700;color:#d4a853}
-        .qbtn{width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-        .qty{font-size:15px;font-weight:600;min-width:20px;text-align:center}
-        .fab{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#b8942e,#d4a853);color:#1a1814;padding:12px 24px;border-radius:30px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 6px 24px rgba(212,168,83,0.3);z-index:100;border:none;font-family:'Cairo',sans-serif}
-        .modal{position:fixed;bottom:0;left:0;right:0;background:#161820;border-radius:22px 22px 0 0;padding:20px;z-index:200;transform:translateY(100%);transition:0.3s;max-height:65vh;overflow-y:auto;border-top:1px solid rgba(255,255,255,0.08)}
-        .modal.open{transform:translateY(0)}
-        .btn{display:block;width:100%;padding:12px;border-radius:10px;border:none;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px;font-family:'Cairo',sans-serif}
-        .btn-gold{background:linear-gradient(135deg,#b8942e,#d4a853);color:#1a1814}
-        .btn-red{background:rgba(239,68,68,0.12);color:#ef4444}
-        .btn-out{background:transparent;border:1px solid rgba(255,255,255,0.08);color:#fff}
-        .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:150;display:none}
-        .overlay.show{display:block}
-        .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:30px;font-weight:700;z-index:300}
-    </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>القائمة - Thana</title>
+<link rel="stylesheet" href="theme-v2.css"><meta name="theme-color" content="#0a0b0f">
+<style>
+body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
+.container{max-width:700px;margin:0 auto}
+.header{text-align:center;padding:12px 0}
+h1{font-size:22px;color:#d4a853}
+.badge{display:inline-block;background:rgba(129,140,248,0.2);color:#818cf8;padding:6px 14px;border-radius:20px;font-size:13px;margin:4px}
+.cats{display:flex;gap:6px;overflow-x:auto;padding:8px 0;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat{padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:#a8a49e;font-size:12px;white-space:nowrap;cursor:pointer}
+.cat.active{background:rgba(212,168,83,0.15);color:#d4a853;border-color:#d4a853}
+.item{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.item h3{font-size:15px;margin:0 0 2px}
+.item .price{font-size:17px;font-weight:700;color:#d4a853}
+.qbtn{width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.qty{font-size:15px;font-weight:600;min-width:20px;text-align:center}
+.fab{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#b8942e,#d4a853);color:#1a1814;padding:12px 24px;border-radius:30px;font-size:15px;font-weight:700;cursor:pointer;z-index:100;border:none;font-family:'Cairo',sans-serif}
+.modal{position:fixed;bottom:0;left:0;right:0;background:#161820;border-radius:22px 22px 0 0;padding:20px;z-index:200;transform:translateY(100%);transition:0.3s;max-height:65vh;overflow-y:auto;border-top:1px solid rgba(255,255,255,0.08)}
+.modal.open{transform:translateY(0)}
+.btn{display:block;width:100%;padding:12px;border-radius:10px;border:none;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px;font-family:'Cairo',sans-serif}
+.btn-gold{background:linear-gradient(135deg,#b8942e,#d4a853);color:#1a1814}
+.btn-red{background:rgba(239,68,68,0.12);color:#ef4444}
+.btn-out{background:transparent;border:1px solid rgba(255,255,255,0.08);color:#fff}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:150;display:none}
+.overlay.show{display:block}
+.toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:30px;font-weight:700;z-index:300}
+</style>
 </head>
 <body>
 <div class="container">
-<div class="header">
-    <div style="font-size:40px">🍽️</div>
-    <h1 id="shopTitle">Thana Restaurant</h1>
-    <div>
-        <button class="cat active" id="btnDineIn" onclick="setMode('dine')" style="font-family:'Cairo',sans-serif">🪑 طاولة</button>
-        <button class="cat" id="btnSafari" onclick="setMode('safari')" style="font-family:'Cairo',sans-serif">🛍️ سفري</button>
-    </div>
-    <div class="badge" id="tableBadge">🪑 طاولة 1</div>
-</div>
-
-<button id="btnLoadMenu" style="display:none;width:100%;padding:12px;border-radius:10px;background:#d4a853;color:#000;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:Cairo,sans-serif;margin-bottom:10px" onclick="loadDefaultMenu()">📋 تحميل القائمة الافتراضية</button>
-<div class="cats" id="cats"></div>
-<div id="menuGrid"></div>
-</div>
-
+<div class="header"><div style="font-size:40px">🍽️</div><h1 id="shopTitle">Thana Restaurant</h1>
+<div><button class="cat active" id="btnDineIn" onclick="setMode('dine')" style="font-family:'Cairo',sans-serif">🪑 طاولة</button>
+<button class="cat" id="btnSafari" onclick="setMode('safari')" style="font-family:'Cairo',sans-serif">🛍️ سفري</button></div>
+<div class="badge" id="tableBadge">🪑 طاولة 1</div></div>
+<div class="cats" id="cats"></div><div id="menuGrid"></div></div>
 <div class="overlay" id="overlay" onclick="closeCart()"></div>
 <button class="fab" onclick="openCart()">🛒 السلة <span id="cartCount">0</span></button>
-
 <div class="modal" id="cartModal">
-<h2 style="color:#d4a853;text-align:center">🛒 طلباتك</h2>
-<div id="cartItems"></div>
+<h2 style="color:#d4a853;text-align:center">🛒 طلباتك</h2><div id="cartItems"></div>
 <div style="text-align:center;font-size:18px;font-weight:700;padding:12px" id="cartTotal">المجموع: 0</div>
 <input type="text" id="orderNote" placeholder="ملاحظات..." style="width:100%;padding:10px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;font-family:'Cairo',sans-serif;font-size:13px;margin-top:6px">
 <button class="btn btn-gold" onclick="submitOrder()">📤 إرسال للمطبخ</button>
 <button class="btn btn-red" onclick="clearCart()">🗑️ تفريغ</button>
-<button class="btn btn-out" onclick="closeCart()">✕ إغلاق</button>
-</div>
+<button class="btn btn-out" onclick="closeCart()">✕ إغلاق</button></div>
 
-<script src="bridge.js"></script>
 <script>
-// ========== قراءة القائمة من المدير ==========
-var MENU = JSON.parse(localStorage.getItem('thana_menu')||'[]');
-if(MENU.length===0){
-    MENU = [
-        {name:'شاورما دجاج',cat:'وجبات رئيسية',price:25000},
-        {name:'شاورما لحم',cat:'وجبات رئيسية',price:30000},
-        {name:'فلافل',cat:'وجبات رئيسية',price:15000},
-        {name:'برجر',cat:'وجبات رئيسية',price:35000},
-        {name:'مشاوي مشكل',cat:'وجبات رئيسية',price:50000},
-        {name:'تبولة',cat:'مقبلات',price:10000},
-        {name:'حمص',cat:'مقبلات',price:10000},
-        {name:'بطاطا مقلية',cat:'مقبلات',price:8000},
-        {name:'كولا',cat:'مشروبات',price:5000},
-        {name:'عصير برتقال',cat:'مشروبات',price:7000},
-        {name:'ماء',cat:'مشروبات',price:2000},
-        {name:'كنافة',cat:'حلويات',price:20000}
-    ];
-}
+var MENU=JSON.parse(localStorage.getItem('thana_menu')||'[]');
+if(MENU.length===0)MENU=[{name:'شاورما دجاج',cat:'وجبات',price:25000},{name:'شاورما لحم',cat:'وجبات',price:30000},{name:'فلافل',cat:'وجبات',price:15000},{name:'برجر',cat:'وجبات',price:35000},{name:'مشاوي',cat:'وجبات',price:50000},{name:'تبولة',cat:'مقبلات',price:10000},{name:'حمص',cat:'مقبلات',price:10000},{name:'بطاطا',cat:'مقبلات',price:8000},{name:'كولا',cat:'مشروبات',price:5000},{name:'عصير',cat:'مشروبات',price:7000},{name:'ماء',cat:'مشروبات',price:2000},{name:'كنافة',cat:'حلويات',price:20000}];
 
-var params = new URLSearchParams(window.location.search);
-var tableId = params.get('table')||'1';
-var mode = 'dine';
+var params=new URLSearchParams(window.location.search);
+var tableId=params.get('table')||'1';
+var mode='dine';
+var shop=JSON.parse(localStorage.getItem('thana_shop_settings')||'{}');
+if(shop.name)document.getElementById('shopTitle').textContent=shop.name;
 
-// اسم المطعم
-var shop = JSON.parse(localStorage.getItem('thana_shop_settings')||'{}');
-if(shop.name) document.getElementById('shopTitle').textContent = shop.name;
+function setMode(m){mode=m;document.getElementById('btnDineIn').classList.toggle('active',m==='dine');document.getElementById('btnSafari').classList.toggle('active',m==='safari');document.getElementById('tableBadge').textContent=m==='safari'?'🛍️ سفري':'🪑 طاولة '+tableId}
 
-function setMode(m){
-    mode=m;
-    document.getElementById('btnDineIn').classList.toggle('active',m==='dine');
-    document.getElementById('btnSafari').classList.toggle('active',m==='safari');
-    document.getElementById('tableBadge').textContent = m==='safari'?'🛍️ سفري':'🪑 طاولة '+tableId;
-}
-
-var cart=[];
-var activeCat='الكل';
-
-function getCats(){
-    var c=['الكل'];
-    MENU.forEach(function(i){var cat=i.cat||i.category||'أخرى';if(c.indexOf(cat)===-1)c.push(cat)});
-    return c;
-}
-
-function renderCats(){
-    document.getElementById('cats').innerHTML = getCats().map(function(c){
-        return '<button class="cat'+(c===activeCat?' active':'')+'" onclick="filter(\''+c+'\')" style="font-family:Cairo,sans-serif">'+c+'</button>';
-    }).join('');
-}
-
-function filter(c){activeCat=c;if(MENU.length===0)document.getElementById("btnLoadMenu").style.display="block";
-renderCats();renderMenu();}
-
-function renderMenu(){
-    var items = activeCat==='الكل'?MENU:MENU.filter(function(i){return (i.cat||i.category||'أخرى')===activeCat});
-    document.getElementById('menuGrid').innerHTML = items.map(function(item){
-        var q = getQty(item.name);
-        return '<div class="item"><div><h3>'+item.name+'</h3><div class="desc">'+(item.price||0).toLocaleString()+' ل.س</div></div><div style="display:flex;align-items:center;gap:8px"><button class="qbtn" onclick="removeItem(\''+item.name+'\')">−</button><span class="qty">'+q+'</span><button class="qbtn" onclick="addItem(\''+item.name+'\','+(item.price||0)+')">+</button></div></div>';
-    }).join('');
-}
-
+var cart=[],activeCat='الكل';
+function getCats(){var c=['الكل'];MENU.forEach(function(i){var cat=i.cat||i.category||'أخرى';if(c.indexOf(cat)===-1)c.push(cat)});return c}
+function renderCats(){document.getElementById('cats').innerHTML=getCats().map(function(c){return'<button class="cat'+(c===activeCat?' active':'')+'" onclick="filter(\''+c+'\')" style="font-family:Cairo,sans-serif">'+c+'</button>'}).join('')}
+function filter(c){activeCat=c;renderCats();renderMenu()}
+function renderMenu(){var items=activeCat==='الكل'?MENU:MENU.filter(function(i){return(i.cat||i.category||'أخرى')===activeCat});document.getElementById('menuGrid').innerHTML=items.map(function(item){var q=getQty(item.name);return'<div class="item"><div><h3>'+item.name+'</h3><div style="font-size:11px;color:#6b6760">'+(item.price||0).toLocaleString()+' ل.س</div></div><div style="display:flex;align-items:center;gap:8px"><button class="qbtn" onclick="removeItem(\''+item.name+'\')">−</button><span class="qty">'+q+'</span><button class="qbtn" onclick="addItem(\''+item.name+'\','+(item.price||0)+')">+</button></div></div>'}).join('')}
 function getQty(n){var f=cart.find(function(i){return i.name===n});return f?f.qty:0}
 function addItem(n,p){var f=cart.find(function(i){return i.name===n});if(f)f.qty++;else cart.push({name:n,price:p,qty:1});updateCart();if(navigator.vibrate)navigator.vibrate(20)}
 function removeItem(n){var f=cart.find(function(i){return i.name===n});if(f){f.qty--;if(f.qty<=0)cart=cart.filter(function(i){return i.name!==n})}updateCart()}
-
-function updateCart(){
-    var tq=cart.reduce(function(s,i){return s+i.qty},0);
-    var tp=cart.reduce(function(s,i){return s+(i.price*i.qty)},0);
-    document.getElementById('cartCount').textContent=tq;
-    document.getElementById('cartTotal').textContent='المجموع: '+tp.toLocaleString()+' ل.س';
-    renderMenu();
-}
-
+function updateCart(){var tq=cart.reduce(function(s,i){return s+i.qty},0),tp=cart.reduce(function(s,i){return s+(i.price*i.qty)},0);document.getElementById('cartCount').textContent=tq;document.getElementById('cartTotal').textContent='المجموع: '+tp.toLocaleString()+' ل.س';renderMenu()}
 function openCart(){document.getElementById('cartModal').classList.add('open');document.getElementById('overlay').classList.add('show')}
 function closeCart(){document.getElementById('cartModal').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
 function clearCart(){cart=[];updateCart();closeCart()}
@@ -149,37 +80,22 @@ function submitOrder(){
         items:cart.map(function(i){return{name:i.name,price:i.price,qty:i.qty}}),
         total:cart.reduce(function(s,i){return s+(i.price*i.qty)},0),
         note:document.getElementById('orderNote').value,
-        status:'new',timestamp:new Date().toISOString(),source:'qr'
+        status:'new',timestamp:new Date().toISOString(),source:'qr',
+        orderNumber:(parseInt(localStorage.getItem('thana_last_order_number')||'0'))+1
     };
+    // حفظ
     var orders=JSON.parse(localStorage.getItem('thana_orders')||'[]');
     orders.push(order);
-    var orders = JSON.parse(localStorage.getItem("thana_orders")||"[]");
-    order.orderNumber = (parseInt(localStorage.getItem("thana_last_order_number")||"0")) + 1;
-    localStorage.setItem("thana_last_order_number", order.orderNumber);
-    orders.push(order);
-    localStorage.setItem("thana_orders", JSON.stringify(orders));
-    localStorage.setItem("thana_new_order_notify", JSON.stringify(order));
-    
-    cart=[];document.getElementById('orderNote').value='';
-    updateCart();closeCart();
-    showToast('✅ تم الإرسال للمطبخ!');
+    localStorage.setItem('thana_orders',JSON.stringify(orders));
+    localStorage.setItem('thana_last_order_number',order.orderNumber);
+    localStorage.setItem('thana_new_order_notify',JSON.stringify(order));
+    localStorage.removeItem('thana_new_order_notify');
+    localStorage.setItem('thana_order_signal',Date.now());
+    cart=[];document.getElementById('orderNote').value='';updateCart();closeCart();
+    alert('✅ تم الإرسال! رقم الطلب: #'+order.orderNumber+'\nالطاولة: '+(order.table==='safari'?'سفري':order.table)+'\nالأصناف: '+order.items.map(function(i){return i.name+'×'+i.qty}).join(', ')+'\nالمجموع: '+order.total.toLocaleString()+' ل.س');
 }
-
-function loadDefaultMenu(){
-MENU=[{name:"شاورما دجاج",cat:"وجبات رئيسية",price:25000},{name:"شاورما لحم",cat:"وجبات رئيسية",price:30000},{name:"فلافل",cat:"وجبات رئيسية",price:15000},{name:"برجر",cat:"وجبات رئيسية",price:35000},{name:"مشاوي مشكل",cat:"وجبات رئيسية",price:50000},{name:"تبولة",cat:"مقبلات",price:10000},{name:"حمص",cat:"مقبلات",price:10000},{name:"بطاطا مقلية",cat:"مقبلات",price:8000},{name:"كولا",cat:"مشروبات",price:5000},{name:"عصير برتقال",cat:"مشروبات",price:7000},{name:"ماء",cat:"مشروبات",price:2000},{name:"كنافة",cat:"حلويات",price:20000}];
-localStorage.setItem("thana_menu",JSON.stringify(MENU));
-document.getElementById("btnLoadMenu").style.display="none";
-renderCats();renderMenu();showToast("✅ تم تحميل 12 صنف");
-}
-function showToast(m){
-    var t=document.querySelector('.toast');if(t)t.remove();
-    t=document.createElement('div');t.className='toast';t.textContent=m;
-    document.body.appendChild(t);setTimeout(function(){t.remove()},2000);
-}
-
-if(MENU.length===0)document.getElementById("btnLoadMenu").style.display="block";
+function showToast(m){var t=document.querySelector('.toast');if(t)t.remove();t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},2000)}
 renderCats();renderMenu();updateCart();
-setMode('dine');
 </script>
 </body>
 </html>

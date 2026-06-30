@@ -1,147 +1,75 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المطبخ - Thana</title>
-    <link rel="stylesheet" href="theme-v2.css">
-    <meta name="theme-color" content="#0a0b0f">
-    <script src="nav-component.js" defer></script>
-    <script src="bridge.js" defer></script>
-    <script src="beep.js" defer></script>
-    <style>
-        body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
-        .container{max-width:900px;margin:0 auto}
-        .header{text-align:center;padding:10px 0}
-        .header h1{font-size:24px;color:#d4a853}
-        .stats{display:flex;gap:8px;justify-content:center;margin:8px 0;flex-wrap:wrap}
-        .stat{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:10px 14px;text-align:center;min-width:60px}
-        .stat .num{font-size:20px;font-weight:700}
-        .stat .lbl{font-size:9px;color:#6b6760}
-        .order-card{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px;margin-bottom:8px;border-right:4px solid #f59e0b}
-        .order-card.cooking{border-right-color:#38bdf8}
-        .order-card.done{border-right-color:#10b981;opacity:0.6}
-        .order-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-        .order-table{font-size:16px;font-weight:700}
-        .order-items{list-style:none}
-        .order-items li{padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.02);font-size:13px}
-        .btn{padding:7px 12px;border-radius:8px;border:none;font-weight:600;font-size:11px;cursor:pointer;font-family:'Cairo',sans-serif}
-        .btn-cook{background:#f59e0b;color:#000}
-        .btn-done{background:#10b981;color:#fff}
-        .btn-back{background:rgba(255,255,255,0.08);color:#fff}
-        .btn-refresh{display:block;width:100%;padding:12px;border-radius:10px;background:rgba(212,168,83,0.12);color:#d4a853;border:1px solid rgba(212,168,83,0.3);font-size:14px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;margin:8px 0}
-        .empty{text-align:center;padding:30px;color:#6b6760}
-        .badge{padding:2px 8px;border-radius:12px;font-size:9px;font-weight:600}
-        .badge-qr{background:rgba(167,139,250,0.2);color:#a78bfa}
-        .badge-waiter{background:rgba(56,189,248,0.2);color:#38bdf8}
-        .badge-voice{background:rgba(251,191,36,0.2);color:#fbbf24}
-        @keyframes flash{0%,100%{box-shadow:0 0 0 0 rgba(212,168,83,0.6)}50%{box-shadow:0 0 20px 5px rgba(212,168,83,0.8)}}
-        .flash{animation:flash 0.8s ease 5;border-right-color:#d4a853!important}
-    </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المطبخ - Thana</title>
+<link rel="stylesheet" href="theme-v2.css"><meta name="theme-color" content="#0a0b0f">
+<script src="nav-component.js" defer></script>
+<script src="beep.js" defer></script>
+<style>
+body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
+.container{max-width:900px;margin:0 auto}
+.header{text-align:center;padding:10px 0}
+h1{font-size:24px;color:#d4a853}
+.stats{display:flex;gap:8px;justify-content:center;margin:8px 0;flex-wrap:wrap}
+.stat{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:10px 14px;text-align:center;min-width:60px}
+.stat .num{font-size:20px;font-weight:700}
+.stat .lbl{font-size:9px;color:#6b6760}
+.card{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px;margin-bottom:8px;border-right:4px solid #f59e0b}
+.card.cooking{border-right-color:#38bdf8}.card.done{border-right-color:#10b981;opacity:0.6}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.card-table{font-size:16px;font-weight:700}
+.card-items{list-style:none}
+.card-items li{padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.02);font-size:13px}
+.btn{padding:7px 12px;border-radius:8px;border:none;font-weight:600;font-size:11px;cursor:pointer;font-family:'Cairo',sans-serif}
+.btn-cook{background:#f59e0b;color:#000}.btn-done{background:#10b981;color:#fff}.btn-back{background:rgba(255,255,255,0.08);color:#fff}
+.btn-refresh{display:block;width:100%;padding:12px;border-radius:10px;background:rgba(212,168,83,0.12);color:#d4a853;border:1px solid rgba(212,168,83,0.3);font-size:14px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;margin:8px 0}
+.empty{text-align:center;padding:30px;color:#6b6760}
+.badge{padding:2px 8px;border-radius:12px;font-size:9px;font-weight:600}
+.badge-qr{background:rgba(167,139,250,0.2);color:#a78bfa}.badge-waiter{background:rgba(56,189,248,0.2);color:#38bdf8}.badge-voice{background:rgba(251,191,36,0.2);color:#fbbf24}
+@keyframes flash{0%,100%{box-shadow:0 0 0 0 rgba(212,168,83,0.6)}50%{box-shadow:0 0 20px 5px rgba(212,168,83,0.8)}}
+.flash{animation:flash 0.8s ease 5;border-right-color:#d4a853!important}
+</style>
 </head>
 <body>
 <div class="container">
 <div class="header"><div style="font-size:40px">🍳</div><h1>شاشة المطبخ</h1></div>
-
 <div class="stats">
-    <div class="stat"><div class="num" id="pendCount" style="color:#f59e0b">0</div><div class="lbl">جديد</div></div>
-    <div class="stat"><div class="num" id="cookCount" style="color:#38bdf8">0</div><div class="lbl">يطبخ</div></div>
-    <div class="stat"><div class="num" id="doneCount" style="color:#10b981">0</div><div class="lbl">جاهز</div></div>
+<div class="stat"><div class="num" id="pendCount" style="color:#f59e0b">0</div><div class="lbl">جديد</div></div>
+<div class="stat"><div class="num" id="cookCount" style="color:#38bdf8">0</div><div class="lbl">يطبخ</div></div>
+<div class="stat"><div class="num" id="doneCount" style="color:#10b981">0</div><div class="lbl">جاهز</div></div>
 </div>
-
-<button class="btn-refresh" onclick="loadOrders()">🔄 تحديث الطلبات الآن</button>
+<button class="btn-refresh" onclick="loadOrders()">🔄 تحديث الآن</button>
 <div id="ordersContainer"><div class="empty"><div style="font-size:40px">🍽️</div><div>بانتظار الطلبات...</div></div></div>
 </div>
-
 <script>
-// ========== قراءة مباشرة كل نصف ثانية ==========
 function loadOrders(){
-    console.log("🔄 تحميل الطلبات...");
-    var raw = localStorage.getItem("thana_orders");
-    console.log("البيانات الخام:", raw ? raw.length : "null");
-    var orders = JSON.parse(localStorage.getItem('thana_orders')||'[]');
-    var today = new Date().toLocaleDateString('ar-SA');
-    var todayOrders = orders.filter(function(o){
-        return new Date(o.timestamp||Date.now()).toLocaleDateString('ar-SA')===today;
-    });
-
-    var sorted = [];
+    var orders=JSON.parse(localStorage.getItem('thana_orders')||'[]');
+    var today=new Date().toLocaleDateString('ar-SA');
+    var todayOrders=orders.filter(function(o){return new Date(o.timestamp||Date.now()).toLocaleDateString('ar-SA')===today});
+    var sorted=[];
     todayOrders.filter(function(o){return o.status==='new'}).forEach(function(o){sorted.push(o)});
     todayOrders.filter(function(o){return o.status==='cooking'}).forEach(function(o){sorted.push(o)});
     todayOrders.filter(function(o){return o.status==='done'&&!o.paymentStatus}).slice(-5).forEach(function(o){sorted.push(o)});
-
-    document.getElementById('pendCount').textContent = todayOrders.filter(function(o){return o.status==='new'}).length;
-    document.getElementById('cookCount').textContent = todayOrders.filter(function(o){return o.status==='cooking'}).length;
-    document.getElementById('doneCount').textContent = todayOrders.filter(function(o){return o.status==='done'&&!o.paymentStatus}).length;
-
-    var container = document.getElementById('ordersContainer');
-    if(sorted.length===0){
-        container.innerHTML = '<div class="empty"><div style="font-size:40px">🍽️</div><div>لا توجد طلبات</div></div>';
-        return;
-    }
-
-    container.innerHTML = sorted.map(function(o){
-        var items = (o.items||[]).map(function(i){return'<li>'+i.name+' ×'+(i.qty||1)+'</li>'}).join('');
-        var badge = '';
-        if(o.source==='qr') badge = '<span class="badge badge-qr">📱 QR</span>';
-        else if(o.source==='voice') badge = '<span class="badge badge-voice">🎤 صوت</span>';
-        else badge = '<span class="badge badge-waiter">📋 نادل</span>';
-        
-        var actions = '';
-        if(o.status==='new'){
-            actions = '<button class="btn btn-cook" onclick="startCooking('+o.id+')">🔥 بدء</button>';
-        } else if(o.status==='cooking'){
-            actions = '<button class="btn btn-done" onclick="markDone('+o.id+')">✅ جاهز</button>';
-        }
-        actions += '<button class="btn btn-back" onclick="backToNew('+o.id+')">↩️</button>';
-
-        var isNew = o.status==='new';
-        return '<div class="order-card'+(o.status==='cooking'?' cooking':'')+(o.status==='done'?' done':'')+(isNew?' flash':'')+'">'+
-            '<div class="order-header"><span class="order-table">#+o.orderNumber+ 🪑 '+o.table+'</span>'+badge+'<span style="font-size:10px;color:#6b6760">'+new Date(o.timestamp||Date.now()).toLocaleTimeString('ar-SA')+'</span></div>'+
-            '<ul class="order-items">'+items+'</ul>'+
-            (o.note?'<div style="font-size:11px;color:#f59e0b;margin-top:4px">📝 '+o.note+'</div>':'')+
-            '<div style="margin-top:6px">'+actions+'</div>'+
-            '</div>';
+    document.getElementById('pendCount').textContent=todayOrders.filter(function(o){return o.status==='new'}).length;
+    document.getElementById('cookCount').textContent=todayOrders.filter(function(o){return o.status==='cooking'}).length;
+    document.getElementById('doneCount').textContent=todayOrders.filter(function(o){return o.status==='done'&&!o.paymentStatus}).length;
+    var container=document.getElementById('ordersContainer');
+    if(sorted.length===0){container.innerHTML='<div class="empty"><div style="font-size:40px">🍽️</div><div>لا توجد طلبات</div></div>';return}
+    container.innerHTML=sorted.map(function(o){
+        var items=(o.items||[]).map(function(i){return'<li>'+i.name+' ×'+(i.qty||1)+'</li>'}).join('');
+        var badge=o.source==='qr'?'<span class="badge badge-qr">QR</span>':o.source==='voice'?'<span class="badge badge-voice">صوت</span>':'<span class="badge badge-waiter">نادل</span>';
+        var actions='';if(o.status==='new')actions='<button class="btn btn-cook" onclick="startCooking('+o.id+')">🔥 بدء</button>';else if(o.status==='cooking')actions='<button class="btn btn-done" onclick="markDone('+o.id+')">✅ جاهز</button>';
+        actions+='<button class="btn btn-back" onclick="backToNew('+o.id+')">↩️</button>';
+        return'<div class="card'+(o.status==='cooking'?' cooking':'')+(o.status==='done'?' done':'')+(o.status==='new'?' flash':'')+'"><div class="card-header"><span class="card-table">#'+(o.orderNumber||'')+' 🪑 '+o.table+'</span>'+badge+'<span style="font-size:10px;color:#6b6760">'+new Date(o.timestamp||Date.now()).toLocaleTimeString('ar-SA')+'</span></div><ul class="card-items">'+items+'</ul>'+(o.note?'<div style="font-size:11px;color:#f59e0b;margin-top:4px">📝 '+o.note+'</div>':'')+'<div style="margin-top:6px">'+actions+'</div></div>';
     }).join('');
-
-    // إزالة الوميض بعد 5 ثواني
-    setTimeout(function(){
-        document.querySelectorAll('.flash').forEach(function(c){c.classList.remove('flash')});
-    },5000);
+    setTimeout(function(){document.querySelectorAll('.flash').forEach(function(c){c.classList.remove('flash')})},5000);
 }
-
-function startCooking(id){
-    var orders = JSON.parse(localStorage.getItem('thana_orders')||'[]');
-    var o = orders.find(function(x){return x.id===id});
-    if(o){o.status='cooking';o.cookStart=new Date().toISOString();localStorage.setItem('thana_orders',JSON.stringify(orders));loadOrders();playBeep&&playBeep()}
-}
-
-function markDone(id){markOrderReady(id);loadOrders()}
-function _markDone{
-    var orders = JSON.parse(localStorage.getItem('thana_orders')||'[]');
-    var o = orders.find(function(x){return x.id===id});
-    if(o){o.status='done';o.cookEnd=new Date().toISOString();localStorage.setItem('thana_orders',JSON.stringify(orders));loadOrders()}
-}
-
-function backToNew(id){
-    var orders = JSON.parse(localStorage.getItem('thana_orders')||'[]');
-    var o = orders.find(function(x){return x.id===id});
-    if(o){o.status='new';localStorage.setItem('thana_orders',JSON.stringify(orders));loadOrders()}
-}
-
-// ========== قلب النظام - تحديث كل 500ms ==========
-loadOrders();
-setInterval(loadOrders, 500);
-
-// الاستماع للتغييرات من التبويبات الأخرى
-window.addEventListener('storage', function(e){
-    if(e.key==='thana_orders'||e.key==='thana_new_order'||e.key==='thana_new_order_notify'){
-        loadOrders();
-        if(e.key==='thana_new_order'||e.key==='thana_new_order_notify'){
-            playBeep&&playBeep();
-        }
-    }
-});
+function startCooking(id){var o=JSON.parse(localStorage.getItem('thana_orders')||'[]').find(function(x){return x.id===id});if(o){o.status='cooking';o.cookStart=new Date().toISOString();localStorage.setItem('thana_orders',JSON.stringify(JSON.parse(localStorage.getItem('thana_orders')||'[]').map(function(x){return x.id===id?o:x})));loadOrders();if(typeof playBeep==='function')playBeep()}}
+function markDone(id){var o=JSON.parse(localStorage.getItem('thana_orders')||'[]').find(function(x){return x.id===id});if(o){o.status='done';o.cookEnd=new Date().toISOString();localStorage.setItem('thana_orders',JSON.stringify(JSON.parse(localStorage.getItem('thana_orders')||'[]').map(function(x){return x.id===id?o:x})));loadOrders()}}
+function backToNew(id){var o=JSON.parse(localStorage.getItem('thana_orders')||'[]').find(function(x){return x.id===id});if(o){o.status='new';localStorage.setItem('thana_orders',JSON.stringify(JSON.parse(localStorage.getItem('thana_orders')||'[]').map(function(x){return x.id===id?o:x})));loadOrders()}}
+loadOrders();setInterval(loadOrders,500);
+window.addEventListener('storage',function(e){if(e.key==='thana_orders'||e.key==='thana_new_order_notify'||e.key==='thana_order_signal'){loadOrders();if(typeof playBeep==='function')playBeep()}});
 </script>
 </body>
 </html>
