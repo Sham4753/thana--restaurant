@@ -521,3 +521,17 @@ tr:hover td { background: rgba(212,168,83,0.03); }
     th, td { padding: 8px 6px; }
     body { padding-bottom: 20px; }
 }
+
+/* منع ظهور الرابط عند اللمس */
+a, button, [onclick] {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* منع شريط المتصفح من الظهور */
+body {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+}

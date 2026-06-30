@@ -93,7 +93,7 @@ function submitOrder(){
     localStorage.removeItem('thana_new_order_notify');
     localStorage.setItem('thana_order_signal',Date.now());
     cart=[];document.getElementById('orderNote').value='';updateCart();closeCart();
-    alert('✅ تم الإرسال! رقم الطلب: #'+order.orderNumber+'\nالطاولة: '+(order.table==='safari'?'سفري':order.table)+'\nالأصناف: '+order.items.map(function(i){return i.name+'×'+i.qty}).join(', ')+'\nالمجموع: '+order.total.toLocaleString()+' ل.س');
+    //alert removed
 }
 function showToast(m){var t=document.querySelector('.toast');if(t)t.remove();t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},2000)}
 renderCats();renderMenu();updateCart();
