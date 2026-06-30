@@ -46,7 +46,11 @@
 <div class="header">
     <div style="font-size:40px">🍽️</div>
     <h1 id="shopTitle">Thana Restaurant</h1>
-    <div class="table-badge">🪑 طاولة <span id="tableNumber">1</span></div>
+    <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:8px 0">
+<button class="cat active" id="btnDineIn" onclick="setMode('dine')">🪑 طاولة</button>
+<button class="cat" id="btnSafari" onclick="setMode('safari')">🛍️ سفري / دليفري</button>
+</div>
+<div class="table-badge">🪑 طاولة <span id="tableNumber">1</span></div>
 </div>
 
 <div class="cats" id="cats"></div>
@@ -84,6 +88,13 @@ var MENU = [
 ];
 
 var params = new URLSearchParams(window.location.search);
+var mode = 'dine';
+function setMode(m){
+    mode=m;
+    document.getElementById("btnDineIn").classList.toggle("active",m==="dine");
+    document.getElementById("btnSafari").classList.toggle("active",m==="safari");
+    document.getElementById("tableNumber").textContent = m==="safari"?"سفري":tableId;
+}
 var tableId = params.get('table')||'1';
 document.getElementById('tableNumber').textContent = tableId;
 
@@ -146,7 +157,7 @@ function clearCart(){cart=[];updateCart();closeCart()}
 function submitOrder(){
     if(cart.length===0)return;
     var order = {
-        id:Date.now(),table:tableId,
+        id:Date.now(),table:mode==="safari"?"safari":tableId,
         items:cart.map(function(i){return{name:i.name,price:i.price,qty:i.qty}}),
         total:cart.reduce(function(s,i){return s+(i.price*i.qty)},0),
         note:document.getElementById('orderNote').value,
