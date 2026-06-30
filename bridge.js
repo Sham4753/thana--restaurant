@@ -56,3 +56,85 @@ function updateOrderStatus(id, status, extra){
 }
 
 console.log('🌉 Thana Bridge v3.0 - جاهز');
+
+// ========== رقم تسلسلي ==========
+function getNextOrderNumber(){
+    var last = parseInt(localStorage.getItem('thana_last_order_number')||'0');
+    last++;
+    localStorage.setItem('thana_last_order_number', last);
+    return last;
+}
+
+// إرسال طلب مع رقم تسلسلي
+function sendOrderWithNumber(order){
+    order.orderNumber = getNextOrderNumber();
+    order.createdAt = new Date().toISOString();
+    return sendOrder(order);
+}
+
+// المطبخ: تعليم الطلب جاهز
+function markOrderReady(id){
+    var orders = JSON.parse(localStorage.getItem('thana_orders')||'[]');
+    var order = orders.find(function(o){return o.id===id});
+    if(order){
+        order.status = 'ready';
+        order.readyAt = new Date().toISOString();
+        localStorage.setItem('thana_orders', JSON.stringify(orders));
+        
+        // إشعار للكاشير
+        localStorage.setItem('thana_order_ready', JSON.stringify(order));
+        setTimeout(function(){ localStorage.removeItem('thana_order_ready'); }, 500);
+        
+        // إزالة من شاشة المطبخ (يحذف بعد ثانية)
+        setTimeout(function(){
+            var orders2 = JSON.parse(localStorage.getItem('thana_orders')||'[]');
+            var idx = orders2.findIndex(function(o){return o.id===id});
+            if(idx>=0){
+                orders2[idx].hideFromKitchen = true;
+                localStorage.setItem('thana_orders', JSON.stringify(orders2));
+            }
+        }, 1000);
+    }
+    return order;
+}
+
+// ========== رقم تسلسلي ==========
+function getNextOrderNumber(){
+    var last = parseInt(localStorage.getItem('thana_last_order_number')||'0');
+    last++;
+    localStorage.setItem('thana_last_order_number', last);
+    return last;
+}
+
+// إرسال طلب مع رقم تسلسلي
+function sendOrderWithNumber(order){
+    order.orderNumber = getNextOrderNumber();
+    order.createdAt = new Date().toISOString();
+    return sendOrder(order);
+}
+
+// المطبخ: تعليم الطلب جاهز
+function markOrderReady(id){
+    var orders = JSON.parse(localStorage.getItem('thana_orders')||'[]');
+    var order = orders.find(function(o){return o.id===id});
+    if(order){
+        order.status = 'ready';
+        order.readyAt = new Date().toISOString();
+        localStorage.setItem('thana_orders', JSON.stringify(orders));
+        
+        // إشعار للكاشير
+        localStorage.setItem('thana_order_ready', JSON.stringify(order));
+        setTimeout(function(){ localStorage.removeItem('thana_order_ready'); }, 500);
+        
+        // إزالة من شاشة المطبخ (يحذف بعد ثانية)
+        setTimeout(function(){
+            var orders2 = JSON.parse(localStorage.getItem('thana_orders')||'[]');
+            var idx = orders2.findIndex(function(o){return o.id===id});
+            if(idx>=0){
+                orders2[idx].hideFromKitchen = true;
+                localStorage.setItem('thana_orders', JSON.stringify(orders2));
+            }
+        }, 1000);
+    }
+    return order;
+}
