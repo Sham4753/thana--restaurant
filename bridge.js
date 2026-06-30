@@ -138,3 +138,117 @@ function markOrderReady(id){
     }
     return order;
 }
+
+// ========== خصم تلقائي من المخزون ==========
+function autoDeductInventory(items){
+    var inventory = JSON.parse(localStorage.getItem('thana_inventory')||'[]');
+    if(inventory.length===0) return;
+    
+    var updated = false;
+    
+    items.forEach(function(item){
+        // البحث عن المادة في المخزون
+        var found = inventory.find(function(inv){
+            return inv.name && item.name && (
+                inv.name.includes(item.name) || 
+                item.name.includes(inv.name) ||
+                inv.name === item.name
+            );
+        });
+        
+        if(found && found.qty > 0){
+            var deduct = 0;
+            // تقدير الكمية المستهلكة
+            if(item.name.includes('شاورما')||item.name.includes('برجر')||item.name.includes('مشاوي')){
+                deduct = 0.15 * (item.qty||1); // 150g لحم/دجاج
+            } else if(item.name.includes('فلافل')||item.name.includes('بطاطا')){
+                deduct = 0.1 * (item.qty||1); // 100g
+            } else if(item.name.includes('كولا')||item.name.includes('عصير')||item.name.includes('ماء')){
+                deduct = 1 * (item.qty||1); // قطعة
+            } else {
+                deduct = 0.05 * (item.qty||1); // افتراضي
+            }
+            
+            found.qty = Math.max(0, found.qty - deduct);
+            updated = true;
+            
+            // تنبيه إذا وصل للحد الأدنى
+            if(found.qty <= found.minQty){
+                console.warn('⚠️ مخزون منخفض:', found.name, found.qty);
+            }
+        }
+    });
+    
+    if(updated){
+        localStorage.setItem('thana_inventory', JSON.stringify(inventory));
+        console.log('📦 تم خصم المخزون');
+    }
+}
+
+// إرسال طلب مع خصم المخزون
+function sendOrderFull(order){
+    order.orderNumber = getNextOrderNumber();
+    order.createdAt = new Date().toISOString();
+    
+    // خصم المخزون
+    autoDeductInventory(order.items||[]);
+    
+    return sendOrder(order);
+}
+
+// ========== خصم تلقائي من المخزون ==========
+function autoDeductInventory(items){
+    var inventory = JSON.parse(localStorage.getItem('thana_inventory')||'[]');
+    if(inventory.length===0) return;
+    
+    var updated = false;
+    
+    items.forEach(function(item){
+        // البحث عن المادة في المخزون
+        var found = inventory.find(function(inv){
+            return inv.name && item.name && (
+                inv.name.includes(item.name) || 
+                item.name.includes(inv.name) ||
+                inv.name === item.name
+            );
+        });
+        
+        if(found && found.qty > 0){
+            var deduct = 0;
+            // تقدير الكمية المستهلكة
+            if(item.name.includes('شاورما')||item.name.includes('برجر')||item.name.includes('مشاوي')){
+                deduct = 0.15 * (item.qty||1); // 150g لحم/دجاج
+            } else if(item.name.includes('فلافل')||item.name.includes('بطاطا')){
+                deduct = 0.1 * (item.qty||1); // 100g
+            } else if(item.name.includes('كولا')||item.name.includes('عصير')||item.name.includes('ماء')){
+                deduct = 1 * (item.qty||1); // قطعة
+            } else {
+                deduct = 0.05 * (item.qty||1); // افتراضي
+            }
+            
+            found.qty = Math.max(0, found.qty - deduct);
+            updated = true;
+            
+            // تنبيه إذا وصل للحد الأدنى
+            if(found.qty <= found.minQty){
+                console.warn('⚠️ مخزون منخفض:', found.name, found.qty);
+            }
+        }
+    });
+    
+    if(updated){
+        localStorage.setItem('thana_inventory', JSON.stringify(inventory));
+        console.log('📦 تم خصم المخزون');
+    }
+}
+
+// إرسال طلب مع خصم المخزون
+function sendOrderFull(order){
+    order.orderNumber = getNextOrderNumber();
+    order.createdAt = new Date().toISOString();
+    
+    // خصم المخزون
+    autoDeductInventory(order.items||[]);
+    
+    return sendOrder(order);
+}
