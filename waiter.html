@@ -7,8 +7,10 @@
     <link rel="stylesheet" href="theme-v2.css?v=2.1">
     <meta name="theme-color" content="#0a0b0f">
     <script src="bridge.js" defer></script>
-    <script src="nav-component.js?v=2.1" defer></script>
-    <script src="pwa-register.js" defer></script>
+    <script src="dark-mode.js"></script>
+<script src="nav-component.js?v=2.1" defer></script>
+    <script src="update-check.js"></script>
+<script src="pwa-register.js" defer></script>
     <style>
         body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
         .container{max-width:700px;margin:0 auto}
@@ -78,6 +80,7 @@
 </div>
 </div>
 
+<script src="channel.js"></script>
 <script>
 var currentOrder=[];
 var currentTable=1;
@@ -164,7 +167,7 @@ function submitOrder(){
     order.orderNumber = (parseInt(localStorage.getItem("thana_last_order_number")||"0")) + 1;
     localStorage.setItem("thana_last_order_number", order.orderNumber);
     orders.push(order);
-    localStorage.setItem("thana_orders", JSON.stringify(orders));
+    broadcastOrder(order);
     localStorage.setItem("thana_new_order_notify", JSON.stringify(order));
     
     
