@@ -46,6 +46,7 @@
     <div class="badge" id="tableBadge">🪑 طاولة 1</div>
 </div>
 
+<button id="btnLoadMenu" style="display:none;width:100%;padding:12px;border-radius:10px;background:#d4a853;color:#000;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:Cairo,sans-serif;margin-bottom:10px" onclick="loadDefaultMenu()">📋 تحميل القائمة الافتراضية</button>
 <div class="cats" id="cats"></div>
 <div id="menuGrid"></div>
 </div>
@@ -113,7 +114,8 @@ function renderCats(){
     }).join('');
 }
 
-function filter(c){activeCat=c;renderCats();renderMenu();}
+function filter(c){activeCat=c;if(MENU.length===0)document.getElementById("btnLoadMenu").style.display="block";
+renderCats();renderMenu();}
 
 function renderMenu(){
     var items = activeCat==='الكل'?MENU:MENU.filter(function(i){return (i.cat||i.category||'أخرى')===activeCat});
@@ -157,12 +159,19 @@ function submitOrder(){
     showToast('✅ تم الإرسال للمطبخ!');
 }
 
+function loadDefaultMenu(){
+MENU=[{name:"شاورما دجاج",cat:"وجبات رئيسية",price:25000},{name:"شاورما لحم",cat:"وجبات رئيسية",price:30000},{name:"فلافل",cat:"وجبات رئيسية",price:15000},{name:"برجر",cat:"وجبات رئيسية",price:35000},{name:"مشاوي مشكل",cat:"وجبات رئيسية",price:50000},{name:"تبولة",cat:"مقبلات",price:10000},{name:"حمص",cat:"مقبلات",price:10000},{name:"بطاطا مقلية",cat:"مقبلات",price:8000},{name:"كولا",cat:"مشروبات",price:5000},{name:"عصير برتقال",cat:"مشروبات",price:7000},{name:"ماء",cat:"مشروبات",price:2000},{name:"كنافة",cat:"حلويات",price:20000}];
+localStorage.setItem("thana_menu",JSON.stringify(MENU));
+document.getElementById("btnLoadMenu").style.display="none";
+renderCats();renderMenu();showToast("✅ تم تحميل 12 صنف");
+}
 function showToast(m){
     var t=document.querySelector('.toast');if(t)t.remove();
     t=document.createElement('div');t.className='toast';t.textContent=m;
     document.body.appendChild(t);setTimeout(function(){t.remove()},2000);
 }
 
+if(MENU.length===0)document.getElementById("btnLoadMenu").style.display="block";
 renderCats();renderMenu();updateCart();
 setMode('dine');
 </script>
