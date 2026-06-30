@@ -160,7 +160,12 @@ function submitOrder(){
     
     var orders=JSON.parse(localStorage.getItem('thana_orders')||'[]');
     orders.push(order);
-    sendOrderFull(order);
+    var orders = JSON.parse(localStorage.getItem("thana_orders")||"[]");
+    order.orderNumber = (parseInt(localStorage.getItem("thana_last_order_number")||"0")) + 1;
+    localStorage.setItem("thana_last_order_number", order.orderNumber);
+    orders.push(order);
+    localStorage.setItem("thana_orders", JSON.stringify(orders));
+    localStorage.setItem("thana_new_order_notify", JSON.stringify(order));
     
     
     // تحديث الطاولة
