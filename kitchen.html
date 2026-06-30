@@ -3,150 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المطبخ - Thana Restaurant</title>
+    <title>المطبخ - Thana</title>
     <link rel="stylesheet" href="theme-v2.css">
     <meta name="theme-color" content="#0a0b0f">
     <script src="nav-component.js" defer></script>
-    <script src="pwa-register.js" defer></script>
+    <script src="bridge.js" defer></script>
+    <script src="beep.js" defer></script>
     <style>
         body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
         .container{max-width:900px;margin:0 auto}
         .header{text-align:center;padding:10px 0}
-        .header h1{font-size:26px;color:#d4a853}
-        .stats{display:flex;gap:8px;justify-content:center;margin:10px 0;flex-wrap:wrap}
-        .stat{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:10px 14px;text-align:center;min-width:70px}
-        .stat .num{font-size:22px;font-weight:700}
+        .header h1{font-size:24px;color:#d4a853}
+        .stats{display:flex;gap:8px;justify-content:center;margin:8px 0;flex-wrap:wrap}
+        .stat{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:10px 14px;text-align:center;min-width:60px}
+        .stat .num{font-size:20px;font-weight:700}
         .stat .lbl{font-size:9px;color:#6b6760}
-        .stat.pend .num{color:#f59e0b}.stat.cook .num{color:#38bdf8}.stat.done .num{color:#10b981}
-
         .order-card{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px;margin-bottom:8px;border-right:4px solid #f59e0b}
         .order-card.cooking{border-right-color:#38bdf8}
         .order-card.done{border-right-color:#10b981;opacity:0.6}
         .order-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
         .order-table{font-size:16px;font-weight:700}
-        .order-time{font-size:10px;color:#6b6760}
         .order-items{list-style:none}
-        .order-items li{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.02);font-size:13px}
-        .order-actions{display:flex;gap:5px;margin-top:8px}
+        .order-items li{padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.02);font-size:13px}
         .btn{padding:7px 12px;border-radius:8px;border:none;font-weight:600;font-size:11px;cursor:pointer;font-family:'Cairo',sans-serif}
         .btn-cook{background:#f59e0b;color:#000}
         .btn-done{background:#10b981;color:#fff}
         .btn-back{background:rgba(255,255,255,0.08);color:#fff}
-        .btn-refresh{background:rgba(212,168,83,0.15);color:#d4a853;border:1px solid rgba(212,168,83,0.3);display:block;width:100%;padding:10px;margin-top:8px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Cairo',sans-serif;font-weight:700}
-
+        .btn-refresh{display:block;width:100%;padding:12px;border-radius:10px;background:rgba(212,168,83,0.12);color:#d4a853;border:1px solid rgba(212,168,83,0.3);font-size:14px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;margin:8px 0}
         .empty{text-align:center;padding:30px;color:#6b6760}
+        .badge{padding:2px 8px;border-radius:12px;font-size:9px;font-weight:600}
+        .badge-qr{background:rgba(167,139,250,0.2);color:#a78bfa}
+        .badge-waiter{background:rgba(56,189,248,0.2);color:#38bdf8}
+        .badge-voice{background:rgba(251,191,36,0.2);color:#fbbf24}
+        @keyframes flash{0%,100%{box-shadow:0 0 0 0 rgba(212,168,83,0.6)}50%{box-shadow:0 0 20px 5px rgba(212,168,83,0.8)}}
+        .flash{animation:flash 0.8s ease 5;border-right-color:#d4a853!important}
     </style>
 </head>
 <body>
 <div class="container">
-<div class="header">
-    <div style="font-size:40px;">🍳</div>
-    <h1>شاشة المطبخ</h1>
-</div>
+<div class="header"><div style="font-size:40px">🍳</div><h1>شاشة المطبخ</h1></div>
 
 <div class="stats">
-    <div class="stat pend"><div class="num" id="pendCount">0</div><div class="lbl">جديد</div></div>
-    <div class="stat cook"><div class="num" id="cookCount">0</div><div class="lbl">يطبخ</div></div>
-    <div class="stat done"><div class="num" id="doneCount">0</div><div class="lbl">جاهز</div></div>
+    <div class="stat"><div class="num" id="pendCount" style="color:#f59e0b">0</div><div class="lbl">جديد</div></div>
+    <div class="stat"><div class="num" id="cookCount" style="color:#38bdf8">0</div><div class="lbl">يطبخ</div></div>
+    <div class="stat"><div class="num" id="doneCount" style="color:#10b981">0</div><div class="lbl">جاهز</div></div>
 </div>
 
 <button class="btn-refresh" onclick="loadOrders()">🔄 تحديث الطلبات الآن</button>
-
-<div id="ordersContainer">
-    <div class="empty"><div style="font-size:40px;">🍽️</div><div>لا توجد طلبات - اضغط تحديث</div></div>
-</div>
+<div id="ordersContainer"><div class="empty"><div style="font-size:40px">🍽️</div><div>بانتظار الطلبات...</div></div></div>
 </div>
 
-<script src="beep.js"></script>
 <script>
+// ========== قراءة مباشرة كل نصف ثانية ==========
 function loadOrders(){
-    var orders=JSON.parse(localStorage.getItem('thana_orders')||'[]');
-    var today=new Date().toLocaleDateString('ar-SA');
-    var todayOrders=orders.filter(function(o){
+    var orders = JSON.parse(localStorage.getItem('thana_orders')||'[]');
+    var today = new Date().toLocaleDateString('ar-SA');
+    var todayOrders = orders.filter(function(o){
         return new Date(o.timestamp||Date.now()).toLocaleDateString('ar-SA')===today;
     });
 
-    var sorted=[];
+    var sorted = [];
     todayOrders.filter(function(o){return o.status==='new'}).forEach(function(o){sorted.push(o)});
     todayOrders.filter(function(o){return o.status==='cooking'}).forEach(function(o){sorted.push(o)});
-    todayOrders.filter(function(o){return o.status==='done'todayOrders.filter(function(o){return o.status==='done'}).slice(-3)todayOrders.filter(function(o){return o.status==='done'}).slice(-3)!o.paymentStatus}).slice(-5).forEach(function(o){sorted.push(o)});
+    todayOrders.filter(function(o){return o.status==='done'&&!o.paymentStatus}).slice(-5).forEach(function(o){sorted.push(o)});
 
-    document.getElementById('pendCount').textContent=todayOrders.filter(function(o){return o.status==='new'}).length;
-    document.getElementById('cookCount').textContent=todayOrders.filter(function(o){return o.status==='cooking'}).length;
-    document.getElementById('doneCount').textContent=todayOrders.filter(function(o){return o.status==='done'}).length;
+    document.getElementById('pendCount').textContent = todayOrders.filter(function(o){return o.status==='new'}).length;
+    document.getElementById('cookCount').textContent = todayOrders.filter(function(o){return o.status==='cooking'}).length;
+    document.getElementById('doneCount').textContent = todayOrders.filter(function(o){return o.status==='done'&&!o.paymentStatus}).length;
 
-    var container=document.getElementById('ordersContainer');
+    var container = document.getElementById('ordersContainer');
     if(sorted.length===0){
-        container.innerHTML='<div class="empty"><div style="font-size:40px;">🍽️</div><div>لا توجد طلبات</div></div>';
+        container.innerHTML = '<div class="empty"><div style="font-size:40px">🍽️</div><div>لا توجد طلبات</div></div>';
         return;
     }
 
-    container.innerHTML=sorted.map(function(o){
-        var itemsHtml=(o.items||[]).map(function(i){return'<li><span>'+i.name+' ×'+(i.qty||1)+'</span></li>'}).join('');
-        var isCooking=o.status==='cooking';
-        var isDone=o.status==='done';
-        var actionHtml='';
-        if(!isDone){
-            actionHtml='<div class="order-actions">';
-            if(!isCooking){
-                actionHtml+='<button class="btn btn-cook" onclick="startCooking('+o.id+')">🔥 بدء الطبخ</button>';
-            }else{
-                actionHtml+='<button class="btn btn-done" onclick="markDone('+o.id+')">✅ جاهز</button>';
-            }
-            actionHtml+='<button class="btn btn-back" onclick="backToNew('+o.id+')">↩️ إعادة</button></div>';
-        }else{
-            actionHtml='<div style="text-align:center;color:#10b981;font-size:11px;">✅ تم التقديم</div>';
+    container.innerHTML = sorted.map(function(o){
+        var items = (o.items||[]).map(function(i){return'<li>'+i.name+' ×'+(i.qty||1)+'</li>'}).join('');
+        var badge = '';
+        if(o.source==='qr') badge = '<span class="badge badge-qr">📱 QR</span>';
+        else if(o.source==='voice') badge = '<span class="badge badge-voice">🎤 صوت</span>';
+        else badge = '<span class="badge badge-waiter">📋 نادل</span>';
+        
+        var actions = '';
+        if(o.status==='new'){
+            actions = '<button class="btn btn-cook" onclick="startCooking('+o.id+')">🔥 بدء</button>';
+        } else if(o.status==='cooking'){
+            actions = '<button class="btn btn-done" onclick="markDone('+o.id+')">✅ جاهز</button>';
         }
+        actions += '<button class="btn btn-back" onclick="backToNew('+o.id+')">↩️</button>';
 
-        return'<div class="order-card flash"'+ (isCooking?' cooking':'') + (isDone?' done':'') +'">'+
-            '<div class="order-header">'+
-            '<span class="order-table">🪑 طاولة '+o.table+'</span>'+
-            '<span class="order-time">'+new Date(o.timestamp||Date.now()).toLocaleTimeString('ar-SA')+'</span>'+
-            '</div>'+
-            '<ul class="order-items">'+itemsHtml+'</ul>'+
-            (o.note?'<div style="font-size:11px;color:#f59e0b;margin-top:4px;">📝 '+o.note+'</div>':'')+
-            actionHtml+
+        var isNew = o.status==='new';
+        return '<div class="order-card'+(o.status==='cooking'?' cooking':'')+(o.status==='done'?' done':'')+(isNew?' flash':'')+'">'+
+            '<div class="order-header"><span class="order-table">🪑 '+o.table+'</span>'+badge+'<span style="font-size:10px;color:#6b6760">'+new Date(o.timestamp||Date.now()).toLocaleTimeString('ar-SA')+'</span></div>'+
+            '<ul class="order-items">'+items+'</ul>'+
+            (o.note?'<div style="font-size:11px;color:#f59e0b;margin-top:4px">📝 '+o.note+'</div>':'')+
+            '<div style="margin-top:6px">'+actions+'</div>'+
             '</div>';
     }).join('');
+
+    // إزالة الوميض بعد 5 ثواني
+    setTimeout(function(){
+        document.querySelectorAll('.flash').forEach(function(c){c.classList.remove('flash')});
+    },5000);
 }
 
-function updateOrder(id,status,extra){
-    var orders=JSON.parse(localStorage.getItem('thana_orders')||'[]');
-    var order=orders.find(function(o){return o.id===id});
-    if(order){
-        order.status=status;
-        if(extra)Object.assign(order,extra);
-        localStorage.setItem('thana_orders',JSON.stringify(orders));
-        loadOrders();
-    }
+function startCooking(id){
+    var orders = JSON.parse(localStorage.getItem('thana_orders')||'[]');
+    var o = orders.find(function(x){return x.id===id});
+    if(o){o.status='cooking';o.cookStart=new Date().toISOString();localStorage.setItem('thana_orders',JSON.stringify(orders));loadOrders();playBeep&&playBeep()}
 }
 
-function startCooking(id){updateOrderStatus(id,"cooking",{cookStart:new Date().toISOString()});loadOrders()}
-function _startCooking(id){updateOrder(id,'cooking',{cookStart:new Date().toISOString()})}
-function markDone(id){updateOrderStatus(id,"done",{cookEnd:new Date().toISOString()});loadOrders()}
-function _markDone(id){updateOrder(id,'done',{cookEnd:new Date().toISOString()});localStorage.setItem('thana_order_ready',id);setTimeout(function(){localStorage.removeItem('thana_order_ready')},5000)}
-function backToNew(id){updateOrder(id,'new',{cookStart:null,cookEnd:null})}
+function markDone(id){
+    var orders = JSON.parse(localStorage.getItem('thana_orders')||'[]');
+    var o = orders.find(function(x){return x.id===id});
+    if(o){o.status='done';o.cookEnd=new Date().toISOString();localStorage.setItem('thana_orders',JSON.stringify(orders));loadOrders()}
+}
 
-// تحميل أول مرة
+function backToNew(id){
+    var orders = JSON.parse(localStorage.getItem('thana_orders')||'[]');
+    var o = orders.find(function(x){return x.id===id});
+    if(o){o.status='new';localStorage.setItem('thana_orders',JSON.stringify(orders));loadOrders()}
+}
+
+// ========== قلب النظام - تحديث كل 500ms ==========
 loadOrders();
+setInterval(loadOrders, 500);
 
-// تحديث تلقائي كل 5 ثواني
-setInterval(loadOrders, 1000);
-
-// استماع للتغييرات
-window.addEventListener('storage',function(e){
-    if(e.key==='thana_orders'||e.key==='thana_new_order_notify') loadOrders();
+// الاستماع للتغييرات من التبويبات الأخرى
+window.addEventListener('storage', function(e){
+    if(e.key==='thana_orders'||e.key==='thana_new_order'||e.key==='thana_new_order_notify'){
+        loadOrders();
+        if(e.key==='thana_new_order'||e.key==='thana_new_order_notify'){
+            playBeep&&playBeep();
+        }
+    }
 });
 </script>
 </body>
 </html>
-<style>
-@keyframes flashNew {
-    0%,100% { box-shadow: 0 0 0 0 rgba(212,168,83,0.6); }
-    50% { box-shadow: 0 0 20px 5px rgba(212,168,83,0.8); }
-}
-.order-card.flash {
-    animation: flashNew 0.8s ease 5;
-    border-right-color: #d4a853 !important;
-}
-</style>
