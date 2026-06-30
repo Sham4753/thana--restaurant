@@ -535,3 +535,23 @@ body {
     overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
 }
+
+/* منع tooltip عند اللمس */
+a[href], button, [onclick] {
+    pointer-events: auto;
+    -webkit-touch-callout: none !important;
+}
+
+/* منع ظهور الرابط */
+a[href]:active::after,
+a[href]:focus::after {
+    display: none !important;
+    content: none !important;
+}
+
+/* منع أي popup نصي */
+* {
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+}
