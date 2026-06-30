@@ -1,0 +1,11 @@
+/* Thana Restaurant – Theme modes */
+:root {
+  --bg: #0a0b0f; --bg-card: #161820; --text: #e8e4dd; --text-secondary: #a8a49e; --gold: #d4a853;
+}
+[data-theme="light"] {
+  --bg: #f8fafc; --bg-card: #ffffff; --text: #0f172a; --text-secondary: #475569; --gold: #b8942e;
+}
+[data-theme="high-contrast"] {
+  --bg: #000; --bg-card: #111; --text: #fff; --text-secondary: #ccc; --gold: #ffd700;
+}
+body { background: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; }
