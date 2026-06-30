@@ -3,27 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>القائمة - Thana Restaurant</title>
+    <title>القائمة - Thana</title>
     <link rel="stylesheet" href="theme-v2.css">
     <meta name="theme-color" content="#0a0b0f">
-    <script src="bridge.js" defer></script>
     <style>
         body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
         .container{max-width:700px;margin:0 auto}
-        .header{text-align:center;padding:16px 0}
-        .header .logo{font-size:42px}
-        .header h1{font-size:22px;color:#d4a853;margin-top:6px}
-        .header .table-badge{display:inline-block;background:rgba(129,140,248,0.2);color:#818cf8;padding:6px 14px;border-radius:20px;font-size:13px;margin-top:6px}
-        .header .call-waiter{display:inline-block;background:rgba(251,191,36,0.15);color:#fbbf24;padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer;margin:6px 4px;border:1px solid rgba(251,191,36,0.3)}
-        .header .call-waiter.called{background:rgba(16,185,129,0.2);color:#10b981}
+        .header{text-align:center;padding:12px 0}
+        .header h1{font-size:22px;color:#d4a853}
+        .table-badge{display:inline-block;background:rgba(129,140,248,0.2);color:#818cf8;padding:6px 14px;border-radius:20px;font-size:13px;margin:6px}
 
-        .cats{display:flex;gap:6px;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+        .cats{display:flex;gap:6px;overflow-x:auto;padding:8px 0;scrollbar-width:none}
         .cats::-webkit-scrollbar{display:none}
-        .cat{padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:#a8a49e;font-size:12px;white-space:nowrap;cursor:pointer;transition:all 0.2s}
+        .cat{padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:#a8a49e;font-size:12px;white-space:nowrap;cursor:pointer}
         .cat.active{background:rgba(212,168,83,0.15);color:#d4a853;border-color:#d4a853}
 
-        .item{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;cursor:pointer;transition:all 0.2s}
-        .item:active{transform:scale(0.98)}
+        .item{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
         .item-info h3{font-size:15px;margin-bottom:2px}
         .item-info .desc{font-size:11px;color:#6b6760}
         .item-price{font-size:17px;font-weight:700;color:#d4a853}
@@ -36,31 +31,22 @@
 
         .modal{position:fixed;bottom:0;left:0;right:0;background:#161820;border-radius:22px 22px 0 0;padding:20px;z-index:200;transform:translateY(100%);transition:transform 0.3s;max-height:65vh;overflow-y:auto;border-top:1px solid rgba(255,255,255,0.08)}
         .modal.open{transform:translateY(0)}
-        .modal h2{text-align:center;color:#d4a853;margin-bottom:14px}
-        .cart-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px}
         .cart-total{text-align:center;font-size:18px;font-weight:700;padding:12px 0}
         .btn{display:block;width:100%;padding:12px;border-radius:10px;border:none;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px;font-family:'Cairo',sans-serif}
         .btn-primary{background:linear-gradient(135deg,#b8942e,#d4a853);color:#1a1814}
         .btn-danger{background:rgba(239,68,68,0.12);color:#ef4444}
         .btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.08);color:#fff}
-
         .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:150;display:none}
         .overlay.show{display:block}
-
-        .note-input{width:100%;padding:10px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;font-family:'Cairo',sans-serif;font-size:13px;margin-top:8px;resize:vertical}
-
-        .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:30px;font-weight:700;z-index:300;animation:td 0.4s ease,tu 0.4s ease 2s forwards}
-        @keyframes td{from{opacity:0;transform:translateX(-50%) translateY(-80px)}}
-        @keyframes tu{to{opacity:0;transform:translateX(-50%) translateY(-80px)}}
+        .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:30px;font-weight:700;z-index:300}
     </style>
 </head>
 <body>
 <div class="container">
 <div class="header">
-<div class="logo">🍽️</div>
-<h1>Thana Restaurant</h1>
-<a href="?table=safari" style="color:#10b981;font-size:11px;">🛍️ طلب سفري</a> 🪑 طاولة <span id="tableNumber">1</span></div><br>
-<span class="call-waiter" id="callWaiter" onclick="callWaiter()">🔔 مناداة النادل</span>
+    <div style="font-size:40px">🍽️</div>
+    <h1 id="shopTitle">Thana Restaurant</h1>
+    <div class="table-badge">🪑 طاولة <span id="tableNumber">1</span></div>
 </div>
 
 <div class="cats" id="cats"></div>
@@ -68,148 +54,121 @@
 </div>
 
 <div class="overlay" id="overlay" onclick="closeCart()"></div>
-
 <button class="cart-fab" id="cartFab" onclick="openCart()">🛒 السلة <span class="cart-count" id="cartCount">0</span></button>
 
 <div class="modal" id="cartModal">
-<h2>🛒 طلباتك</h2>
+<h2 style="color:#d4a853;text-align:center">🛒 طلباتك</h2>
 <div id="cartItems"></div>
-<div class="cart-total" id="cartTotal">المجموع: 0 ل.س</div>
-<textarea class="note-input" id="orderNote" placeholder="ملاحظات (اختياري)..."></textarea>
-<button class="btn btn-primary" onclick="submitOrder()">📤 إرسال الطلب للمطبخ</button>
-<button class="btn btn-danger" onclick="clearCart()">🗑️ تفريغ السلة</button>
+<div class="cart-total" id="cartTotal">المجموع: 0</div>
+<input type="text" id="orderNote" placeholder="ملاحظات (بدون بصل...)" style="width:100%;padding:10px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;font-family:'Cairo',sans-serif;font-size:13px;margin-top:6px">
+<button class="btn btn-primary" onclick="submitOrder()">📤 إرسال للمطبخ</button>
+<button class="btn btn-danger" onclick="clearCart()">🗑️ تفريغ</button>
 <button class="btn btn-outline" onclick="closeCart()">✕ إغلاق</button>
 </div>
 
 <script>
-function getDefaultMenu(){return[{name:"شاورما دجاج",category:"وجبات رئيسية",price:25000,desc:"دجاج طازج مع ثوم"},{name:"شاورما لحم",category:"وجبات رئيسية",price:30000,desc:"لحم بقري مع طحينة"},{name:"فلافل",category:"وجبات رئيسية",price:15000,desc:"فلافل مقرمش"},{name:"برجر",category:"وجبات رئيسية",price:35000,desc:"لحم أنجوس"},{name:"مشاوي مشكل",category:"وجبات رئيسية",price:50000,desc:"كفتة وشيش طاووق"},{name:"تبولة",category:"مقبلات",price:10000,desc:"برغل طازج"},{name:"حمص",category:"مقبلات",price:10000,desc:"حمص كريمي"},{name:"بطاطا مقلية",category:"مقبلات",price:8000,desc:"ذهبية مقرمشة"},{name:"كولا",category:"مشروبات",price:5000,desc:"مشروب غازي"},{name:"عصير برتقال",category:"مشروبات",price:7000,desc:"طازج"},{name:"ماء",category:"مشروبات",price:2000,desc:"معدن"},{name:"كنافة",category:"حلويات",price:20000,desc:"بالقشطة"}]}
-function saveMenuToStorage(m){localStorage.setItem("thana_menu",JSON.stringify(m))}
+// القائمة ثابتة
+var MENU = [
+    {name:'شاورما دجاج',cat:'وجبات رئيسية',price:25000},
+    {name:'شاورما لحم',cat:'وجبات رئيسية',price:30000},
+    {name:'فلافل',cat:'وجبات رئيسية',price:15000},
+    {name:'برجر',cat:'وجبات رئيسية',price:35000},
+    {name:'مشاوي مشكل',cat:'وجبات رئيسية',price:50000},
+    {name:'تبولة',cat:'مقبلات',price:10000},
+    {name:'حمص',cat:'مقبلات',price:10000},
+    {name:'بطاطا مقلية',cat:'مقبلات',price:8000},
+    {name:'كولا',cat:'مشروبات',price:5000},
+    {name:'عصير برتقال',cat:'مشروبات',price:7000},
+    {name:'ماء',cat:'مشروبات',price:2000},
+    {name:'كنافة',cat:'حلويات',price:20000}
+];
 
-var params=new URLSearchParams(window.location.search);
-var tableId=params.get.'table')||'1';
-document.getElementById('tableNumber').textContent=tableId;
+var params = new URLSearchParams(window.location.search);
+var tableId = params.get('table')||'1';
+document.getElementById('tableNumber').textContent = tableId;
 
-// استخدام قائمة المخزون الفعلية
-var menu=JSON.parse(localStorage.getItem('thana_menu')||'[]');
-if(menu.length===0){
-    menu=[
-        {name:'شاورما دجاج',category:'وجبات رئيسية',price:25000,desc:'دجاج طازج مع ثوم'},
-        {name:'شاورما لحم',category:'وجبات رئيسية',price:30000,desc:'لحم بقري مع طحينة'},
-        {name:'فلافل',category:'وجبات رئيسية',price:15000,desc:'فلافل مقرمش'},
-        {name:'برجر',category:'وجبات رئيسية',price:35000,desc:'لحم أنجوس'},
-        {name:'مشاوي مشكل',category:'وجبات رئيسية',price:50000,desc:'كفتة وشيش طاووق'},
-        {name:'تبولة',category:'مقبلات',price:10000,desc:'برغل طازج'},
-        {name:'حمص',category:'مقبلات',price:10000,desc:'حمص كريمي'},
-        {name:'بطاطا مقلية',category:'مقبلات',price:8000,desc:'ذهبية مقرمشة'},
-        {name:'كولا',category:'مشروبات',price:5000,desc:'مشروب غازي'},
-        {name:'عصير برتقال',category:'مشروبات',price:7000,desc:'طازج'},
-        {name:'ماء',category:'مشروبات',price:2000,desc:'معدن'},
-        {name:'كنافة',category:'حلويات',price:20000,desc:'بالقشطة'}
-    ];
-}
+var shop = JSON.parse(localStorage.getItem('thana_shop_settings')||'{}');
+if(shop.name) document.getElementById('shopTitle').textContent = shop.name;
 
-var cart=[];
-var activeCat='الكل';
+var cart = [];
+var activeCat = 'الكل';
 
 function getCats(){
-    var c=['الكل'];
-    menu.forEach(function(i){if(c.indexOf(i.category||'أخرى')===-1)c.push(i.category||'أخرى')});
+    var c = ['الكل'];
+    MENU.forEach(function(i){if(c.indexOf(i.cat)===-1)c.push(i.cat)});
     return c;
 }
-function renderCats(){
-    var h='';
-    getCats().forEach(function(c){
-        h+='<button class="cat'+(c===activeCat?' active':'')+'" onclick="filterCat(\''+c+'\')">'+c+'</button>';
-    });
-    document.getElementById('cats').innerHTML=h;
-}
-function filterCat(c){activeCat=c;renderCats();renderMenu();}
-function getQty(name){var f=cart.find(function(i){return i.name===name});return f?f.qty:0}
 
-function addToCart(item){
-    var f=cart.find(function(i){return i.name===item.name});
-    if(f){f.qty++}else{cart.push({name:item.name,price:item.price,qty:1})}
-    updateCartUI();if(navigator.vibrate)navigator.vibrate(20);
+function renderCats(){
+    var h = '';
+    getCats().forEach(function(c){
+        h += '<button class="cat'+(c===activeCat?' active':'')+'" onclick="filter(\''+c+'\')">'+c+'</button>';
+    });
+    document.getElementById('cats').innerHTML = h;
 }
-function removeFromCart(item){
-    var f=cart.find(function(i){return i.name===item.name});
-    if(f){f.qty--;if(f.qty<=0)cart=cart.filter(function(i){return i.name!==item.name})}
-    updateCartUI();
-}
+
+function filter(c){activeCat=c;renderCats();renderMenu();}
 
 function renderMenu(){
-    var filtered=activeCat==='الكل'?menu:menu.filter(function(i){return (i.category||'أخرى')===activeCat});
-    var h='';
-    filtered.forEach(function(item){
-        var q=getQty(item.name);
-        h+='<div class="item"><div class="item-info"><h3>'+item.name+'</h3><div class="desc">'+((item.price||0).toLocaleString())+' ل.س'+(item.desc?' - '+item.desc:'')+'</div></div><div class="item-actions"><button class="qbtn" onclick="removeFromCart({name:\''+item.name+'\',price:'+(item.price||0)+'})">−</button><span class="qty">'+q+'</span><button class="qbtn" onclick="addToCart({name:\''+item.name+'\',price:'+(item.price||0)+'})">+</button></div></div>';
+    var items = activeCat==='الكل' ? MENU : MENU.filter(function(i){return i.cat===activeCat});
+    var h = '';
+    items.forEach(function(item){
+        var q = getQty(item.name);
+        h += '<div class="item"><div class="item-info"><h3>'+item.name+'</h3><div class="desc">'+(item.price||0).toLocaleString()+' ل.س</div></div><div class="item-actions"><button class="qbtn" onclick="removeItem(\''+item.name+'\')">−</button><span class="qty">'+q+'</span><button class="qbtn" onclick="addItem(\''+item.name+'\','+item.price+')">+</button></div></div>';
     });
-    document.getElementById('menuGrid').innerHTML=h;
+    document.getElementById('menuGrid').innerHTML = h;
 }
 
-function updateCartUI(){
+function getQty(name){var f=cart.find(function(i){return i.name===name});return f?f.qty:0}
+function addItem(name,price){
+    var f=cart.find(function(i){return i.name===name});
+    if(f){f.qty++}else{cart.push({name:name,price:price,qty:1})}
+    updateCart();if(navigator.vibrate)navigator.vibrate(20);
+}
+function removeItem(name){
+    var f=cart.find(function(i){return i.name===name});
+    if(f){f.qty--;if(f.qty<=0)cart=cart.filter(function(i){return i.name!==name})}
+    updateCart();
+}
+
+function updateCart(){
     var tq=cart.reduce(function(s,i){return s+i.qty},0);
     var tp=cart.reduce(function(s,i){return s+(i.price*i.qty)},0);
-    document.getElementById('cartCount').textContent=tq;
-    document.getElementById('cartTotal').textContent='المجموع: '+tp.toLocaleString()+' ل.س';
-    var ci=document.getElementById('cartItems');
-    if(cart.length===0){ci.innerHTML='<p style="text-align:center;color:#6b6760;padding:16px;">السلة فارغة</p>'}
-    else{
-        ci.innerHTML=cart.map(function(i){
-            return '<div class="cart-item"><div>'+i.name+'</div><div style="display:flex;align-items:center;gap:8px;"><button class="qbtn" onclick="removeFromCart({name:\''+i.name+'\',price:'+i.price+'})">−</button><span>'+i.qty+'</span><button class="qbtn" onclick="addToCart({name:\''+i.name+'\',price:'+i.price+'})">+</button></div><div style="color:#d4a853;">'+(i.price*i.qty).toLocaleString()+' ل.س</div></div>';
-        }).join('');
-    }
+    document.getElementById('cartCount').textContent = tq;
+    document.getElementById('cartTotal').textContent = 'المجموع: '+tp.toLocaleString()+' ل.س';
     renderMenu();
 }
 
 function openCart(){document.getElementById('cartModal').classList.add('open');document.getElementById('overlay').classList.add('show')}
 function closeCart(){document.getElementById('cartModal').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
-function clearCart(){if(confirm('تفريغ السلة؟')){cart=[];updateCartUI();closeCart()}}
+function clearCart(){cart=[];updateCart();closeCart()}
 
 function submitOrder(){
-    if(cart.length===0){showToast('⚠️ السلة فارغة');return}
-    var note=document.getElementById('orderNote').value;
-    var total=cart.reduce(function(s,i){return s+(i.price*i.qty)},0);
-    var order={
+    if(cart.length===0)return;
+    var order = {
         id:Date.now(),table:tableId,
         items:cart.map(function(i){return{name:i.name,price:i.price,qty:i.qty}}),
-        total:total,note:note,status:'new',
-        timestamp:new Date().toISOString(),source:'qr'
+        total:cart.reduce(function(s,i){return s+(i.price*i.qty)},0),
+        note:document.getElementById('orderNote').value,
+        status:'new',timestamp:new Date().toISOString(),source:'qr'
     };
-    
-    // حفظ الطلب مباشرة
-    var orders=JSON.parse(localStorage.getItem('thana_orders')||'[]');
+    var orders = JSON.parse(localStorage.getItem('thana_orders')||'[]');
     orders.push(order);
     localStorage.setItem('thana_orders',JSON.stringify(orders));
     localStorage.setItem('thana_new_order_notify',JSON.stringify(order));
     
-    // تحديث الطاولة
-    var tables=JSON.parse(localStorage.getItem('thana_tables')||'[]');
-    var t=tables.find(function(tbl){return tbl.id==tableId});
-    if(t){t.status='busy';localStorage.setItem('thana_tables',JSON.stringify(tables))}
-    
     cart=[];document.getElementById('orderNote').value='';
-    updateCartUI();closeCart();
-    showToast('✅ تم إرسال الطلب للمطبخ!');
+    updateCart();closeCart();
+    showToast('✅ تم الإرسال للمطبخ!');
 }
 
-function callWaiter(){
-    var btn=document.getElementById('callWaiter');
-    btn.textContent='✅ تم النداء - النادل قادم';btn.classList.add('called');
-    var calls=JSON.parse(localStorage.getItem('thana_waiter_calls')||'[]');
-    calls.push({table:tableId,time:new Date().toISOString()});
-    localStorage.setItem('thana_waiter_calls',JSON.stringify(calls));
-    showToast('🔔 تم مناداة النادل');
-    setTimeout(function(){btn.textContent='🔔 مناداة النادل';btn.classList.remove('called')},8000);
-}
-
-function showToast(msg){
+function showToast(m){
     var t=document.querySelector('.toast');if(t)t.remove();
-    t=document.createElement('div');t.className='toast';t.textContent=msg;
-    document.body.appendChild(t);setTimeout(function(){t.remove()},2500);
+    t=document.createElement('div');t.className='toast';t.textContent=m;
+    document.body.appendChild(t);setTimeout(function(){t.remove()},2000);
 }
 
-renderCats();renderMenu();updateCartUI();
+renderCats();renderMenu();updateCart();
 </script>
 </body>
 </html>
