@@ -555,3 +555,24 @@ a[href]:focus::after {
     -webkit-user-select: none !important;
     user-select: none !important;
 }
+
+/* إخفاء tooltip المتصفح */
+.thana-nav a,
+.thana-nav span,
+.thana-nav button {
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    pointer-events: auto;
+}
+
+/* منع tooltip على الأجهزة اللمسية */
+@media (pointer: coarse) {
+    .thana-nav a::after,
+    .thana-nav a::before {
+        display: none !important;
+    }
+    a[href] {
+        -webkit-touch-callout: none !important;
+    }
+}
