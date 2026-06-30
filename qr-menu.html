@@ -82,6 +82,9 @@
 </div>
 
 <script>
+function getDefaultMenu(){return[{name:"شاورما دجاج",category:"وجبات رئيسية",price:25000,desc:"دجاج طازج مع ثوم"},{name:"شاورما لحم",category:"وجبات رئيسية",price:30000,desc:"لحم بقري مع طحينة"},{name:"فلافل",category:"وجبات رئيسية",price:15000,desc:"فلافل مقرمش"},{name:"برجر",category:"وجبات رئيسية",price:35000,desc:"لحم أنجوس"},{name:"مشاوي مشكل",category:"وجبات رئيسية",price:50000,desc:"كفتة وشيش طاووق"},{name:"تبولة",category:"مقبلات",price:10000,desc:"برغل طازج"},{name:"حمص",category:"مقبلات",price:10000,desc:"حمص كريمي"},{name:"بطاطا مقلية",category:"مقبلات",price:8000,desc:"ذهبية مقرمشة"},{name:"كولا",category:"مشروبات",price:5000,desc:"مشروب غازي"},{name:"عصير برتقال",category:"مشروبات",price:7000,desc:"طازج"},{name:"ماء",category:"مشروبات",price:2000,desc:"معدن"},{name:"كنافة",category:"حلويات",price:20000,desc:"بالقشطة"}]}
+function saveMenuToStorage(m){localStorage.setItem("thana_menu",JSON.stringify(m))}
+
 var params=new URLSearchParams(window.location.search);
 var tableId=params.get.'table')||'1';
 document.getElementById('tableNumber').textContent=tableId;
