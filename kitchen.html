@@ -56,6 +56,12 @@
 <script>
 // ========== قراءة مباشرة كل نصف ثانية ==========
 function loadOrders(){
+    console.log("🔄 تحميل الطلبات...");
+    var raw = localStorage.getItem("thana_orders");
+    console.log("البيانات الخام:", raw ? raw.length : "null");
+    console.log("🔄 تحميل الطلبات...");
+    var raw = localStorage.getItem("thana_orders");
+    console.log("البيانات الخام:", raw ? raw.length : "null");
     var orders = JSON.parse(localStorage.getItem('thana_orders')||'[]');
     var today = new Date().toLocaleDateString('ar-SA');
     var todayOrders = orders.filter(function(o){
