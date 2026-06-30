@@ -357,7 +357,7 @@
             const chart = document.getElementById('hourlyChart');
             chart.innerHTML = hourlyData.map((val, i) => `
                 <div class="bar-col">
-                    <div class="bar" style="height:${(val/max)*100}%" title="${val.toLocaleString()} ل.س"></div>
+                    <div class="bar" style="height:${(val/max)*100}%" data-title="${val.toLocaleString()} ل.س"></div>
                     <span class="bar-label">${labels[i]}</span>
                 </div>
             `).join('');
@@ -399,7 +399,7 @@
             }
             const container = document.getElementById('miniTables');
             container.innerHTML = tables.map(t => `
-                <div class="mini-table ${t.status}" title="طاولة ${t.id}">
+                <div class="mini-table ${t.status}" data-title="طاولة ${t.id}">
                     ${t.id}
                 </div>
             `).join('');

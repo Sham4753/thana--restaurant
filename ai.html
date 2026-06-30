@@ -479,7 +479,7 @@
                 const g = Math.round(23 + intensity * 40);
                 const b = Math.round(42 + intensity * 60);
                 return `
-                    <div class="hour-block" style="background:rgba(${r},${g},${b},${0.3 + intensity * 0.7});" title="${labels[i]}: ${val} طلب">
+                    <div class="hour-block" style="background:rgba(${r},${g},${b},${0.3 + intensity * 0.7});" data-title="${labels[i]}: ${val} طلب">
                         <span class="hour-label">${labels[i]}</span>
                     </div>
                 `;

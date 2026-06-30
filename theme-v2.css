@@ -576,3 +576,28 @@ a[href]:focus::after {
         -webkit-touch-callout: none !important;
     }
 }
+
+/* إخفاء أي title attribute tooltip */
+*[title] {
+    pointer-events: none;
+}
+
+/* منع أي preview أو popup على كل العناصر */
+* {
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+}
+
+/* إخفاء الـ link preview تماماً */
+a[href]:after,
+a[href]:before,
+span[onclick]:after,
+span[onclick]:before,
+div[onclick]:after,
+div[onclick]:before {
+    content: none !important;
+    display: none !important;
+}
