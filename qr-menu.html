@@ -152,8 +152,8 @@ function submitOrder(){
     };
     var orders=JSON.parse(localStorage.getItem('thana_orders')||'[]');
     orders.push(order);
-    localStorage.setItem('thana_orders',JSON.stringify(orders));
-    localStorage.setItem('thana_new_order_notify',JSON.stringify(order));
+    sendOrder(order);
+    
     cart=[];document.getElementById('orderNote').value='';
     updateCart();closeCart();
     showToast('✅ تم الإرسال للمطبخ!');

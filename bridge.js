@@ -1,70 +1,58 @@
 // ============================================
-// Thana Restaurant - Bridge System
-// جسر اتصال بين جميع الصفحات
+// Thana Bridge v3.0 - نظام متكامل
+// QR ← مطبخ ← كاشير ← أرشيف - تلقائي
 // ============================================
 
-const BRIDGE_VERSION = '1.0';
-
-// إرسال طلب مع إشعار فوري لجميع الصفحات
-function bridgeSendOrder(order) {
-    // 1. حفظ في localStorage
-    const orders = JSON.parse(localStorage.getItem('thana_orders') || '[]');
+// إرسال طلب من أي مكان (QR, نادل, صوت)
+function sendOrder(order){
+    var orders = JSON.parse(localStorage.getItem('thana_orders')||'[]');
     orders.push(order);
     localStorage.setItem('thana_orders', JSON.stringify(orders));
     
-    // 2. إشعار فوري
-    localStorage.setItem('thana_new_order_notify', JSON.stringify(order));
+    // إشعار فوري
+    localStorage.setItem('thana_new_order', JSON.stringify(order));
+    setTimeout(function(){ localStorage.removeItem('thana_new_order'); }, 500);
     
-    // 3. إزالة الإشعار بعد لحظة (عشان يشتغل event listener كل مرة)
-    setTimeout(() => {
-        localStorage.removeItem('thana_new_order_notify');
-    }, 100);
+    // تحديث الطاولة
+    if(order.table && order.table !== 'safari'){
+        var tables = JSON.parse(localStorage.getItem('thana_tables')||'[]');
+        var t = tables.find(function(x){return x.id==order.table});
+        if(t){t.status='busy';localStorage.setItem('thana_tables',JSON.stringify(tables));}
+    }
     
-    // 4. تحديث الطاولة
-    updateTableStatus(order.table);
-    
-    // 5. هزة تأكيد
-    if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
-    
-    console.log('📤 طلب جديد:', order.id, 'طاولة', order.table);
+    console.log('📤 طلب:', order.id, 'طاولة:', order.table);
     return order;
 }
 
-function updateTableStatus(tableId) {
-    let tables = JSON.parse(localStorage.getItem('thana_tables') || '[]');
-    const table = tables.find(t => t.id == tableId);
-    if (table) {
-        table.status = 'busy';
-        localStorage.setItem('thana_tables', JSON.stringify(tables));
-    }
-}
-
-// استماع للطلبات الجديدة (لصفحة المطبخ والنادل)
-function bridgeListenForOrders(callback) {
-    window.addEventListener('storage', function(e) {
-        if (e.key === 'thana_new_order_notify' && e.newValue) {
-            try {
-                const order = JSON.parse(e.newValue);
-                if (order && order.id) {
-                    console.log('🔔 طلب جديد:', order.id);
-                    if (callback) callback(order);
-                    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-                }
-            } catch(err) {}
+// تحديث حالة الطلب (من المطبخ)
+function updateOrderStatus(id, status, extra){
+    var orders = JSON.parse(localStorage.getItem('thana_orders')||'[]');
+    var order = orders.find(function(o){return o.id===id});
+    if(order){
+        order.status = status;
+        if(extra) Object.assign(order, extra);
+        localStorage.setItem('thana_orders', JSON.stringify(orders));
+        
+        // إذا جاهز ← إشعار للكاشير
+        if(status === 'done'){
+            localStorage.setItem('thana_order_done', JSON.stringify(order));
+            setTimeout(function(){ localStorage.removeItem('thana_order_done'); }, 500);
         }
         
-        if (e.key === 'thana_orders') {
-            console.log('🔄 تحديث الطلبات');
-            if (callback) callback(null);
+        // إذا مدفوع ← تفريغ الطاولة
+        if(status === 'paid'){
+            if(order.table && order.table !== 'safari'){
+                var tables = JSON.parse(localStorage.getItem('thana_tables')||'[]');
+                var t = tables.find(function(x){return x.id==order.table});
+                if(t){t.status='free';localStorage.setItem('thana_tables',JSON.stringify(tables));}
+            }
+            // إضافة للكاش
+            var cash = JSON.parse(localStorage.getItem('thana_cash')||'[]');
+            cash.push({id:order.id, table:order.table, total:order.total, time:new Date().toISOString()});
+            localStorage.setItem('thana_cash', JSON.stringify(cash));
         }
-    });
-}
-
-console.log('🌉 Thana Bridge v' + BRIDGE_VERSION + ' - جاهز');
-
-// إشعار فوري عند طلب جديد
-function notifyKitchen(order) {
-    if (typeof notifyNewOrder === 'function') {
-        notifyNewOrder(order);
     }
+    return order;
 }
+
+console.log('🌉 Thana Bridge v3.0 - جاهز');

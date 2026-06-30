@@ -121,8 +121,10 @@ function updateOrder(id,status,extra){
     }
 }
 
-function startCooking(id){updateOrder(id,'cooking',{cookStart:new Date().toISOString()})}
-function markDone(id){updateOrder(id,'done',{cookEnd:new Date().toISOString()});localStorage.setItem('thana_order_ready',id);setTimeout(function(){localStorage.removeItem('thana_order_ready')},5000)}
+function startCooking(id){updateOrderStatus(id,"cooking",{cookStart:new Date().toISOString()});loadOrders()}
+function _startCooking(id){updateOrder(id,'cooking',{cookStart:new Date().toISOString()})}
+function markDone(id){updateOrderStatus(id,"done",{cookEnd:new Date().toISOString()});loadOrders()}
+function _markDone(id){updateOrder(id,'done',{cookEnd:new Date().toISOString()});localStorage.setItem('thana_order_ready',id);setTimeout(function(){localStorage.removeItem('thana_order_ready')},5000)}
 function backToNew(id){updateOrder(id,'new',{cookStart:null,cookEnd:null})}
 
 // تحميل أول مرة
