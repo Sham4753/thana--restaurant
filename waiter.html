@@ -38,7 +38,7 @@
         }
         .btn:active{transform:scale(0.95)}
         .btn-gold{background:linear-gradient(135deg,#b8942e,#d4a853);color:#1a1814}
-        .btn-success{background:#10b981;color:#fff}
+        .btn-success{background:var(--success-color);color:#fff}
         .btn-danger{background:rgba(239,68,68,0.12);color:var(--danger)}
         .btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.08);color:#fff}
 
@@ -49,7 +49,7 @@
         .orders-list{margin-top:8px}
         .mini-order{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;margin-bottom:6px;font-size:12px;display:flex;justify-content:space-between;align-items:center}
 
-        .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:30px;font-weight:700;z-index:300;animation:td 0.4s ease,tu 0.4s ease 2s forwards}
+        .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:var(--success-color);color:#fff;padding:10px 20px;border-radius:30px;font-weight:700;z-index:300;animation:td 0.4s ease,tu 0.4s ease 2s forwards}
         @keyframes td{from{opacity:0;transform:translateX(-50%) translateY(-80px)}}
         @keyframes tu{to{opacity:0;transform:translateX(-50%) translateY(-80px)}}
     </style>

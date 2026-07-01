@@ -94,7 +94,8 @@ function processSync() {
 // ========== تهيئة ==========
 function init() {
     var session = JSON.parse(localStorage.getItem('thana_auth_session') || 'null');
-    if (session && session.role) {
+    if (checkLicense()) {
+        if (session && session.role) {
         role = session.role;
         navigate(role === 'admin' ? 'index' : role === 'waiter' ? 'waiter' : role === 'kitchen' ? 'kitchen' : role === 'cashier' ? 'orders' : 'index');
     } else {
@@ -142,15 +143,19 @@ function renderCharts() {
     var hourly = Array(8).fill(0);
     orders.forEach(function(o){ var h = new Date(o.timestamp).getHours() - 12; if(h>=0&&h<8) hourly[h] += o.total||0; });
     var ctx1 = document.getElementById('salesChart');
-    if (ctx1) new Chart(ctx1, { type:'line', data:{ labels:['12م','1م','2م','3م','4م','5م','6م','7م'], datasets:[{ label:'مبيعات', data:hourly, borderColor:'#00f0ff', backgroundColor:'rgba(0,240,255,0.1)', fill:true }] }, options:{ plugins:{ legend:{ display:false } } } });
+    if (ctx1) new Chart(ctx1, { type:'line', data:{ labels:['12م','1م','2م','3م','4م','5م','6م','7م'], datasets:[{ label:'مبيعات', data:hourly, borderColor:'var(--neon-cyan)', backgroundColor:'rgba(0,240,255,0.1)', fill:true }] }, options:{ plugins:{ legend:{ display:false } } } });
     
     var items = {};
     orders.forEach(function(o){ (o.items||[]).forEach(function(i){ items[i.name] = (items[i.name]||0) + (i.qty||1); }); });
     var sorted = Object.entries(items).sort(function(a,b){ return b[1]-a[1]; }).slice(0,5);
     var ctx2 = document.getElementById('pieChart');
-    if (ctx2) new Chart(ctx2, { type:'bar', data:{ labels:sorted.map(function(s){return s[0]}), datasets:[{ label:'طلبات', data:sorted.map(function(s){return s[1]}), backgroundColor:'#00f0ff' }] }, options:{ plugins:{ legend:{ display:false } } } });
+    if (ctx2) new Chart(ctx2, { type:'bar', data:{ labels:sorted.map(function(s){return s[0]}), datasets:[{ label:'طلبات', data:sorted.map(function(s){return s[1]}), backgroundColor:'var(--neon-cyan)' }] }, options:{ plugins:{ legend:{ display:false } } } });
 }
 
+    } else {
+        navigate("activate");
+    }
+}
 init();
 </script>
 </body>

@@ -21,7 +21,7 @@
         .btn{display:block;width:100%;padding:14px;border-radius:12px;border:none;font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;font-family:'Cairo',sans-serif}
         .btn-gold{background:linear-gradient(135deg,#b8942e,#d4a853);color:#1a1814}
         .btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.1);color:#fff}
-        .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 22px;border-radius:30px;font-weight:700;z-index:300}
+        .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:var(--success-color);color:#fff;padding:10px 22px;border-radius:30px;font-weight:700;z-index:300}
         .color-pick{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
         .color-dot{width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all 0.2s}
         .color-dot:hover{transform:scale(1.1)}
@@ -62,9 +62,9 @@
     <div class="color-pick" id="colors">
         <div class="color-dot sel" style="background:#d4a853" data-color="gold" onclick="pickColor(this)"></div>
         <div class="color-dot" style="background:#38bdf8" data-color="blue" onclick="pickColor(this)"></div>
-        <div class="color-dot" style="background:#10b981" data-color="green" onclick="pickColor(this)"></div>
+        <div class="color-dot" style="background:var(--success-color)" data-color="green" onclick="pickColor(this)"></div>
         <div class="color-dot" style="background:#f59e0b" data-color="orange" onclick="pickColor(this)"></div>
-        <div class="color-dot" style="background:#ef4444" data-color="red" onclick="pickColor(this)"></div>
+        <div class="color-dot" style="background:var(--error-color)" data-color="red" onclick="pickColor(this)"></div>
         <div class="color-dot" style="background:#8b5cf6" data-color="purple" onclick="pickColor(this)"></div>
         <div class="color-dot" style="background:#ec4899" data-color="pink" onclick="pickColor(this)"></div>
     </div>
