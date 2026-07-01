@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المنيو - Thana</title>
+    <link rel="stylesheet" href="theme-neon.css">
+    <script src="state.js"></script>
+    <script src="toast.js"></script>
+    <script src="nav-component.js" defer></script>
+    <style>
+        body{padding:16px;font-family:'Cairo',sans-serif;background:var(--bg-dark);color:#fff}
+        .container{max-width:900px;margin:0 auto}
+        h1{color:var(--neon-cyan);text-align:center;margin:16px 0}
+        .form-card{background:var(--bg-card);border:1px solid rgba(0,240,255,0.15);border-radius:16px;padding:20px;margin:16px 0}
+        .form-row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+        .form-row input{flex:1;min-width:120px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(0,240,255,0.15);color:#fff;font-family:'Cairo',sans-serif}
+        .btn{padding:10px 20px;border-radius:8px;border:none;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;font-size:13px}
+        .btn-add{background:var(--neon-cyan);color:#000}
+        .btn-edit{background:var(--warning-color);color:#000}
+        .btn-del{background:var(--error-color);color:#fff}
+        .menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+        .menu-card{
+            background:var(--bg-card);border:1px solid rgba(0,240,255,0.1);
+            border-radius:16px;overflow:hidden;transition:0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+            transform-style:preserve-3d;
+        }
+        .menu-card:hover{transform:rotateY(5deg) scale(1.03);border-color:var(--neon-cyan);box-shadow:0 0 30px rgba(0,240,255,0.15)}
+        .menu-card img{width:100%;height:180px;object-fit:cover;background:rgba(0,240,255,0.05)}
+        .menu-card-body{padding:14px}
+        .menu-card-body h3{color:var(--neon-cyan);margin:0 0 4px}
+        .menu-card-body .price{font-size:20px;font-weight:700}
+        .menu-card-body .desc{color:var(--text-secondary);font-size:12px;margin:4px 0}
+        .menu-card-actions{display:flex;gap:6px;margin-top:8px}
+        label{display:block;color:var(--text-secondary);font-size:11px;margin-bottom:2px}
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🍽️ إدارة المنيو</h1>
+    
+    <div class="form-card">
+        <input type="hidden" id="editId">
+        <div class="form-row">
+            <div><label>اسم الصنف</label><input type="text" id="itemName" placeholder="شاورما دجاج"></div>
+            <div><label>السعر</label><input type="number" id="itemPrice" placeholder="25000"></div>
+            <div><label>الفئة</label><input type="text" id="itemCat" placeholder="وجبات رئيسية"></div>
+        </div>
+        <div class="form-row" style="margin-top:8px">
+            <div style="flex:2"><label>الوصف</label><input type="text" id="itemDesc" placeholder="دجاج طازج مع ثوم"></div>
+            <div style="flex:2"><label>رابط الصورة</label><input type="text" id="itemImg" placeholder="https://..."></div>
+            <button class="btn btn-add" onclick="addItem()">➕ إضافة</button>
+        </div>
+    </div>
+    
+    <div class="menu-grid" id="menuGrid"></div>
+</div>
+
+<script>
+function getMenu(){return JSON.parse(localStorage.getItem('thana_menu')||'[]')}
+function saveMenu(m){localStorage.setItem('thana_menu',JSON.stringify(m));renderMenu()}
+
+function addItem(){
+    var name=document.getElementById('itemName').value.trim();
+    var price=parseInt(document.getElementById('itemPrice').value)||0;
+    var cat=document.getElementById('itemCat').value.trim();
+    var desc=document.getElementById('itemDesc').value.trim();
+    var img=document.getElementById('itemImg').value.trim();
+    var editId=document.getElementById('editId').value;
+    
+    if(!name||!price){toast('الاسم والسعر مطلوبان','error');return}
+    
+    var menu=getMenu();
+    
+    if(editId){
+        var idx=menu.findIndex(function(i){return i.id==editId});
+        if(idx>=0){menu[idx]={id:editId,name:name,price:price,cat:cat,desc:desc,img:img}}
+        document.getElementById('editId').value='';
+        toast('✅ تم التعديل');
+    }else{
+        menu.push({id:Date.now(),name:name,price:price,cat:cat,desc:desc,img:img});
+        toast('✅ تمت الإضافة');
+    }
+    
+    saveMenu(menu);
+    clearForm();
+}
+
+function editItem(id){
+    var menu=getMenu();
+    var item=menu.find(function(i){return i.id==id});
+    if(!item)return;
+    document.getElementById('editId').value=item.id;
+    document.getElementById('itemName').value=item.name;
+    document.getElementById('itemPrice').value=item.price;
+    document.getElementById('itemCat').value=item.cat||'';
+    document.getElementById('itemDesc').value=item.desc||'';
+    document.getElementById('itemImg').value=item.img||'';
+    window.scrollTo(0,0);
+}
+
+function deleteItem(id){
+    if(!confirm('حذف هذا الصنف؟'))return;
+    var menu=getMenu().filter(function(i){return i.id!=id});
+    saveMenu(menu);
+    toast('🗑️ تم الحذف');
+}
+
+function clearForm(){
+    document.getElementById('editId').value='';
+    document.getElementById('itemName').value='';
+    document.getElementById('itemPrice').value='';
+    document.getElementById('itemCat').value='';
+    document.getElementById('itemDesc').value='';
+    document.getElementById('itemImg').value='';
+}
+
+function renderMenu(){
+    var menu=getMenu();
+    var html='';
+    if(menu.length===0){
+        html='<div class="form-card" style="text-align:center;color:var(--text-secondary)">لا توجد أصناف. أضف أول صنف.</div>';
+    }
+    menu.forEach(function(item){
+        html+='<div class="menu-card">'+
+            (item.img?'<img src="'+item.img+'" onerror="this.style.display=\'none\'">':'<div style="height:180px;display:flex;align-items:center;justify-content:center;font-size:64px;background:rgba(0,240,255,0.03)">🍽️</div>')+
+            '<div class="menu-card-body"><h3>'+item.name+'</h3><div class="price">'+(item.price||0).toLocaleString()+' ل.س</div>'+
+            (item.desc?'<div class="desc">'+item.desc+'</div>':'')+
+            (item.cat?'<div style="color:var(--neon-cyan);font-size:10px;margin-top:4px">'+item.cat+'</div>':'')+
+            '<div class="menu-card-actions"><button class="btn btn-edit" onclick="editItem('+item.id+')">✏️ تعديل</button><button class="btn btn-del" onclick="deleteItem('+item.id+')">🗑️ حذف</button></div></div></div>';
+    });
+    document.getElementById('menuGrid').innerHTML=html;
+}
+
+renderMenu();
+</script>
+</body>
+</html>
