@@ -81,7 +81,7 @@ function createNavBar(){
         navHTML+='<span class="nav-item'+(isActive?' active':'')+'" onclick="goTo(\''+item.href+'\')">'+item.icon+' '+item.label+'</span>';
     });
     
-    navHTML+='<span class="sep"></span><span class="nav-item logout" onclick="localStorage.clear();window.location.href=\"login.html\"">🚪</span></nav>';
+    navHTML+='<span class="sep"></span><span class="nav-item logout" onclick="localStorage.clear();location.href=onclick="localStorage.clear();window.location.href=\"login.html\""quot;login.htmlonclick="localStorage.clear();window.location.href=\"login.html\""quot;">🚪</span></nav>';
     document.body.insertAdjacentHTML('afterbegin',navHTML);
 }
 
