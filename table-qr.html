@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توليد QR Codes - Thana</title>
+    <link rel="stylesheet" href="theme-neon.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="nav-component.js" defer></script>
+    <style>
+        body{padding:16px;font-family:'Cairo',sans-serif;background:var(--bg-dark);color:#fff}
+        .container{max-width:900px;margin:0 auto}
+        h1{color:var(--neon-cyan);text-align:center;margin:16px 0}
+        .controls{text-align:center;margin:16px 0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+        .controls input{width:60px;padding:8px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(0,240,255,0.15);color:#fff;text-align:center;font-family:'Cairo',sans-serif}
+        .btn{padding:10px 20px;border-radius:8px;border:none;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;font-size:13px}
+        .btn-gold{background:var(--neon-cyan);color:#000}
+        .btn-outline{background:transparent;border:1px solid var(--neon-cyan);color:var(--neon-cyan)}
+        .qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin:20px 0}
+        .qr-card{
+            background:var(--bg-card);border:1px solid rgba(0,240,255,0.1);
+            border-radius:16px;padding:16px;text-align:center;
+            page-break-inside:avoid;
+        }
+        .qr-card h3{color:var(--neon-cyan);margin:8px 0}
+        .qr-card p{color:var(--text-secondary);font-size:11px}
+        .qr-card .desc{font-size:10px;color:var(--text-muted);margin-top:4px}
+        @media print{
+            body{background:#fff}
+            .no-print{display:none}
+            .qr-card{border:1px solid #ddd;background:#fff}
+            .qr-card h3{color:#000}
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📱 توليد QR Codes للطاولات</h1>
+    
+    <div class="controls no-print">
+        <span style="color:var(--text-secondary)">من طاولة:</span>
+        <input type="number" id="fromTable" value="1" min="1" max="50">
+        <span style="color:var(--text-secondary)">إلى:</span>
+        <input type="number" id="toTable" value="15" min="1" max="50">
+        <input type="text" id="baseUrl" placeholder="رابط المطعم" style="width:250px">
+        <button class="btn btn-gold" onclick="generateAll()">🔲 توليد</button>
+        <button class="btn btn-outline" onclick="window.print()">🖨️ طباعة</button>
+    </div>
+    
+    <div class="qr-grid" id="qrGrid"></div>
+</div>
+
+<script>
+// الرابط الأساسي
+var base = window.location.origin + window.location.pathname.replace('table-qr.html','landing.html');
+
+document.getElementById('baseUrl').value = base;
+document.getElementById('baseUrl').placeholder = base;
+
+function generateAll(){
+    var from = parseInt(document.getElementById('fromTable').value) || 1;
+    var to = parseInt(document.getElementById('toTable').value) || 15;
+    var url = document.getElementById('baseUrl').value || base;
+    
+    var grid = document.getElementById('qrGrid');
+    grid.innerHTML = '';
+    
+    for (var i = from; i <= to; i++) {
+        var div = document.createElement('div');
+        div.className = 'qr-card';
+        div.innerHTML = '<div id="qr'+i+'"></div><h3>🪑 طاولة '+i+'</h3><p>امسح الكود للطلب</p><div class="desc">'+url+'?table='+i+'</div>';
+        grid.appendChild(div);
+        
+        new QRCode(document.getElementById('qr'+i), {
+            text: url + '?table=' + i,
+            width: 150, height: 150,
+            colorDark: '#0a0f1e', colorLight: '#ffffff'
+        });
+    }
+    
+    document.getElementById('toTable').value = to;
+}
+
+// توليد تلقائي
+setTimeout(generateAll, 500);
+</script>
+</body>
+</html>
