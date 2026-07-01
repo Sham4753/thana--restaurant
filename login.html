@@ -206,7 +206,13 @@ function doLogin(){
         m.textContent = '✅ مرحباً ' + u.n + '...';
         m.className = 'msg s';
         if(u.r === 'guest'){ setTimeout(function(){ location.href = 'qr-menu.html?table=1'; }, 400); }
-        else { setTimeout(function(){ location.href = 'index.html'; }, 400); }
+        else if(u.r==='waiter'){ setTimeout(function(){ location.href='waiter.html'; }, 400); }
+        else if(u.r==='kitchen'){ setTimeout(function(){ location.href='kitchen.html'; }, 400); }
+        else if(u.r==='cashier'){ setTimeout(function(){ location.href='orders.html'; }, 400); }
+        else { if(u.r==='waiter'){ setTimeout(function(){ location.href='waiter.html'; }, 400); }
+        else if(u.r==='kitchen'){ setTimeout(function(){ location.href='kitchen.html'; }, 400); }
+        else if(u.r==='cashier'){ setTimeout(function(){ location.href='orders.html'; }, 400); }
+        else { setTimeout(function(){ location.href='index.html'; }, 400); } }
     } else {
         m.textContent = '❌ PIN خطأ';
         m.className = 'msg e';
@@ -243,7 +249,10 @@ function loginWithFP(){
         localStorage.setItem('thana_auth_session', JSON.stringify({role:'admin',userId:'admin',loginTime:new Date().toISOString()}));
         m.textContent = '✅ تم التحقق!';
         m.className = 'msg s';
-        setTimeout(function(){ location.href = 'index.html'; }, 400);
+        if(u.r==='waiter'){ setTimeout(function(){ location.href='waiter.html'; }, 400); }
+        else if(u.r==='kitchen'){ setTimeout(function(){ location.href='kitchen.html'; }, 400); }
+        else if(u.r==='cashier'){ setTimeout(function(){ location.href='orders.html'; }, 400); }
+        else { setTimeout(function(){ location.href='index.html'; }, 400); }
     }).catch(function(){
         m.textContent = '❌ فشل - استخدم PIN';
         m.className = 'msg e';
