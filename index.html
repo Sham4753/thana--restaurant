@@ -72,3 +72,9 @@ if(s.name){document.getElementById('shopNameDisplay').textContent=s.name;documen
 </script>
 </body>
 </html>
+<script>
+// إذا مش مسجل دخول - روح على login.html
+if(!localStorage.getItem('thana_auth_session')){
+    window.location.href = 'login.html';
+}
+</script>
