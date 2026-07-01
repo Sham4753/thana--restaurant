@@ -8,23 +8,23 @@
 <script src="state.js"></script>
 <script src="nav-component.js?v=2.1" defer></script>
     <style>
-        body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
+        body{padding:16px;font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text)}
         .container{max-width:700px;margin:0 auto}
-        .card{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:20px;margin-bottom:14px}
-        h2{color:#d4a853;text-align:center;margin-bottom:16px}
-        h3{color:#d4a853;margin-bottom:10px;font-size:15px}
+        .card{background:var(--bg-card);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:20px;margin-bottom:14px}
+        h2{color:var(--gold);text-align:center;margin-bottom:16px}
+        h3{color:var(--gold);margin-bottom:10px;font-size:15px}
         .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
         .stat{background:rgba(255,255,255,0.02);padding:12px;border-radius:10px;text-align:center}
         .stat .num{font-size:24px;font-weight:700}
-        .stat .lbl{font-size:9px;color:#6b6760;margin-top:2px}
-        .stat .num.gold{color:#d4a853}
-        .stat .num.green{color:#10b981}
-        .stat .num.red{color:#ef4444}
+        .stat .lbl{font-size:9px;color:var(--text-muted);margin-top:2px}
+        .stat .num.gold{color:var(--gold)}
+        .stat .num.green{color:var(--success)}
+        .stat .num.red{color:var(--danger)}
         .stat .num.blue{color:#38bdf8}
         
         .btn{display:block;width:100%;padding:14px;border-radius:12px;border:none;font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;font-family:'Cairo',sans-serif}
         .btn-gold{background:linear-gradient(135deg,#b8942e,#d4a853);color:#1a1814}
-        .btn-danger{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.2)}
+        .btn-danger{background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.2)}
         .btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.1);color:#fff}
         
         .archive-item{display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(255,255,255,0.02);border-radius:10px;margin-bottom:6px;font-size:13px}
@@ -36,7 +36,7 @@
 <div class="card" style="text-align:center">
     <div style="font-size:48px">🔒</div>
     <h2>الإغلاق اليومي</h2>
-    <p style="color:#6b6760;font-size:12px">آخر النهار - سكر اليوم وابدأ جديد</p>
+    <p style="color:var(--text-muted);font-size:12px">آخر النهار - سكر اليوم وابدأ جديد</p>
 </div>
 
 <div class="card">
@@ -46,7 +46,7 @@
 
 <div class="card">
     <h3>🔒 إجراء الإغلاق</h3>
-    <p style="font-size:12px;color:#f59e0b;margin-bottom:10px">⚠️ الإغلاق: يرحل طلبات اليوم للأرشيف + يصفر العدادات + يفضي الطاولات</p>
+    <p style="font-size:12px;color:var(--warning);margin-bottom:10px">⚠️ الإغلاق: يرحل طلبات اليوم للأرشيف + يصفر العدادات + يفضي الطاولات</p>
     <button class="btn btn-gold" onclick="closeDay()">🔒 إغلاق اليوم وبدء يوم جديد</button>
     <button class="btn btn-outline" onclick="exportToday()">📤 تصدير تقرير اليوم</button>
 </div>
@@ -127,11 +127,11 @@ function closeDay(){
 function renderArchive(){
     var archive=GA();
     var container=document.getElementById('archiveList');
-    if(archive.length===0){container.innerHTML='<div style="text-align:center;color:#6b6760;padding:12px;">الأرشيف فارغ</div>';return}
+    if(archive.length===0){container.innerHTML='<div style="text-align:center;color:var(--text-muted);padding:12px;">الأرشيف فارغ</div>';return}
     
     var currency=localStorage.getItem('thana_currency_symbol')||'ل.س';
     container.innerHTML=archive.map(function(a,i){
-        return'<div class="archive-item"><div><b>📅 '+a.date+'</b><br><span style="font-size:11px;color:#a8a49e;">طلبات: '+a.totalOrders+' | مدفوع: '+a.totalPaid+' | دين: '+a.totalDebt+'</span></div><div style="text-align:left"><b style="color:#d4a853;">'+(a.totalCash||0).toLocaleString()+' '+currency+'</b><br><button class="btn" style="font-size:10px;padding:4px 8px;background:rgba(56,189,248,0.1);color:#38bdf8;" onclick="viewArchive('+i+')">👁️ عرض</button></div></div>';
+        return'<div class="archive-item"><div><b>📅 '+a.date+'</b><br><span style="font-size:11px;color:var(--text-secondary);">طلبات: '+a.totalOrders+' | مدفوع: '+a.totalPaid+' | دين: '+a.totalDebt+'</span></div><div style="text-align:left"><b style="color:var(--gold);">'+(a.totalCash||0).toLocaleString()+' '+currency+'</b><br><button class="btn" style="font-size:10px;padding:4px 8px;background:rgba(56,189,248,0.1);color:#38bdf8;" onclick="viewArchive('+i+')">👁️ عرض</button></div></div>';
     }).join('');
 }
 

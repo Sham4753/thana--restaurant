@@ -10,26 +10,26 @@
 <script src="state.js"></script>
 <script src="nav-component.js?v=2.1" defer></script>
     <style>
-        body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
+        body{padding:16px;font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text)}
         .container{max-width:950px;margin:0 auto}
         .header{text-align:center;padding:12px 0}
-        .header h1{font-size:24px;color:#d4a853}
+        .header h1{font-size:24px;color:var(--gold)}
         .stats{display:flex;gap:8px;justify-content:center;margin:10px 0;flex-wrap:wrap}
-        .stat{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:10px 14px;text-align:center;min-width:70px}
+        .stat{background:var(--bg-card);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:10px 14px;text-align:center;min-width:70px}
         .stat .num{font-size:20px;font-weight:700}
-        .stat .lbl{font-size:9px;color:#6b6760}
-        .card{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px;margin-bottom:10px}
-        h3{color:#d4a853;margin-bottom:10px;font-size:15px}
+        .stat .lbl{font-size:9px;color:var(--text-muted)}
+        .card{background:var(--bg-card);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px;margin-bottom:10px}
+        h3{color:var(--gold);margin-bottom:10px;font-size:15px}
         .order-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.03);font-size:13px;flex-wrap:wrap;gap:6px}
         .badge{padding:3px 8px;border-radius:12px;font-size:9px;font-weight:600}
-        .badge-paid{background:rgba(16,185,129,0.15);color:#10b981}
-        .badge-debt{background:rgba(245,158,11,0.15);color:#f59e0b}
-        .badge-cancel{background:rgba(239,68,68,0.15);color:#ef4444}
+        .badge-paid{background:rgba(16,185,129,0.15);color:var(--success)}
+        .badge-debt{background:rgba(245,158,11,0.15);color:var(--warning)}
+        .badge-cancel{background:rgba(239,68,68,0.15);color:var(--danger)}
         .btn{padding:6px 12px;border-radius:8px;border:none;font-weight:600;font-size:10px;cursor:pointer;font-family:'Cairo',sans-serif;margin:2px}
         .btn-paid{background:#10b981;color:#fff}
         .btn-debt{background:#f59e0b;color:#000}
-        .btn-cancel{background:rgba(239,68,68,0.2);color:#ef4444}
-        .btn-del{background:rgba(239,68,68,0.1);color:#ef4444}
+        .btn-cancel{background:rgba(239,68,68,0.2);color:var(--danger)}
+        .btn-del{background:rgba(239,68,68,0.1);color:var(--danger)}
         .btn-print{background:#38bdf8;color:#fff}
         .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:30px;font-weight:700;z-index:300}
     </style>
@@ -40,9 +40,9 @@
 
 <div class="stats">
     <div class="stat"><div class="num" id="sAll" style="color:#38bdf8">0</div><div class="lbl">نشط</div></div>
-    <div class="stat"><div class="num" id="sPaid" style="color:#10b981">0</div><div class="lbl">مدفوع</div></div>
-    <div class="stat"><div class="num" id="sDebt" style="color:#f59e0b">0</div><div class="lbl">دين</div></div>
-    <div class="stat"><div class="num" id="sCash" style="color:#d4a853">0</div><div class="lbl">الكاش</div></div>
+    <div class="stat"><div class="num" id="sPaid" style="color:var(--success)">0</div><div class="lbl">مدفوع</div></div>
+    <div class="stat"><div class="num" id="sDebt" style="color:var(--warning)">0</div><div class="lbl">دين</div></div>
+    <div class="stat"><div class="num" id="sCash" style="color:var(--gold)">0</div><div class="lbl">الكاش</div></div>
 </div>
 
 <div class="card"><h3>🆕 نشط</h3><div id="activeOrders"></div></div>
@@ -75,7 +75,7 @@ function renderAll(){
 }
 
 function renderList(orders,type){
-    if(orders.length===0)return'<div style="text-align:center;padding:14px;color:#6b6760;font-size:12px;">لا توجد طلبات</div>';
+    if(orders.length===0)return'<div style="text-align:center;padding:14px;color:var(--text-muted);font-size:12px;">لا توجد طلبات</div>';
     return orders.reverse().map(function(o){
         var num = o.orderNumber || o.id.toString().slice(-4);
         var items=(o.items||[]).map(function(i){return i.name+'×'+(i.qty||1)}).join('، ');
@@ -100,7 +100,7 @@ function renderList(orders,type){
         }
         actions+='<button class="btn btn-del" onclick="delOrder('+o.id+')">🗑️</button>';
         
-        return'<div class="order-row"><div><b>#'+num+' '+tableInfo+'</b> '+badge+'<br><span style="font-size:11px;color:#a8a49e;">'+items+'</span></div><div style="text-align:left"><b style="color:#d4a853;">'+(o.total||0).toLocaleString()+' ل.س</b><br><span style="font-size:10px;color:#6b6760;">'+new Date(o.timestamp||Date.now()).toLocaleTimeString('ar-SA')+'</span></div><div>'+actions+'</div></div>';
+        return'<div class="order-row"><div><b>#'+num+' '+tableInfo+'</b> '+badge+'<br><span style="font-size:11px;color:var(--text-secondary);">'+items+'</span></div><div style="text-align:left"><b style="color:var(--gold);">'+(o.total||0).toLocaleString()+' ل.س</b><br><span style="font-size:10px;color:var(--text-muted);">'+new Date(o.timestamp||Date.now()).toLocaleTimeString('ar-SA')+'</span></div><div>'+actions+'</div></div>';
     }).join('');
 }
 

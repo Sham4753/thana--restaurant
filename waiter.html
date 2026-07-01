@@ -16,15 +16,15 @@
     <script src="update-check.js"></script>
 <script src="pwa-register.js" defer></script>
     <style>
-        body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
+        body{padding:16px;font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text)}
         .container{max-width:700px;margin:0 auto}
         .header{text-align:center;padding:12px 0}
-        .header h1{font-size:24px;color:#d4a853}
+        .header h1{font-size:24px;color:var(--gold)}
 
-        .card{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:16px;margin-bottom:12px}
+        .card{background:var(--bg-card);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:16px;margin-bottom:12px}
 
         .form-row{display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-bottom:10px}
-        .form-row label{font-size:11px;color:#a8a49e;display:block;margin-bottom:2px}
+        .form-row label{font-size:11px;color:var(--text-secondary);display:block;margin-bottom:2px}
         .form-row select,.form-row input{
             padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.04);
             border:1px solid rgba(255,255,255,0.08);color:#fff;font-family:'Cairo',sans-serif;font-size:13px;
@@ -39,12 +39,12 @@
         .btn:active{transform:scale(0.95)}
         .btn-gold{background:linear-gradient(135deg,#b8942e,#d4a853);color:#1a1814}
         .btn-success{background:#10b981;color:#fff}
-        .btn-danger{background:rgba(239,68,68,0.12);color:#ef4444}
+        .btn-danger{background:rgba(239,68,68,0.12);color:var(--danger)}
         .btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.08);color:#fff}
 
         .order-preview{margin-top:10px}
         .order-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.03);font-size:13px}
-        .order-total{text-align:center;font-size:18px;font-weight:700;padding:10px 0;color:#d4a853}
+        .order-total{text-align:center;font-size:18px;font-weight:700;padding:10px 0;color:var(--gold)}
 
         .orders-list{margin-top:8px}
         .mini-order{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;margin-bottom:6px;font-size:12px;display:flex;justify-content:space-between;align-items:center}
@@ -67,7 +67,7 @@
 </div>
 
 <div class="order-preview" id="orderPreview">
-<p style="color:#6b6760;text-align:center;">لا توجد أصناف مضافة</p>
+<p style="color:var(--text-muted);text-align:center;">لا توجد أصناف مضافة</p>
 </div>
 <div class="order-total" id="orderTotal" style="display:none;"></div>
 
@@ -79,7 +79,7 @@
 </div>
 
 <div class="card">
-<h3 style="color:#d4a853;margin-bottom:10px;">📋 آخر الطلبات اليوم</h3>
+<h3 style="color:var(--gold);margin-bottom:10px;">📋 آخر الطلبات اليوم</h3>
 <div class="orders-list" id="recentOrders"></div>
 </div>
 </div>
@@ -137,14 +137,14 @@ function renderOrder(){
     var totalEl=document.getElementById('orderTotal');
     
     if(currentOrder.length===0){
-        container.innerHTML='<p style="color:#6b6760;text-align:center;">لا توجد أصناف مضافة</p>';
+        container.innerHTML='<p style="color:var(--text-muted);text-align:center;">لا توجد أصناف مضافة</p>';
         totalEl.style.display='none';
         return;
     }
     
     var total=currentOrder.reduce(function(s,i){return s+(i.price*i.qty)},0);
     container.innerHTML=currentOrder.map(function(item,idx){
-        return'<div class="order-item"><span>'+item.name+' ×'+item.qty+'</span><span>'+(item.price*item.qty).toLocaleString()+' ل.س <span onclick="removeFromOrder('+idx+')" style="color:#ef4444;cursor:pointer;">✕</span></span></div>';
+        return'<div class="order-item"><span>'+item.name+' ×'+item.qty+'</span><span>'+(item.price*item.qty).toLocaleString()+' ل.س <span onclick="removeFromOrder('+idx+')" style="color:var(--danger);cursor:pointer;">✕</span></span></div>';
     }).join('');
     
     totalEl.style.display='block';
@@ -190,9 +190,9 @@ function loadRecent(){
     var today=new Date().toLocaleDateString('ar-SA');
     var recent=orders.filter(function(o){return new Date(o.timestamp||Date.now()).toLocaleDateString('ar-SA')===today}).slice(-8).reverse();
     var container=document.getElementById('recentOrders');
-    if(recent.length===0){container.innerHTML='<p style="color:#6b6760;text-align:center;">لا توجد طلبات</p>';return}
+    if(recent.length===0){container.innerHTML='<p style="color:var(--text-muted);text-align:center;">لا توجد طلبات</p>';return}
     container.innerHTML=recent.map(function(o){
-        return'<div class="mini-order"><div>🪑'+o.table+' - '+(o.items||[]).map(function(i){return i.name+'×'+(i.qty||1)}).join(', ')+'</div><div style="color:#d4a853;">'+(o.total||0).toLocaleString()+' ل.س</div></div>';
+        return'<div class="mini-order"><div>🪑'+o.table+' - '+(o.items||[]).map(function(i){return i.name+'×'+(i.qty||1)}).join(', ')+'</div><div style="color:var(--gold);">'+(o.total||0).toLocaleString()+' ل.س</div></div>';
     }).join('');
 }
 

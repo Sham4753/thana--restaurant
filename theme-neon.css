@@ -177,3 +177,4 @@ body { font-family: var(--font); }
 .card, .glass-card { border-radius: var(--radius-lg); }
 .btn, button { border-radius: var(--radius); }
 input, textarea, select { border-radius: var(--radius-sm); }
+/* ألوان موحدة */

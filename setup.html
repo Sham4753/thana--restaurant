@@ -8,16 +8,16 @@
 <script src="state.js"></script>
 <script src="nav-component.js?v=2.1" defer></script>
     <style>
-        body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
+        body{padding:16px;font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text)}
         .container{max-width:550px;margin:0 auto}
-        .card{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:22px;margin-bottom:14px}
-        h2{color:#d4a853;text-align:center;margin-bottom:18px;font-size:20px}
-        h3{color:#d4a853;margin-bottom:12px;font-size:14px}
-        label{display:block;font-size:12px;color:#a8a49e;margin-bottom:4px;margin-top:12px}
+        .card{background:var(--bg-card);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:22px;margin-bottom:14px}
+        h2{color:var(--gold);text-align:center;margin-bottom:18px;font-size:20px}
+        h3{color:var(--gold);margin-bottom:12px;font-size:14px}
+        label{display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px;margin-top:12px}
         input{width:100%;padding:12px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;font-family:'Cairo',sans-serif;font-size:14px}
         .preview-box{background:rgba(0,0,0,0.3);border-radius:12px;padding:16px;text-align:center;margin-top:14px}
-        .preview-box .pname{font-size:20px;font-weight:800;color:#d4a853}
-        .preview-box .pinfo{font-size:11px;color:#a8a49e;margin-top:2px}
+        .preview-box .pname{font-size:20px;font-weight:800;color:var(--gold)}
+        .preview-box .pinfo{font-size:11px;color:var(--text-secondary);margin-top:2px}
         .btn{display:block;width:100%;padding:14px;border-radius:12px;border:none;font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;font-family:'Cairo',sans-serif}
         .btn-gold{background:linear-gradient(135deg,#b8942e,#d4a853);color:#1a1814}
         .btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.1);color:#fff}
@@ -33,7 +33,7 @@
 <div class="card">
     <div style="font-size:48px;text-align:center;">🏪</div>
     <h2>إعداد هوية المطعم</h2>
-    <p style="text-align:center;color:#a8a49e;font-size:12px;">اضبط الإعدادات مرة وحدة - النظام كله بيتحدث</p>
+    <p style="text-align:center;color:var(--text-secondary);font-size:12px;">اضبط الإعدادات مرة وحدة - النظام كله بيتحدث</p>
 </div>
 
 <div class="card">

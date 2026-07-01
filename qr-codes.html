@@ -9,10 +9,10 @@
 <script src="nav-component.js?v=2.1" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
-        body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
+        body{padding:16px;font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text)}
         .container{max-width:700px;margin:0 auto}
-        .card{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:16px;margin-bottom:12px}
-        h2{color:#d4a853;text-align:center;margin-bottom:12px}
+        .card{background:var(--bg-card);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:16px;margin-bottom:12px}
+        h2{color:var(--gold);text-align:center;margin-bottom:12px}
         .qr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
         .qr-box{text-align:center;background:rgba(255,255,255,0.02);padding:14px;border-radius:12px}
         .qr-box canvas{margin:0 auto}
@@ -24,7 +24,7 @@
 <body>
 <div class="container">
 <div class="card"><h2>📱 رموز QR للطاولات</h2>
-<p style="text-align:center;color:#6b6760;font-size:12px">اطبع هذه الصفحة وضع كل كود على الطاولة المناسبة</p></div>
+<p style="text-align:center;color:var(--text-muted);font-size:12px">اطبع هذه الصفحة وضع كل كود على الطاولة المناسبة</p></div>
 
 <div class="card">
 <div class="qr-grid" id="qrGrid"></div>

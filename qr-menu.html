@@ -5,26 +5,26 @@
 <title>القائمة - Thana</title>
 <link rel="stylesheet" href="theme-neon.css?v=2.1"><meta name="theme-color" content="#0a0b0f">
 <style>
-body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
+body{padding:16px;font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text)}
 .container{max-width:700px;margin:0 auto}
 .header{text-align:center;padding:12px 0}
-h1{font-size:22px;color:#d4a853}
+h1{font-size:22px;color:var(--gold)}
 .badge{display:inline-block;background:rgba(129,140,248,0.2);color:#818cf8;padding:6px 14px;border-radius:20px;font-size:13px;margin:4px}
 .cats{display:flex;gap:6px;overflow-x:auto;padding:8px 0;scrollbar-width:none}
 .cats::-webkit-scrollbar{display:none}
-.cat{padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:#a8a49e;font-size:12px;white-space:nowrap;cursor:pointer}
-.cat.active{background:rgba(212,168,83,0.15);color:#d4a853;border-color:#d4a853}
-.item{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.cat{padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:var(--text-secondary);font-size:12px;white-space:nowrap;cursor:pointer}
+.cat.active{background:rgba(212,168,83,0.15);color:var(--gold);border-color:var(--gold)}
+.item{background:var(--bg-card);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .item h3{font-size:15px;margin:0 0 2px}
-.item .price{font-size:17px;font-weight:700;color:#d4a853}
+.item .price{font-size:17px;font-weight:700;color:var(--gold)}
 .qbtn{width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .qty{font-size:15px;font-weight:600;min-width:20px;text-align:center}
 .fab{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#b8942e,#d4a853);color:#1a1814;padding:12px 24px;border-radius:30px;font-size:15px;font-weight:700;cursor:pointer;z-index:100;border:none;font-family:'Cairo',sans-serif}
-.modal{position:fixed;bottom:0;left:0;right:0;background:#161820;border-radius:22px 22px 0 0;padding:20px;z-index:200;transform:translateY(100%);transition:0.3s;max-height:65vh;overflow-y:auto;border-top:1px solid rgba(255,255,255,0.08)}
+.modal{position:fixed;bottom:0;left:0;right:0;background:var(--bg-card);border-radius:22px 22px 0 0;padding:20px;z-index:200;transform:translateY(100%);transition:0.3s;max-height:65vh;overflow-y:auto;border-top:1px solid rgba(255,255,255,0.08)}
 .modal.open{transform:translateY(0)}
 .btn{display:block;width:100%;padding:12px;border-radius:10px;border:none;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px;font-family:'Cairo',sans-serif}
 .btn-gold{background:linear-gradient(135deg,#b8942e,#d4a853);color:#1a1814}
-.btn-red{background:rgba(239,68,68,0.12);color:#ef4444}
+.btn-red{background:rgba(239,68,68,0.12);color:var(--danger)}
 .btn-out{background:transparent;border:1px solid rgba(255,255,255,0.08);color:#fff}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:150;display:none}
 .overlay.show{display:block}
@@ -41,7 +41,7 @@ h1{font-size:22px;color:#d4a853}
 <div class="overlay" id="overlay" onclick="closeCart()"></div>
 <button class="fab" onclick="openCart()">🛒 السلة <span id="cartCount">0</span></button>
 <div class="modal" id="cartModal">
-<h2 style="color:#d4a853;text-align:center">🛒 طلباتك</h2><div id="cartItems"></div>
+<h2 style="color:var(--gold);text-align:center">🛒 طلباتك</h2><div id="cartItems"></div>
 <div style="text-align:center;font-size:18px;font-weight:700;padding:12px" id="cartTotal">المجموع: 0</div>
 <input type="text" id="orderNote" placeholder="ملاحظات..." style="width:100%;padding:10px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;font-family:'Cairo',sans-serif;font-size:13px;margin-top:6px">
 <button class="btn btn-gold" onclick="submitOrder()">📤 إرسال للمطبخ</button>
@@ -65,7 +65,7 @@ var cart=[],activeCat='الكل';
 function getCats(){var c=['الكل'];MENU.forEach(function(i){var cat=i.cat||i.category||'أخرى';if(c.indexOf(cat)===-1)c.push(cat)});return c}
 function renderCats(){document.getElementById('cats').innerHTML=getCats().map(function(c){return'<button class="cat'+(c===activeCat?' active':'')+'" onclick="filter(\''+c+'\')" style="font-family:Cairo,sans-serif">'+c+'</button>'}).join('')}
 function filter(c){activeCat=c;renderCats();renderMenu()}
-function renderMenu(){var items=activeCat==='الكل'?MENU:MENU.filter(function(i){return(i.cat||i.category||'أخرى')===activeCat});document.getElementById('menuGrid').innerHTML=items.map(function(item){var q=getQty(item.name);return'<div class="item"><div><h3>'+item.name+'</h3><div style="font-size:11px;color:#6b6760">'+(item.price||0).toLocaleString()+' ل.س</div></div><div style="display:flex;align-items:center;gap:8px"><button class="qbtn" onclick="removeItem(\''+item.name+'\')">−</button><span class="qty">'+q+'</span><button class="qbtn" onclick="addItem(\''+item.name+'\','+(item.price||0)+')">+</button></div></div>'}).join('')}
+function renderMenu(){var items=activeCat==='الكل'?MENU:MENU.filter(function(i){return(i.cat||i.category||'أخرى')===activeCat});document.getElementById('menuGrid').innerHTML=items.map(function(item){var q=getQty(item.name);return'<div class="item"><div><h3>'+item.name+'</h3><div style="font-size:11px;color:var(--text-muted)">'+(item.price||0).toLocaleString()+' ل.س</div></div><div style="display:flex;align-items:center;gap:8px"><button class="qbtn" onclick="removeItem(\''+item.name+'\')">−</button><span class="qty">'+q+'</span><button class="qbtn" onclick="addItem(\''+item.name+'\','+(item.price||0)+')">+</button></div></div>'}).join('')}
 function getQty(n){var f=cart.find(function(i){return i.name===n});return f?f.qty:0}
 function addItem(n,p){var f=cart.find(function(i){return i.name===n});if(f)f.qty++;else cart.push({name:n,price:p,qty:1});updateCart();if(navigator.vibrate)navigator.vibrate(20)}
 function removeItem(n){var f=cart.find(function(i){return i.name===n});if(f){f.qty--;if(f.qty<=0)cart=cart.filter(function(i){return i.name!==n})}updateCart()}

@@ -105,24 +105,24 @@ function init() {
 // ========== تحميل الصفحات ==========
 function loadDashboard() {
     var el = document.getElementById('page-dashboard');
-    el.innerHTML = '<div class="container"><h1 style="color:#00f0ff;text-align:center">📊 لوحة التحكم</h1><div class="card"><canvas id="salesChart" height="200"></canvas></div><div class="card"><canvas id="pieChart" height="200"></canvas></div></div>';
+    el.innerHTML = '<div class="container"><h1 style="color:var(--gold);text-align:center">📊 لوحة التحكم</h1><div class="card"><canvas id="salesChart" height="200"></canvas></div><div class="card"><canvas id="pieChart" height="200"></canvas></div></div>';
     setTimeout(renderCharts, 300);
 }
 
 function loadOrders() {
     var el = document.getElementById('page-orders');
-    el.innerHTML = '<div class="container"><h1 style="color:#00f0ff;text-align:center">📊 الطلبات</h1><div class="card"><p style="text-align:center;color:#a8a49e">تحميل...</p></div></div>';
+    el.innerHTML = '<div class="container"><h1 style="color:var(--gold);text-align:center">📊 الطلبات</h1><div class="card"><p style="text-align:center;color:var(--text-secondary)">تحميل...</p></div></div>';
 }
 
 function loadKitchen() {
     var el = document.getElementById('page-kitchen');
-    el.innerHTML = '<div class="container"><h1 style="color:#00f0ff;text-align:center">🍳 المطبخ</h1><button class="btn" onclick="refreshKitchen()" style="width:100%">🔄 تحديث</button><div id="kitchenOrders"></div></div>';
+    el.innerHTML = '<div class="container"><h1 style="color:var(--gold);text-align:center">🍳 المطبخ</h1><button class="btn" onclick="refreshKitchen()" style="width:100%">🔄 تحديث</button><div id="kitchenOrders"></div></div>';
     refreshKitchen();
 }
 
 function loadWaiter() {
     var el = document.getElementById('page-waiter');
-    el.innerHTML = '<div class="container"><h1 style="color:#00f0ff;text-align:center">📋 النادل</h1><div class="card"><p style="text-align:center;color:#a8a49e">تحميل...</p></div></div>';
+    el.innerHTML = '<div class="container"><h1 style="color:var(--gold);text-align:center">📋 النادل</h1><div class="card"><p style="text-align:center;color:var(--text-secondary)">تحميل...</p></div></div>';
 }
 
 function refreshKitchen() {
@@ -131,7 +131,7 @@ function refreshKitchen() {
     var todayOrders = orders.filter(function(o){ return new Date(o.timestamp||Date.now()).toLocaleDateString('ar-SA') === today && o.status !== 'done'; });
     var el = document.getElementById('kitchenOrders');
     if (!el) return;
-    if (todayOrders.length === 0) { el.innerHTML = '<p style="text-align:center;color:#6b6760">لا توجد طلبات</p>'; return; }
+    if (todayOrders.length === 0) { el.innerHTML = '<p style="text-align:center;color:var(--text-muted)">لا توجد طلبات</p>'; return; }
     el.innerHTML = todayOrders.map(function(o){
         return '<div class="card" style="border-right:3px solid '+(o.status==='new'?'#f59e0b':'#38bdf8')+'"><b>#'+o.orderNumber+' 🪑 '+o.table+'</b><br>'+(o.items||[]).map(function(i){return i.name+' ×'+i.qty}).join(', ')+'<br><small>'+(o.total||0).toLocaleString()+' ل.س</small></div>';
     }).join('');

@@ -8,10 +8,10 @@
 <script src="state.js"></script>
 <script src="nav-component.js?v=2.1" defer></script>
     <style>
-        body{padding:16px;font-family:'Cairo',sans-serif;background:#0a0b0f;color:#e8e4dd}
+        body{padding:16px;font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text)}
         .container{max-width:600px;margin:0 auto}
-        .card{background:#161820;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:16px;margin-bottom:12px}
-        h2{color:#d4a853;text-align:center;margin-bottom:14px}
+        .card{background:var(--bg-card);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:16px;margin-bottom:12px}
+        h2{color:var(--gold);text-align:center;margin-bottom:14px}
         input{padding:10px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;font-family:'Cairo',sans-serif;font-size:13px;width:100%;margin-bottom:6px}
         .btn{display:block;width:100%;padding:10px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;margin-top:6px;font-family:'Cairo',sans-serif}
         .btn-gold{background:linear-gradient(135deg,#b8942e,#d4a853);color:#1a1814}
@@ -45,8 +45,8 @@ function addSupplier(){
 function delSup(i){if(confirm('حذف؟')){var s=GS();s.splice(i,1);SS(s);render()}}
 function render(){
     var s=GS();
-    document.getElementById('supplierList').innerHTML=s.length===0?'<div style="text-align:center;color:#6b6760;padding:12px;">لا يوجد موردين</div>':
-    s.map(function(x,i){return'<div class="supplier-row"><div><b>'+x.name+'</b><br><span style="font-size:10px;color:#a8a49e;">📞 '+x.phone+' | 📦 '+x.item+'</span></div><span onclick="delSup('+i+')" style="color:#ef4444;cursor:pointer">🗑️</span></div>'}).join('');
+    document.getElementById('supplierList').innerHTML=s.length===0?'<div style="text-align:center;color:var(--text-muted);padding:12px;">لا يوجد موردين</div>':
+    s.map(function(x,i){return'<div class="supplier-row"><div><b>'+x.name+'</b><br><span style="font-size:10px;color:var(--text-secondary);">📞 '+x.phone+' | 📦 '+x.item+'</span></div><span onclick="delSup('+i+')" style="color:var(--danger);cursor:pointer">🗑️</span></div>'}).join('');
 }
 function showToast(m){var t=document.querySelector('.toast');if(t)t.remove();t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},2000)}
 render();
