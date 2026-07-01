@@ -50,7 +50,7 @@ function C(){
         var u=U[P];
         localStorage.setItem('thana_auth_session',JSON.stringify({role:u.r}));
         m.textContent='✅ '+u.n;m.className='msg s';
-        var pages={admin:'index.html',waiter:'waiter.html',kitchen:'kitchen.html',cashier:'orders.html',manager:'index.html'};
+        var pages={admin:(localStorage.getItem('thana_pins')===null?'pin-settings.html':'index.html'),waiter:'waiter.html',kitchen:'kitchen.html',cashier:'orders.html',manager:'index.html'};
         setTimeout(function(){location.href=pages[u.r]||'index.html'},400);
     }else{m.textContent='❌ غلط - جرب 2026';m.className='msg e';P='';D()}
 }
