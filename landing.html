@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مرحباً بك - Thana</title>
+    <link rel="stylesheet" href="theme-neon.css">
+    <style>
+        body{background:var(--bg-dark);font-family:'Cairo',sans-serif;color:#fff;text-align:center;padding:16px}
+        .container{max-width:500px;margin:0 auto}
+        .hero{font-size:72px;margin:20px 0}
+        h1{color:var(--neon-cyan);font-size:28px}
+        .sub{color:var(--text-secondary);font-size:14px;margin-bottom:30px}
+        .cards{display:flex;flex-direction:column;gap:12px}
+        .card{
+            background:var(--bg-card);border:1px solid rgba(0,240,255,0.15);
+            border-radius:16px;padding:24px;cursor:pointer;transition:0.3s;
+            text-decoration:none;color:#fff;display:flex;align-items:center;gap:16px;
+        }
+        .card:hover{border-color:var(--neon-cyan);box-shadow:0 0 30px rgba(0,240,255,0.1);transform:translateY(-2px)}
+        .card .icon{font-size:48px}
+        .card .info{text-align:right;flex:1}
+        .card .info h3{color:var(--neon-cyan);margin:0}
+        .card .info p{color:var(--text-secondary);font-size:12px;margin:4px 0 0}
+        .card .arrow{color:var(--neon-cyan);font-size:24px}
+        
+        .brand{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);color:var(--text-muted);font-size:10px}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="hero">🍽️</div>
+    <h1 id="shopName">مطعم المجد</h1>
+    <div class="sub">اختر ما تريد</div>
+    
+    <div class="cards">
+        <a href="qr-menu.html" class="card">
+            <div class="icon">📖</div>
+            <div class="info"><h3>عرض المنيو</h3><p>تصفح الأصناف واطلب مباشرة</p></div>
+            <div class="arrow">◀</div>
+        </a>
+        
+        <a href="qr-menu.html?mode=safari" class="card">
+            <div class="icon">🛵</div>
+            <div class="info"><h3>طلب توصيل</h3><p>اطلب للبيت أو المكتب</p></div>
+            <div class="arrow">◀</div>
+        </a>
+        
+        <a href="tel:+963999000000" class="card">
+            <div class="icon">📞</div>
+            <div class="info"><h3>اتصل بنا</h3><p>للاستفسار أو الحجز</p></div>
+            <div class="arrow">◀</div>
+        </a>
+    </div>
+    
+    <div class="brand">Powered by Thana Restaurant</div>
+</div>
+
+<script>
+var s=JSON.parse(localStorage.getItem('thana_shop_settings')||'{}');
+if(s.name)document.getElementById('shopName').textContent=s.name;
+
+// قراءة رقم الطاولة من الـ URL
+var p=new URLSearchParams(window.location.search);
+var table=p.get('table');
+if(table){
+    document.querySelector('a[href="qr-menu.html"]').href='qr-menu.html?table='+table;
+    document.querySelector('a[href="qr-menu.html?mode=safari"]').href='qr-menu.html?table='+table+'&mode=safari';
+}
+</script>
+</body>
+</html>
