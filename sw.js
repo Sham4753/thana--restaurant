@@ -1,10 +1,10 @@
 const CACHE = 'thana-v2.1-' + Date.now();
 const FILES = [
-    '/thana--restaurant/','/thana--restaurant/login.html','/thana--restaurant/index.html',
-    '/thana--restaurant/kitchen.html','/thana--restaurant/waiter.html','/thana--restaurant/qr-menu.html',
-    '/thana--restaurant/orders.html','/thana--restaurant/dashboard.html','/thana--restaurant/close.html',
-    '/thana--restaurant/theme-v2.css','/thana--restaurant/nav-component.js','/thana--restaurant/bridge.js',
-    '/thana--restaurant/beep.js','/thana--restaurant/channel.js','/thana--restaurant/manifest.json'
+    '/','/login.html','/index.html',
+    '/kitchen.html','/waiter.html','/qr-menu.html',
+    '/orders.html','/dashboard.html','/close.html',
+    '/theme-v2.css','/nav-component.js','/bridge.js',
+    '/beep.js','/channel.js','/manifest.json'
 ];
 
 self.addEventListener('install', e => {
