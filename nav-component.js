@@ -82,6 +82,7 @@ function createNavBar(){
     });
     
     navHTML+='<span class="sep"></span><span class="nav-item logout" onclick="localStorage.clear();window.location.href=\"login.html\"">🚪</span></nav>';
+    setTimeout(function(){ var lb=document.getElementById("logoutBtn"); if(lb){ lb.onclick=function(){ localStorage.clear(); window.location.href="login.html"; }; } }, 200);
     document.body.insertAdjacentHTML('afterbegin',navHTML);
 }
 
