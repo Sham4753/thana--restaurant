@@ -3,157 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thana - تحقق</title>
+    <title>Thana - دخول</title>
     <link rel="stylesheet" href="theme-neon.css">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         body{
-            background:#0a0b0f;
+            background:#0a0f1e;
             font-family:'Cairo',sans-serif;
             display:flex;align-items:center;justify-content:center;
             min-height:100vh;padding:16px;
+            background-image:radial-gradient(ellipse at center, rgba(0,240,255,0.05) 0%, transparent 70%);
         }
-        .c{
-            background:#161820;
-            border-radius:18px;padding:32px 24px;text-align:center;
-            max-width:380px;width:100%;
-            border:1px solid rgba(255,255,255,0.06);
+        .login-form{
+            background:rgba(10,15,26,0.75);
+            padding:50px 40px;border-radius:16px;
+            backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+            border:1px solid rgba(0,240,255,0.15);
+            box-shadow:0 -4px 30px rgba(0,240,255,0.2), 0 20px 50px rgba(0,0,0,0.9);
+            width:360px;text-align:center;
         }
-        .logo{font-size:48px;margin-bottom:8px}
-        h2{color:#d4a853;font-size:20px;margin-bottom:4px}
-        p{color:#a8a49e;font-size:12px;margin-bottom:20px}
-
-        .otp-inputs{
-            display:flex;gap:10px;justify-content:center;margin:16px 0;
+        .icon{font-size:48px;margin-bottom:8px;filter:drop-shadow(0 0 10px rgba(0,240,255,0.5))}
+        h2{color:#00f0ff;font-size:18px;font-weight:700;letter-spacing:3px;margin-bottom:4px;text-shadow:0 0 20px rgba(0,240,255,0.4)}
+        .sub{color:rgba(0,240,255,0.5);font-size:11px;letter-spacing:1px;margin-bottom:24px}
+        .input-group{text-align:right;margin-bottom:16px}
+        .input-group label{display:block;color:rgba(0,240,255,0.7);font-size:10px;letter-spacing:2px;margin-bottom:6px}
+        .input-group input{
+            width:100%;padding:12px 16px;background:rgba(0,240,255,0.03);
+            border:1px solid rgba(0,240,255,0.15);border-radius:8px;
+            color:#fff;font-size:14px;font-family:'Cairo',sans-serif;
+            transition:all 0.3s;
         }
-        .otp-inputs input{
-            width:50px;height:55px;
-            border-radius:12px;
-            background:rgba(255,255,255,0.04);
-            border:1px solid rgba(255,255,255,0.1);
-            color:#fff;font-size:22px;font-weight:700;
-            text-align:center;
-            font-family:'Cairo',sans-serif;
-            transition:all 0.2s;
+        .input-group input:focus{outline:none;border-color:#00f0ff;box-shadow:0 0 15px rgba(0,240,255,0.15)}
+        .forgot{text-align:left;margin-bottom:20px}
+        .forgot a{color:rgba(0,240,255,0.4);font-size:10px;text-decoration:none}
+        .login-btn{
+            width:100%;padding:14px;
+            background:linear-gradient(135deg, rgba(0,240,255,0.1), rgba(0,240,255,0.02));
+            border:1px solid rgba(0,240,255,0.3);border-radius:8px;
+            color:#00f0ff;font-size:14px;font-weight:700;
+            letter-spacing:3px;cursor:pointer;
+            font-family:'Cairo',sans-serif;transition:all 0.3s;
         }
-        .otp-inputs input:focus{
-            outline:none;
-            border-color:#d4a853;
-            box-shadow:0 0 0 3px rgba(212,168,83,0.1);
-        }
-
-        .verify-btn{
-            display:block;width:100%;padding:14px;
-            border-radius:12px;border:none;
-            background:linear-gradient(135deg,#b8942e,#d4a853);
-            color:#1a1814;font-size:15px;font-weight:700;
-            cursor:pointer;font-family:'Cairo',sans-serif;
-            margin-top:16px;transition:all 0.2s;
-        }
-        .verify-btn:active{transform:scale(0.97)}
-
-        .success-overlay{
-            display:none;
-            padding:20px;
-        }
-        .success-overlay.show{display:block}
-        .check-icon{
-            width:60px;height:60px;border-radius:50%;
-            background:#10b981;margin:0 auto 12px;
-            display:flex;align-items:center;justify-content:center;
-            font-size:30px;color:#fff;
-        }
-        .check-icon::after{content:'✓'}
-
-        .msg{min-height:20px;font-size:13px;font-weight:600;margin:8px 0}
-        .msg.e{color:#ef4444}.msg.s{color:#10b981}
-
-        .btns{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.06);display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
-        .btns button{padding:9px 12px;border-radius:20px;font-size:11px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);color:#a8a49e;cursor:pointer;font-family:'Cairo',sans-serif;font-weight:600}
-
-        @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-        .shake{animation:shake 0.4s}
+        .login-btn:hover{background:rgba(0,240,255,0.15);box-shadow:0 0 30px rgba(0,240,255,0.25)}
+        .success-msg{display:none;padding:16px;border:1px solid rgba(0,240,255,0.3);border-radius:8px;margin-top:12px;color:#00f0ff;animation:pulse 2s infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+        .error{color:#ff4466;font-size:11px;margin-top:4px;display:none}
+        .pin-hint{color:rgba(0,240,255,0.3);font-size:9px;margin-top:12px}
     </style>
 </head>
 <body>
-<div class="c">
-    <div class="logo">🍽️</div>
-    <h2>تحقق OTP</h2>
-    <p>أدخل رمز التحقق المكون من 4 أرقام</p>
-
-    <div class="otp-inputs" id="otpForm">
-        <input type="text" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');nextInput(this)" id="o1">
-        <input type="text" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');nextInput(this)" id="o2">
-        <input type="text" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');nextInput(this)" id="o3">
-        <input type="text" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');nextInput(this)" id="o4">
+<div class="login-form">
+    <div class="icon">🖥️</div>
+    <h2>ACCESS TERMINAL</h2>
+    <div class="sub">Please authenticate to continue</div>
+    
+    <div class="input-group">
+        <label>Username</label>
+        <input type="text" id="username" value="admin">
     </div>
-
-    <div class="msg" id="msg"></div>
-
-    <button class="verify-btn" id="submitBtn" onclick="verifyOTP()">تحقق الآن</button>
-
-    <div class="success-overlay" id="successMsg">
-        <div class="check-icon"></div>
-        <h2 style="color:#10b981">تم بنجاح!</h2>
-        <p>تم تأكيد الهوية بنجاح</p>
+    
+    <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="PIN" maxlength="4">
+        <div class="error" id="errorMsg">Invalid credentials</div>
     </div>
-
-    <div class="btns">
-        <button onclick="quickVerify('2026')">🔑 مدير</button>
-        <button onclick="quickVerify('1111')">📋 نادل</button>
-        <button onclick="quickVerify('2222')">🍳 مطبخ</button>
-        <button onclick="quickVerify('3333')">💰 كاشير</button>
-    </div>
+    
+    <div class="forgot"><a href="#">Forgot Access?</a></div>
+    
+    <button class="login-btn" onclick="initialize()">INITIALIZE SESSION</button>
+    
+    <div class="success-msg" id="successMsg">✅ ACCESS GRANTED. DEPLOYING SESSION.</div>
+    <div class="pin-hint">PIN: 4753</div>
 </div>
 
 <script>
-var U={'2026':{n:'المدير',r:'admin'},'1111':{n:'النادل',r:'waiter'},'2222':{n:'المطبخ',r:'kitchen'},'3333':{n:'الكاشير',r:'cashier'},'4444':{n:'مدير',r:'manager'}};
+var U={'4753':'admin','1111':'waiter','2222':'kitchen','3333':'cashier'};
+var pages={admin:(localStorage.getItem('thana_pins')===null?'pin-settings.html':'index.html'),waiter:'waiter.html',kitchen:'kitchen.html',cashier:'orders.html'};
 
-function nextInput(el){
-    if(el.value.length===1){
-        var next=el.nextElementSibling;
-        if(next&&next.tagName==='INPUT')next.focus();
-    }
-}
-
-function getOTP(){
-    return document.getElementById('o1').value + document.getElementById('o2').value + document.getElementById('o3').value + document.getElementById('o4').value;
-}
-
-function verifyOTP(){
-    var pin=getOTP();
-    var m=document.getElementById('msg');
-    
-    if(pin.length<4){m.textContent='أدخل 4 أرقام';m.className='msg e';return}
-    
+function initialize(){
+    var pin=document.getElementById('password').value;
     if(U[pin]){
-        var u=U[pin];
-        localStorage.setItem('thana_auth_session',JSON.stringify({role:u.r}));
-        
-        // إظهار النجاح
-        document.getElementById('otpForm').style.display='none';
-        document.getElementById('submitBtn').style.display='none';
-        document.getElementById('successMsg').classList.add('show');
-        
-        var pages={admin:(localStorage.getItem('thana_pins')===null?'pin-settings.html':'index.html'),waiter:'waiter.html',kitchen:'kitchen.html',cashier:'orders.html',manager:'index.html'};
-        setTimeout(function(){location.href=pages[u.r]||'index.html'},800);
+        localStorage.setItem('thana_auth_session',JSON.stringify({role:U[pin]}));
+        document.getElementById('successMsg').style.display='block';
+        document.getElementById('errorMsg').style.display='none';
+        setTimeout(function(){location.href=pages[U[pin]]||'index.html'},1200);
     }else{
-        m.textContent='❌ رمز غير صحيح';
-        m.className='msg e';
-        document.querySelector('.c').classList.add('shake');
-        setTimeout(function(){document.querySelector('.c').classList.remove('shake')},400);
-        document.querySelectorAll('.otp-inputs input').forEach(function(i){i.value=''});
-        document.getElementById('o1').focus();
+        document.getElementById('errorMsg').style.display='block';
+        document.getElementById('password').value='';
     }
 }
-
-function quickVerify(pin){
-    document.getElementById('o1').value=pin[0];
-    document.getElementById('o2').value=pin[1];
-    document.getElementById('o3').value=pin[2];
-    document.getElementById('o4').value=pin[3];
-    verifyOTP();
-}
+document.getElementById('password').addEventListener('keyup',function(e){if(e.key==='Enter')initialize()});
 </script>
 </body>
 </html>
