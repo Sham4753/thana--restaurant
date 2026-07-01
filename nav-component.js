@@ -66,6 +66,7 @@ function getNavConfig(){
             ]
         }
     };
+    if(role==="admin"return configs[role]return configs[role]localStorage.getItem("thana_pins")===null){goTo("pin-settings.html");return [];}
     return configs[role]||configs['admin'];
 }
 
