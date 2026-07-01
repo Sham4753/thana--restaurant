@@ -116,7 +116,7 @@
     
     <div class="input-group">
         <label>Password (PIN)</label>
-        <input type="password" id="password" placeholder="****" maxlength="4">
+        <input type="password" id="password" placeholder="****" maxlength="4" inputmode="numeric" pattern="[0-9]*">
         <div class="error" id="errorMsg">Invalid credentials</div>
     </div>
     
@@ -130,7 +130,7 @@
 </div>
 
 <script>
-var U={'4753aa':'admin','1111':'waiter','2222':'kitchen','3333':'cashier'};
+var U={'4753':'admin','1111':'waiter','2222':'kitchen','3333':'cashier'};
 var pages={admin:(localStorage.getItem('thana_pins')===null?'pin-settings.html':'index.html'),waiter:'waiter.html',kitchen:'kitchen.html',cashier:'orders.html'};
 
 function initialize(){
