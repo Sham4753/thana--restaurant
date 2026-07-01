@@ -34,7 +34,6 @@ function getNavConfig(){
         },
         waiter:{
             name:'📋 النادل',items:[
-                {href:'index.html',icon:'🏠',label:'الرئيسية'},
                 {href:'waiter.html',icon:'📋',label:'النادل'},
                 {href:'tables.html',icon:'🪑',label:'الطاولات'},
                 {href:'menu.html',icon:'🍽️',label:'القائمة'},
@@ -44,7 +43,6 @@ function getNavConfig(){
         },
         kitchen:{
             name:'🍳 المطبخ',items:[
-                {href:'index.html',icon:'🏠',label:'الرئيسية'},
                 {href:'kitchen.html',icon:'🍳',label:'المطبخ'},
                 {href:'inventory.html',icon:'📦',label:'المخزون'},
                 {href:'velocity.html',icon:'⚡',label:'السرعة'},
@@ -53,7 +51,6 @@ function getNavConfig(){
         },
         cashier:{
             name:'💰 الكاشير',items:[
-                {href:'index.html',icon:'🏠',label:'الرئيسية'},
                 {href:'orders.html',icon:'📊',label:'الطلبات'},
                 {href:'reports.html',icon:'📈',label:'التقارير'},
                 {href:'print.html',icon:'🖨️',label:'طباعة'},
