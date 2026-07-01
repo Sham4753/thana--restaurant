@@ -47,7 +47,7 @@
             const name = document.getElementById('restaurantName').value.trim();
             if (!name) return;
             localStorage.setItem('thana_restaurant_name', name);
-            alert('✅ تم الحفظ');
+            toast(' تم الحفظ');
         }
 
         function changePIN() {
@@ -55,7 +55,7 @@
             if (pin.length !== 4) { alert('أدخل 4 أرقام'); return; }
             localStorage.setItem('thana_admin_pin', pin);
             document.getElementById('newPIN').value = '';
-            alert('✅ تم تغيير الرمز');
+            toast(' تم تغيير الرمز');
         }
 
         function backup() {
@@ -79,7 +79,7 @@
             reader.onload = function(e) {
                 const data = JSON.parse(e.target.result);
                 for (const [key, value] of Object.entries(data)) localStorage.setItem(key, JSON.stringify(value));
-                alert('✅ تمت الاستعادة');
+                toast(' تمت الاستعادة');
                 location.reload();
             };
             reader.readAsText(file);

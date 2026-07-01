@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="theme-neon.css?v=2.1">
     <meta name="theme-color" content="#0a0b0f">
     <script src="bridge.js" defer></script>
+<script src="toast.js"></script>
 <script src="nav-component.js?v=2.1" defer></script>
     <script src="update-check.js"></script>
 <script src="pwa-register.js" defer></script>
@@ -176,7 +177,7 @@ function submitOrder(){
     if(t){t.status='busy';localStorage.setItem('thana_tables',JSON.stringify(tables))}
     
     currentOrder=[];document.getElementById('orderNote').value='';
-    renderOrder();loadTables();loadRecent();setInterval(function(){var ready=localStorage.getItem('thana_order_ready');if(ready){alert('✅ طلب #'+ready+' جاهز للتقديم!');localStorage.removeItem('thana_order_ready')}},3000);
+    renderOrder();loadTables();loadRecent();setInterval(function(){var ready=localStorage.getItem('thana_order_ready');if(ready){toast(' طلب #'+ready+' جاهز للتقديم!');localStorage.removeItem('thana_order_ready')}},3000);
     showToast('✅ تم إرسال الطلب للمطبخ!');
 }
 
@@ -197,7 +198,7 @@ function showToast(msg){
     document.body.appendChild(t);setTimeout(function(){t.remove()},2500);
 }
 
-loadTables();loadMenu();renderOrder();loadRecent();setInterval(function(){var ready=localStorage.getItem('thana_order_ready');if(ready){alert('✅ طلب #'+ready+' جاهز للتقديم!');localStorage.removeItem('thana_order_ready')}},3000);
+loadTables();loadMenu();renderOrder();loadRecent();setInterval(function(){var ready=localStorage.getItem('thana_order_ready');if(ready){toast(' طلب #'+ready+' جاهز للتقديم!');localStorage.removeItem('thana_order_ready')}},3000);
 </script>
 </body>
 </html>

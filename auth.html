@@ -577,7 +577,7 @@
                 
                 document.getElementById('encInput').value = new TextDecoder().decode(decrypted);
             } catch (err) {
-                alert('❌ فشل فك التشفير - تأكد من المفتاح');
+                toast(' فشل فك التشفير - تأكد من المفتاح');
             }
         }
 
@@ -617,9 +617,9 @@
                 combined.set(new Uint8Array(encrypted), iv.length);
                 
                 localStorage.setItem('thana_encrypted_backup', btoa(String.fromCharCode(...combined)));
-                alert('✅ تم تشفير جميع البيانات بنجاح!\nالنسخة المشفرة محفوظة في thana_encrypted_backup');
+                toast(' تم تشفير جميع البيانات بنجاح!\nالنسخة المشفرة محفوظة في thana_encrypted_backup');
             } catch (err) {
-                alert('❌ خطأ: ' + err.message);
+                toast(' خطأ: ' + err.message);
             }
         }
 
@@ -641,9 +641,9 @@
                 for (const [k, v] of Object.entries(allData)) {
                     localStorage.setItem(k, v);
                 }
-                alert('✅ تم فك التشفير واستعادة البيانات!');
+                toast(' تم فك التشفير واستعادة البيانات!');
             } catch (err) {
-                alert('❌ فشل - تأكد من المفتاح الصحيح');
+                toast(' فشل - تأكد من المفتاح الصحيح');
             }
         }
 
@@ -699,7 +699,7 @@
             document.getElementById('fpRegister').classList.remove('registered');
             document.getElementById('fpLogin').classList.remove('registered');
             renderUsers();
-            alert('✅ تم مسح جميع بيانات المصادقة');
+            toast(' تم مسح جميع بيانات المصادقة');
         }
 
         // ========== بدء التشغيل ==========

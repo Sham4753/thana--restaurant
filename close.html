@@ -119,7 +119,7 @@ function closeDay(){
     tables.forEach(function(t){t.status='free'});
     ST(tables);
     
-    alert('✅ تم إغلاق اليوم بنجاح!\n\nالطلبات: '+today.length+'\nالكاش: '+today.filter(function(o){return o.paymentStatus==='paid'}).reduce(function(s,o){return s+(o.total||0)},0).toLocaleString());
+    toast(' تم إغلاق اليوم بنجاح!\n\nالطلبات: '+today.length+'\nالكاش: '+today.filter(function(o){return o.paymentStatus==='paid'}).reduce(function(s,o){return s+(o.total||0)},0).toLocaleString());
     renderStats();
 }
 
