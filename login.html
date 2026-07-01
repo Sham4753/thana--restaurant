@@ -3,64 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thana - دخول</title>
+    <title>Thana - تحقق</title>
     <link rel="stylesheet" href="theme-v2.css">
     <style>
-        *{margin:0;padding:0}
-        body{background:#0a0b0f;font-family:'Cairo',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:16px}
-        .c{background:#161820;border-radius:18px;padding:28px 18px;text-align:center;max-width:360px;width:100%;border:1px solid rgba(255,255,255,0.06)}
-        h1{color:#d4a853;font-size:20px;margin:6px 0}
-        p{color:#a8a49e;font-size:11px;margin-bottom:16px}
-        .dots{display:flex;gap:8px;justify-content:center;margin:12px 0}
-        .dots span{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.2)}
-        .dots span.f{background:#d4a853;border-color:#d4a853}
-        .pad{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;max-width:210px;margin:0 auto}
-        .pad button{padding:13px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;font-size:17px;font-weight:600;cursor:pointer;font-family:'Cairo',sans-serif}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            background:#0a0b0f;
+            font-family:'Cairo',sans-serif;
+            display:flex;align-items:center;justify-content:center;
+            min-height:100vh;padding:16px;
+        }
+        .c{
+            background:#161820;
+            border-radius:18px;padding:32px 24px;text-align:center;
+            max-width:380px;width:100%;
+            border:1px solid rgba(255,255,255,0.06);
+        }
+        .logo{font-size:48px;margin-bottom:8px}
+        h2{color:#d4a853;font-size:20px;margin-bottom:4px}
+        p{color:#a8a49e;font-size:12px;margin-bottom:20px}
+
+        .otp-inputs{
+            display:flex;gap:10px;justify-content:center;margin:16px 0;
+        }
+        .otp-inputs input{
+            width:50px;height:55px;
+            border-radius:12px;
+            background:rgba(255,255,255,0.04);
+            border:1px solid rgba(255,255,255,0.1);
+            color:#fff;font-size:22px;font-weight:700;
+            text-align:center;
+            font-family:'Cairo',sans-serif;
+            transition:all 0.2s;
+        }
+        .otp-inputs input:focus{
+            outline:none;
+            border-color:#d4a853;
+            box-shadow:0 0 0 3px rgba(212,168,83,0.1);
+        }
+
+        .verify-btn{
+            display:block;width:100%;padding:14px;
+            border-radius:12px;border:none;
+            background:linear-gradient(135deg,#b8942e,#d4a853);
+            color:#1a1814;font-size:15px;font-weight:700;
+            cursor:pointer;font-family:'Cairo',sans-serif;
+            margin-top:16px;transition:all 0.2s;
+        }
+        .verify-btn:active{transform:scale(0.97)}
+
+        .success-overlay{
+            display:none;
+            padding:20px;
+        }
+        .success-overlay.show{display:block}
+        .check-icon{
+            width:60px;height:60px;border-radius:50%;
+            background:#10b981;margin:0 auto 12px;
+            display:flex;align-items:center;justify-content:center;
+            font-size:30px;color:#fff;
+        }
+        .check-icon::after{content:'✓'}
+
         .msg{min-height:20px;font-size:13px;font-weight:600;margin:8px 0}
         .msg.e{color:#ef4444}.msg.s{color:#10b981}
+
         .btns{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.06);display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
         .btns button{padding:9px 12px;border-radius:20px;font-size:11px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);color:#a8a49e;cursor:pointer;font-family:'Cairo',sans-serif;font-weight:600}
-        .re{width:100%;margin-top:10px;padding:10px;border-radius:10px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#ef4444;font-weight:700;font-size:11px;cursor:pointer;font-family:'Cairo',sans-serif}
+
+        @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+        .shake{animation:shake 0.4s}
     </style>
 </head>
 <body>
 <div class="c">
-    <div style="font-size:44px">🍽️</div>
-    <h1>Thana Restaurant</h1>
-    <p>أدخل PIN للدخول</p>
-    <div class="dots" id="dots"><span></span><span></span><span></span><span></span></div>
-    <div class="msg" id="msg"></div>
-    <div class="pad" id="pad"></div>
-    <div class="btns">
-        <button onclick="go('2026')">🔑 مدير</button>
-        <button onclick="go('1111')">📋 نادل</button>
-        <button onclick="go('2222')">🍳 مطبخ</button>
-        <button onclick="go('3333')">💰 كاشير</button>
+    <div class="logo">🍽️</div>
+    <h2>تحقق OTP</h2>
+    <p>أدخل رمز التحقق المكون من 4 أرقام</p>
+
+    <div class="otp-inputs" id="otpForm">
+        <input type="text" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');nextInput(this)" id="o1">
+        <input type="text" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');nextInput(this)" id="o2">
+        <input type="text" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');nextInput(this)" id="o3">
+        <input type="text" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');nextInput(this)" id="o4">
     </div>
-    <button class="re" onclick="localStorage.clear();location.reload()">🗑️ مسح البيانات</button>
+
+    <div class="msg" id="msg"></div>
+
+    <button class="verify-btn" id="submitBtn" onclick="verifyOTP()">تحقق الآن</button>
+
+    <div class="success-overlay" id="successMsg">
+        <div class="check-icon"></div>
+        <h2 style="color:#10b981">تم بنجاح!</h2>
+        <p>تم تأكيد الهوية بنجاح</p>
+    </div>
+
+    <div class="btns">
+        <button onclick="quickVerify('2026')">🔑 مدير</button>
+        <button onclick="quickVerify('1111')">📋 نادل</button>
+        <button onclick="quickVerify('2222')">🍳 مطبخ</button>
+        <button onclick="quickVerify('3333')">💰 كاشير</button>
+    </div>
 </div>
+
 <script>
-var U={'4753aa':{n:'المدير',r:'admin'},'1111':{n:'النادل',r:'waiter'},'2222':{n:'المطبخ',r:'kitchen'},'3333':{n:'الكاشير',r:'cashier'},'4444':{n:'مدير',r:'manager'}};
-var P='';
-function D(){document.querySelectorAll('#dots span').forEach(function(d,i){d.classList.toggle('f',i<P.length)})}
-function go(p){P=p;D();setTimeout(C,200)}
-function C(){
+var U={'2026':{n:'المدير',r:'admin'},'1111':{n:'النادل',r:'waiter'},'2222':{n:'المطبخ',r:'kitchen'},'3333':{n:'الكاشير',r:'cashier'},'4444':{n:'مدير',r:'manager'}};
+
+function nextInput(el){
+    if(el.value.length===1){
+        var next=el.nextElementSibling;
+        if(next&&next.tagName==='INPUT')next.focus();
+    }
+}
+
+function getOTP(){
+    return document.getElementById('o1').value + document.getElementById('o2').value + document.getElementById('o3').value + document.getElementById('o4').value;
+}
+
+function verifyOTP(){
+    var pin=getOTP();
     var m=document.getElementById('msg');
-    if(U[P]){
-        var u=U[P];
+    
+    if(pin.length<4){m.textContent='أدخل 4 أرقام';m.className='msg e';return}
+    
+    if(U[pin]){
+        var u=U[pin];
         localStorage.setItem('thana_auth_session',JSON.stringify({role:u.r}));
-        m.textContent='✅ '+u.n;m.className='msg s';
+        
+        // إظهار النجاح
+        document.getElementById('otpForm').style.display='none';
+        document.getElementById('submitBtn').style.display='none';
+        document.getElementById('successMsg').classList.add('show');
+        
         var pages={admin:(localStorage.getItem('thana_pins')===null?'pin-settings.html':'index.html'),waiter:'waiter.html',kitchen:'kitchen.html',cashier:'orders.html',manager:'index.html'};
-        setTimeout(function(){location.href=pages[u.r]||'index.html'},400);
-    }else{m.textContent='❌ غلط - جرب 2026';m.className='msg e';P='';D()}
+        setTimeout(function(){location.href=pages[u.r]||'index.html'},800);
+    }else{
+        m.textContent='❌ رمز غير صحيح';
+        m.className='msg e';
+        document.querySelector('.c').classList.add('shake');
+        setTimeout(function(){document.querySelector('.c').classList.remove('shake')},400);
+        document.querySelectorAll('.otp-inputs input').forEach(function(i){i.value=''});
+        document.getElementById('o1').focus();
+    }
 }
-function T(k){
-    document.getElementById('msg').textContent='';document.getElementById('msg').className='msg';
-    if(k==='C')P='';else if(k==='⌫')P=P.slice(0,-1);else if(k==='✓'){C();return}else{if(P.length<4){P+=k;if(P.length===4)setTimeout(C,300)}}
-    D();
+
+function quickVerify(pin){
+    document.getElementById('o1').value=pin[0];
+    document.getElementById('o2').value=pin[1];
+    document.getElementById('o3').value=pin[2];
+    document.getElementById('o4').value=pin[3];
+    verifyOTP();
 }
-var pad=document.getElementById('pad');
-'123456789C0⌫✓'.split('').forEach(function(k){var b=document.createElement('button');b.textContent=k;b.onclick=function(){T(k)};pad.appendChild(b)});
 </script>
 </body>
 </html>
