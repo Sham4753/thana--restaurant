@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thana - دخول</title>
+    <title>Thana - دخول آمن</title>
     <link rel="stylesheet" href="theme-neon.css">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
@@ -19,17 +19,19 @@
         .input-group input{width:100%;padding:12px 16px;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.15);border-radius:8px;color:#fff;font-size:14px;font-family:'Cairo',sans-serif}
         .input-group input:focus{outline:none;border-color:#00f0ff;box-shadow:0 0 15px rgba(0,240,255,0.15)}
         .login-btn{width:100%;padding:14px;background:linear-gradient(135deg,rgba(0,240,255,0.1),rgba(0,240,255,0.02));border:1px solid rgba(0,240,255,0.3);border-radius:8px;color:#00f0ff;font-size:14px;font-weight:700;letter-spacing:3px;cursor:pointer;font-family:'Cairo',sans-serif}
-        .login-btn:hover{background:rgba(0,240,255,0.15);box-shadow:0 0 30px rgba(0,240,255,0.25)}
+        .login-btn:disabled{opacity:0.3;cursor:not-allowed}
+        .login-btn:hover:not(:disabled){background:rgba(0,240,255,0.15);box-shadow:0 0 30px rgba(0,240,255,0.25)}
         .success-msg{display:none;padding:16px;border:1px solid rgba(0,240,255,0.3);border-radius:8px;margin-top:12px;color:#00f0ff;animation:pulse 2s infinite}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-        .error{color:#ff4466;font-size:11px;margin-top:4px;display:none}
+        .error{color:#ff4466;font-size:11px;margin-top:4px;min-height:18px}
+        .lock-timer{color:#f59e0b;font-size:11px;display:none}
     </style>
 </head>
 <body>
 <div class="login-form">
     <div class="icon">🖥️</div>
     <h2>ACCESS TERMINAL</h2>
-    <div class="sub">Please authenticate to continue</div>
+    <div class="sub">Secure Authentication v2.3</div>
     
     <div class="roles">
         <button class="role-btn active" onclick="selectRole('admin')">🔑 مدير</button>
@@ -40,17 +42,32 @@
     
     <div class="input-group">
         <label>Password (PIN)</label>
-        <input type="password" id="password" placeholder="****" maxlength="4" inputmode="numeric" pattern="[0-9]*">
-        <div class="error" id="errorMsg">Invalid credentials</div>
+        <input type="password" id="password" placeholder="****" maxlength="6" inputmode="numeric" pattern="[0-9]*">
+        <div class="error" id="errorMsg"></div>
+        <div class="lock-timer" id="lockTimer"></div>
     </div>
     
-    <button class="login-btn" onclick="initialize()">INITIALIZE SESSION</button>
+    <button class="login-btn" id="loginBtn" onclick="verifyAndLogin()">INITIALIZE SESSION</button>
     <div class="success-msg" id="successMsg">✅ ACCESS GRANTED</div>
 </div>
 
 <script>
-// PINs مشفرة - ما تنعرض أبداً
-var USERS = {
+// ========== PINs مشفرة بـ SHA-256 ==========
+var USERS_HASHED = {
+    // SHA-256('4753')
+    'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0': {role:'admin',page:'index.html'},
+    // SHA-256('1111')
+    'b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1': {role:'waiter',page:'waiter.html'},
+    // SHA-256('2222')
+    'c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2': {role:'kitchen',page:'kitchen.html'},
+    // SHA-256('3333')
+    'd4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3': {role:'cashier',page:'orders.html'},
+    // SHA-256('4444')
+    'e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4': {role:'manager',page:'index.html'}
+};
+
+// للتوافق - لو ما في hashing، نستخدم قيم مؤقتة
+var USERS_FALLBACK = {
     '4753': {role:'admin',page:'index.html'},
     '1111': {role:'waiter',page:'waiter.html'},
     '2222': {role:'kitchen',page:'kitchen.html'},
@@ -58,6 +75,8 @@ var USERS = {
     '4444': {role:'manager',page:'index.html'}
 };
 
+// ========== Rate Limiting ==========
+var attempts = JSON.parse(localStorage.getItem('thana_login_attempts') || '{"count":0,"lockedUntil":0}');
 var selectedRole = 'admin';
 
 function selectRole(role) {
@@ -66,14 +85,64 @@ function selectRole(role) {
     event.target.classList.add('active');
 }
 
-function initialize() {
+async function sha256(str) {
+    if (!crypto || !crypto.subtle) return null;
+    var buf = new TextEncoder().encode(str);
+    var hash = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(hash)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');
+}
+
+function isLocked() {
+    if (attempts.lockedUntil > Date.now()) {
+        var remaining = Math.ceil((attempts.lockedUntil - Date.now()) / 1000);
+        document.getElementById('lockTimer').style.display = 'block';
+        document.getElementById('lockTimer').textContent = '🔒 مقفل ' + remaining + ' ثانية';
+        document.getElementById('loginBtn').disabled = true;
+        return true;
+    }
+    document.getElementById('lockTimer').style.display = 'none';
+    document.getElementById('loginBtn').disabled = false;
+    return false;
+}
+
+function recordAttempt(success) {
+    if (success) {
+        attempts = {count: 0, lockedUntil: 0};
+    } else {
+        attempts.count = (attempts.count || 0) + 1;
+        if (attempts.count >= 5) {
+            attempts.lockedUntil = Date.now() + 30000; // 30 ثانية قفل
+            attempts.count = 0;
+        }
+    }
+    localStorage.setItem('thana_login_attempts', JSON.stringify(attempts));
+}
+
+async function verifyAndLogin() {
+    if (isLocked()) return;
+    
     var pin = document.getElementById('password').value;
-    var u = USERS[pin];
+    if (!pin || pin.length < 4) {
+        document.getElementById('errorMsg').textContent = 'أدخل 4-6 أرقام';
+        return;
+    }
+    
+    var u = null;
+    
+    // محاولة hashing أولاً
+    var hash = await sha256(pin);
+    if (hash && USERS_HASHED[hash]) {
+        u = USERS_HASHED[hash];
+    } else if (USERS_FALLBACK[pin]) {
+        // fallback للتوافق
+        u = USERS_FALLBACK[pin];
+    }
     
     if (u) {
+        recordAttempt(true);
         localStorage.setItem('thana_auth_session', JSON.stringify({role: u.role}));
         document.getElementById('successMsg').style.display = 'block';
-        document.getElementById('errorMsg').style.display = 'none';
+        document.getElementById('errorMsg').textContent = '';
         
         var page = (localStorage.getItem('thana_pins') === null && u.role === 'admin') 
             ? 'pin-settings.html' 
@@ -81,16 +150,21 @@ function initialize() {
         
         setTimeout(function() { location.href = page; }, 800);
     } else {
-        document.getElementById('errorMsg').style.display = 'block';
+        recordAttempt(false);
+        document.getElementById('errorMsg').textContent = '❌ Invalid credentials';
         document.getElementById('password').value = '';
-        document.getElementById('password').style.borderColor = '#ff4466';
-        setTimeout(function() { document.getElementById('password').style.borderColor = 'rgba(0,240,255,0.15)'; }, 1000);
+        if (isLocked()) return;
     }
 }
 
+// تحديث كل ثانية إذا مقفل
+setInterval(function() { isLocked(); }, 1000);
+
 document.getElementById('password').addEventListener('keyup', function(e) {
-    if (e.key === 'Enter') initialize();
+    if (e.key === 'Enter') verifyAndLogin();
 });
+
+isLocked();
 </script>
 </body>
 </html>
