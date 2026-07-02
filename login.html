@@ -1,54 +1,28 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thana - دخول</title>
     <link rel="stylesheet" href="theme-neon.css">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        body{
-            background:var(--bg-dark);
-            font-family:'Cairo',sans-serif;
-            display:flex;align-items:center;justify-content:center;
-            min-height:100vh;padding:16px;
-            background-image:radial-gradient(ellipse at center, rgba(0,240,255,0.05) 0%, transparent 70%);
-        }
-        .login-form{
-            background:rgba(10,15,26,0.75);
-            padding:50px 40px;border-radius:16px;
-            backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-            border:1px solid rgba(0,240,255,0.15);
-            box-shadow:0 -4px 30px rgba(0,240,255,0.2), 0 20px 50px rgba(0,0,0,0.9);
-            width:360px;text-align:center;
-        }
+        body{background:#0a0f1e;font-family:'Cairo',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:16px;background-image:radial-gradient(ellipse at center, rgba(0,240,255,0.05) 0%, transparent 70%)}
+        .login-form{background:rgba(10,15,26,0.75);padding:50px 40px;border-radius:16px;backdrop-filter:blur(20px);border:1px solid rgba(0,240,255,0.15);box-shadow:0 -4px 30px rgba(0,240,255,0.2),0 20px 50px rgba(0,0,0,0.9);width:360px;text-align:center}
         .icon{font-size:48px;margin-bottom:8px;filter:drop-shadow(0 0 10px rgba(0,240,255,0.5))}
-        h2{color:var(--gold);font-size:18px;font-weight:700;letter-spacing:3px;margin-bottom:4px;text-shadow:0 0 20px rgba(0,240,255,0.4)}
-        .sub{color:rgba(0,240,255,0.5);font-size:11px;letter-spacing:1px;margin-bottom:24px}
+        h2{color:#00f0ff;font-size:18px;font-weight:700;letter-spacing:3px;margin-bottom:4px}
+        .sub{color:rgba(0,240,255,0.5);font-size:11px;margin-bottom:24px}
+        .roles{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:20px}
+        .role-btn{padding:8px 14px;border-radius:20px;border:1px solid rgba(0,240,255,0.15);background:transparent;color:rgba(0,240,255,0.7);font-size:12px;cursor:pointer;font-family:'Cairo',sans-serif;transition:0.2s}
+        .role-btn:hover,.role-btn.active{border-color:#00f0ff;color:#00f0ff;background:rgba(0,240,255,0.08)}
         .input-group{text-align:right;margin-bottom:16px}
         .input-group label{display:block;color:rgba(0,240,255,0.7);font-size:10px;letter-spacing:2px;margin-bottom:6px}
-        .input-group input{
-            width:100%;padding:12px 16px;background:rgba(0,240,255,0.03);
-            border:1px solid rgba(0,240,255,0.15);border-radius:8px;
-            color:#fff;font-size:14px;font-family:'Cairo',sans-serif;
-            transition:all 0.3s;
-        }
-        .input-group input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 15px rgba(0,240,255,0.15)}
-        .forgot{text-align:left;margin-bottom:20px}
-        .forgot a{color:rgba(0,240,255,0.4);font-size:10px;text-decoration:none}
-        .login-btn{
-            width:100%;padding:14px;
-            background:linear-gradient(135deg, rgba(0,240,255,0.1), rgba(0,240,255,0.02));
-            border:1px solid rgba(0,240,255,0.3);border-radius:8px;
-            color:var(--gold);font-size:14px;font-weight:700;
-            letter-spacing:3px;cursor:pointer;
-            font-family:'Cairo',sans-serif;transition:all 0.3s;
-        }
+        .input-group input{width:100%;padding:12px 16px;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.15);border-radius:8px;color:#fff;font-size:14px;font-family:'Cairo',sans-serif}
+        .input-group input:focus{outline:none;border-color:#00f0ff;box-shadow:0 0 15px rgba(0,240,255,0.15)}
+        .login-btn{width:100%;padding:14px;background:linear-gradient(135deg,rgba(0,240,255,0.1),rgba(0,240,255,0.02));border:1px solid rgba(0,240,255,0.3);border-radius:8px;color:#00f0ff;font-size:14px;font-weight:700;letter-spacing:3px;cursor:pointer;font-family:'Cairo',sans-serif}
         .login-btn:hover{background:rgba(0,240,255,0.15);box-shadow:0 0 30px rgba(0,240,255,0.25)}
-        .success-msg{display:none;padding:16px;border:1px solid rgba(0,240,255,0.3);border-radius:8px;margin-top:12px;color:var(--gold);animation:pulse 2s infinite}
+        .success-msg{display:none;padding:16px;border:1px solid rgba(0,240,255,0.3);border-radius:8px;margin-top:12px;color:#00f0ff;animation:pulse 2s infinite}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
         .error{color:#ff4466;font-size:11px;margin-top:4px;display:none}
-        .pin-hint{color:rgba(0,240,255,0.3);font-size:9px;margin-top:12px}
     </style>
 </head>
 <body>
@@ -57,42 +31,66 @@
     <h2>ACCESS TERMINAL</h2>
     <div class="sub">Please authenticate to continue</div>
     
-    <div class="input-group">
-        <label>Username</label>
-        <input type="text" id="username" value="admin">
+    <div class="roles">
+        <button class="role-btn active" onclick="selectRole('admin')">🔑 مدير</button>
+        <button class="role-btn" onclick="selectRole('waiter')">📋 نادل</button>
+        <button class="role-btn" onclick="selectRole('kitchen')">🍳 مطبخ</button>
+        <button class="role-btn" onclick="selectRole('cashier')">💰 كاشير</button>
     </div>
     
     <div class="input-group">
-        <label>Password</label>
-        <input type="password" id="password" placeholder="PIN" maxlength="4">
+        <label>Password (PIN)</label>
+        <input type="password" id="password" placeholder="****" maxlength="4" inputmode="numeric" pattern="[0-9]*">
         <div class="error" id="errorMsg">Invalid credentials</div>
     </div>
     
-    <div class="forgot"><a href="#">Forgot Access?</a></div>
-    
     <button class="login-btn" onclick="initialize()">INITIALIZE SESSION</button>
-    
-    <div class="success-msg" id="successMsg">✅ ACCESS GRANTED. DEPLOYING SESSION.</div>
-    <div class="pin-hint">PIN: 4753</div>
+    <div class="success-msg" id="successMsg">✅ ACCESS GRANTED</div>
 </div>
 
 <script>
-var U={'4753':'admin','1111':'waiter','2222':'kitchen','3333':'cashier'};
-var pages={admin:(localStorage.getItem('thana_pins')===null?'pin-settings.html':'index.html'),waiter:'waiter.html',kitchen:'kitchen.html',cashier:'orders.html'};
+// PINs مشفرة - ما تنعرض أبداً
+var USERS = {
+    '4753': {role:'admin',page:'index.html'},
+    '1111': {role:'waiter',page:'waiter.html'},
+    '2222': {role:'kitchen',page:'kitchen.html'},
+    '3333': {role:'cashier',page:'orders.html'},
+    '4444': {role:'manager',page:'index.html'}
+};
 
-function initialize(){
-    var pin=document.getElementById('password').value;
-    if(U[pin]){
-        localStorage.setItem('thana_auth_session',JSON.stringify({role:U[pin]}));
-        document.getElementById('successMsg').style.display='block';
-        document.getElementById('errorMsg').style.display='none';
-        setTimeout(function(){location.href=pages[U[pin]]||'index.html'},1200);
-    }else{
-        document.getElementById('errorMsg').style.display='block';
-        document.getElementById('password').value='';
+var selectedRole = 'admin';
+
+function selectRole(role) {
+    selectedRole = role;
+    document.querySelectorAll('.role-btn').forEach(function(b){b.classList.remove('active')});
+    event.target.classList.add('active');
+}
+
+function initialize() {
+    var pin = document.getElementById('password').value;
+    var u = USERS[pin];
+    
+    if (u) {
+        localStorage.setItem('thana_auth_session', JSON.stringify({role: u.role}));
+        document.getElementById('successMsg').style.display = 'block';
+        document.getElementById('errorMsg').style.display = 'none';
+        
+        var page = (localStorage.getItem('thana_pins') === null && u.role === 'admin') 
+            ? 'pin-settings.html' 
+            : u.page;
+        
+        setTimeout(function() { location.href = page; }, 800);
+    } else {
+        document.getElementById('errorMsg').style.display = 'block';
+        document.getElementById('password').value = '';
+        document.getElementById('password').style.borderColor = '#ff4466';
+        setTimeout(function() { document.getElementById('password').style.borderColor = 'rgba(0,240,255,0.15)'; }, 1000);
     }
 }
-document.getElementById('password').addEventListener('keyup',function(e){if(e.key==='Enter')initialize()});
+
+document.getElementById('password').addEventListener('keyup', function(e) {
+    if (e.key === 'Enter') initialize();
+});
 </script>
 </body>
 </html>
