@@ -1,16 +1,13 @@
 // Thana License - Simple Gate
-var LICENSE_VALID = true; // مفعل افتراضياً للتطوير
-
-(function(){
+var LICENSE_VALID = (function(){
     try {
         var lic = JSON.parse(localStorage.getItem('thana_license') || 'null');
-        if (!lic || !lic.key || lic.key.length < 8) {
-            LICENSE_VALID = false;
-        }
-    } catch(e) { LICENSE_VALID = false; }
+        return lic && lic.key && lic.key.length > 8;
+    } catch(e) { return false; }
 })();
 
-// ما نمنع أي صفحة - بس نحذر
-if (!LICENSE_VALID) {
-    console.warn('⚠️ ترخيص غير مفعل');
+if (!LICENSE_VALID && !window.location.pathname.includes('activate')) {
+    document.addEventListener('DOMContentLoaded', function() {
+        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:Cairo,sans-serif;color:#00f0ff;text-align:center"><div><h1>🔑</h1><p>يرجى تفعيل الترخيص</p><a href="activate.html" style="color:#00f0ff">تفعيل</a></div></div>';
+    });
 }
