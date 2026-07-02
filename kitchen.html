@@ -7,6 +7,7 @@
 <script src="live-kitchen.js"></script>
 <script src="toast.js"></script>
 <script src="license-check.js"></script>
+<script src="sync-channel.js"></script>
 <script src="state.js"></script>
 <script src="nav-component.js?v=2.1" defer></script>
 <script src="beep.js" defer></script>
@@ -73,7 +74,10 @@ function loadOrders(){
 function startCooking(id){var o=JSON.parse(localStorage.getItem('thana_orders')||'[]').find(function(x){return x.id===id});if(o){o.status='cooking';o.cookStart=new Date().toISOString();localStorage.setItem('thana_orders',JSON.stringify(JSON.parse(localStorage.getItem('thana_orders')||'[]').map(function(x){return x.id===id?o:x})));loadOrders();if(typeof playBeep==='function')playBeep()}}
 function markDone(id){var o=JSON.parse(localStorage.getItem('thana_orders')||'[]').find(function(x){return x.id===id});if(o){o.status='done';o.cookEnd=new Date().toISOString();localStorage.setItem('thana_orders',JSON.stringify(JSON.parse(localStorage.getItem('thana_orders')||'[]').map(function(x){return x.id===id?o:x})));loadOrders()}}
 function backToNew(id){var o=JSON.parse(localStorage.getItem('thana_orders')||'[]').find(function(x){return x.id===id});if(o){o.status='new';localStorage.setItem('thana_orders',JSON.stringify(JSON.parse(localStorage.getItem('thana_orders')||'[]').map(function(x){return x.id===id?o:x})));loadOrders()}}
-loadOrders();setInterval(loadOrders,500);
+initOrderListener(function(data){
+        if(data.order) { loadOrders(); if(typeof playBeep==="function") playBeep(); }
+    });
+    loadOrders();setInterval(loadOrders,500);
 window.addEventListener('storage',function(e){if(e.key==='thana_orders'||e.key==='thana_new_order_notify'||e.key==='thana_order_signal'){loadOrders();if(typeof playBeep==='function')playBeep()}});
 </script>
 </body>
