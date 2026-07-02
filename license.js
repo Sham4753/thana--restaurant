@@ -39,7 +39,9 @@ const VALID_LICENSES = {
     // شكل الكود: { name: 'اسم المطعم', expiry: 'YYYY-MM-DD', active: true }
     
     // مثال - كود تجريبي للمطور
-    'THANA-DEV0-0000-0000': {
+    'THANA-DEV0-0000-0000': { name: 'المطور - نسخة تجريبية', expiry: '2099-12-31', active: true, type: 'dev' },
+        'DEV-LOCAL-TEST-0001': { name: 'تطوير محلي', expiry: '2099-12-31', active: true, type: 'dev' },
+        'THANA-DEV0-0000-0000': {
         name: 'المطور - نسخة تجريبية',
         expiry: '2099-12-31',
         active: true,
