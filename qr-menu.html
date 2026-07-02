@@ -91,6 +91,12 @@ function submitOrder(){
     orders.push(order);
     localStorage.setItem('thana_orders', JSON.stringify(orders));
     localStorage.setItem('thana_new_order_notify', JSON.stringify(order));
+    // تحديث الطاولة
+    if(order.table!=='safari'){
+        var tables=JSON.parse(localStorage.getItem('thana_tables')||'[]');
+        var t=tables.find(function(x){return x.id==order.table});
+        if(t){t.status='busy';localStorage.setItem('thana_tables',JSON.stringify(tables));}
+    }
     broadcastOrder(order);
     var orders=JSON.parse(localStorage.getItem('thana_orders')||'[]');
     orders.push(order);
